@@ -9,9 +9,10 @@ branches:
 jdk:
   - oraclejdk8
 
-#before_script:
+before_script:
 #  - wget http://pnml.lip6.fr/camipnml/download/fr.lip6.pnml.cami2pnml-2.1.13.jar
 #  - mvn install:install-file -Dfile=fr.lip6.pnml.cami2pnml-2.1.13.jar -DgroupId=fr.lip6.pnml -DartifactId=fr.lip6.pnml.cami2pnml -Dversion=2.1.13 -Dpackaging=jar
+   - chmod 755 build.sh
 
 # script to launch
 # le script sh contient juste une commande de build maven. ça pourrait aussi être une commande de build gradle
