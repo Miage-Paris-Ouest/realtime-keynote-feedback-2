@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 ./gradlew sonarqube \
   -Dsonar.projectKey=Miage-Paris-Ouest_realtime-keynote-feedback-2 \
   -Dsonar.organization=miage-paris-ouest-1 \
