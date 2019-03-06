@@ -5,6 +5,7 @@ apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'org.sonarqube'
 
+
 sourceCompatibility = 1.8
 
 repositories {
