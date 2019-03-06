@@ -61,6 +61,10 @@ sonarqube {
     }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
+
 // Makes sonar runner not dependent on tests (when the test
 // Requires that you run the test task before the sonarqube task
 project.tasks["sonarqube"].dependsOn = []
