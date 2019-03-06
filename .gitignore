@@ -25,6 +25,6 @@ hs_err_pid*
 #.gradle/
 .idea/
 build.sh
-#gradle/wrapper/gradle-wrapper.properties
 settings.gradle
 .gradle/
+#gradle/wrapper/gradle-wrapper.properties
