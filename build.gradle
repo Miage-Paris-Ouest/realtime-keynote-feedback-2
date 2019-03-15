@@ -50,7 +50,7 @@ sonarqube {
     properties {
         property "sonar.jacoco.reportPaths", ["build/jacoco/testTestNG.exec", "build/jacoco/test.exec"]
         property "sonar.junit.reportPaths", ["build/test-results/testTestNG", "build/test-results/test"]
-        property "sonar.tests", "src/test/java"
+        property "sonar.tests", "src" //"src/test/java"
         property "sonar.coverage.exclusions", ["src/main/java/impl/ExpressionBuilder.java", "src/main/java/main/Main.java" ]
     }
 }
