@@ -15,6 +15,7 @@ before_script:
    - chmod 755 ./build.sh
    - chmod +x gradle/wrapper/gradle-wrapper.jar
    - chmod +x gradlew
+   - chmod +x gradlew.bat
 
 # script to launch
 # le script sh contient juste une commande de build maven. ça pourrait aussi être une commande de build gradle
