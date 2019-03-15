@@ -30,5 +30,5 @@ script: "./build.sh"
 #    - '$HOME/.m2/repository'
 
 notifications:
-  slack: 'm1miage-javateam.slack.com:xoxp-534865671954-534705393460-579318650647-66d243f61599d6bf97d484212f8a7c83#github'
+  slack: 'm1miage-javateam.slack.com:xoxp-534865671954-534705393460-579318650647-66d243f61599d6bf97d484212f8a7c83#github' 
     on_success: always
