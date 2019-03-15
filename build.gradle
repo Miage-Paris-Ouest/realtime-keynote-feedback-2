@@ -41,12 +41,6 @@ jacocoTestReport {
     }
 }
 
-task testTestNG(type: Test) {
-    useTestNG() {
-        options.suites 'src/test/resources/testng.xml'
-    }
-}
-
 test {
     dependsOn 'testTestNG'
     ignoreFailures = true
