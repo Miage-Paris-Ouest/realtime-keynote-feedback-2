@@ -24,11 +24,8 @@ before_script:
 
 script: "./build.sh"
 
-# cache pour Maven
-#cache:
-#  directories:
-#    - '$HOME/.m2/repository'
-
-#notifications:
-#  slack: 'm1miage-javateam.slack.com:xoxp-534865671954-534705393460-579318650647-66d243f61599d6bf97d484212f8a7c83#github' 
-#    on_success: always
+notifications:
+  slack:
+    rooms:
+      - 'm1miage-javateam.slack.com:MwBJB_qWwLOKlgSHlcjCyQ#github'
+    on_failure: always # default: always
