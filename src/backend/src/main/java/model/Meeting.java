@@ -2,6 +2,7 @@ package model;
 
 public class Meeting {
 	private String title;
+	private String subject;
 	private String date;
 	private int startTime;
 	private int endTime;
@@ -9,8 +10,9 @@ public class Meeting {
 	private int numPers;
 	private int attIndice;
 	
-	public Meeting (String title, String date, int startTime, int endTime,  int numPers) {
+	public Meeting (String title, String subject, String date, int startTime, int endTime,  int numPers) {
 		this.title = title;
+		this.subject = subject;
 		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -19,9 +21,10 @@ public class Meeting {
 		this.AttentionCalcul();
 	}
 	
-	public Meeting (String title,  int numPers) {
+	public Meeting (String title, String subject,  int numPers) {
 //		LocalDateTime currentTime = LocalDateTime.now();
 		this.title = title;
+		this.subject = subject;
 //		this.date = currentTime.toLocalDate(); Gérer la date
 //		this.startTime = LocalDateTime.now(); Gérer l'heure
 //		this.endTime = (Integer) null;
