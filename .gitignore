@@ -31,3 +31,4 @@ settings.gradle
 gradle/wrapper/gradle-wrapper.properties
 node_modules
 bin/
+/.metadata/
