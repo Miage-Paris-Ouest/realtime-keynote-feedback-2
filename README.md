@@ -4,7 +4,7 @@ Tout d'abord, on n'oublie pas de lier sa machine au compte git afin de cloner le
 
 Les étapes d'installations : 
 
-- Installer VueJS et npm
+- Installer node, npm et Vue cli
 - Cloner le projet
 - cd */realtime-keynote-feedback-2/projet/frontend-vuejs*
 
