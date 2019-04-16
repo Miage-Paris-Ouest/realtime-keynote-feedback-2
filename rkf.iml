@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="file://$USER_HOME$/Bureau/javax.persistence.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/slf4j-api-1.7.25.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-aop-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-beans-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-context-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-core-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-data-commons-2.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-data-jpa-2.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-expression-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-jcl-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-jdbc-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-orm-5.1.6.RELEASE.jar" />
+    <libelement value="file://$USER_HOME$/Bureau/spring-tx-5.1.6.RELEASE.jar" />
+    <conelement value="org.eclipse.buildship.core.gradleclasspathcontainer" />
+    <src_description expected_position="0" />
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="library" name="org.eclipse.buildship.core.gradleclasspathcontainer" level="application" />
+    <orderEntry type="module-library">
+      <library name="javax.persistence.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/javax.persistence.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="slf4j-api-1.7.25.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/slf4j-api-1.7.25.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-aop-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-aop-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-beans-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-beans-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-context-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-context-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-core-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-core-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-data-commons-2.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-data-commons-2.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-data-jpa-2.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-data-jpa-2.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-expression-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-expression-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-jcl-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-jcl-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-jdbc-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-jdbc-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-orm-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-orm-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-tx-5.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="file://$USER_HOME$/Bureau/spring-tx-5.1.6.RELEASE.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
