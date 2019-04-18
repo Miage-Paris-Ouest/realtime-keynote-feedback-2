@@ -32,8 +32,10 @@ public class Seance implements Serializable {
     @Column(length = 60, nullable = true)
     private Date description;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "id")
-    private long seanceAnalyticsId;
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "seanceId")
+    private SeanceAnalytics seanceAnalyticsId;
 
     @Column(nullable = false)
     private int participants;
@@ -42,7 +44,7 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
-    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, Date description, long seanceAnalyticsId, int participants) {
+    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, Date description, SeanceAnalytics seanceAnalyticsId, int participants) {
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
@@ -105,11 +107,11 @@ public class Seance implements Serializable {
         this.description = description;
     }
 
-    public long getSeanceAnalyticsId() {
+    public SeanceAnalytics getSeanceAnalyticsId() {
         return seanceAnalyticsId;
     }
 
-    public void setSeanceAnalyticsId(long seanceAnalyticsId) {
+    public void setSeanceAnalyticsId(SeanceAnalytics seanceAnalyticsId) {
         this.seanceAnalyticsId = seanceAnalyticsId;
     }
 
