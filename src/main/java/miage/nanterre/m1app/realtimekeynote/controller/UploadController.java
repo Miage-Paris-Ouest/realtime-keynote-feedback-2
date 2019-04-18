@@ -1,4 +1,4 @@
-package controller;
+package miage.nanterre.m1app.realtimekeynote.controller;
 
 
 import org.springframework.http.HttpStatus;
