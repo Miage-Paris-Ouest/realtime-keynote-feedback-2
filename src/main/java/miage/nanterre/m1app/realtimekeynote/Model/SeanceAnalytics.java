@@ -21,19 +21,14 @@ public class SeanceAnalytics implements Serializable {
     @Column(nullable = true, unique = false)
     private double[] analyticsData;
 
-    @Column(nullable = true, unique = false)
-    private double averageAttention;
-
     public SeanceAnalytics() {
     }
 
-    public SeanceAnalytics(Seance seance, double[] analyticsData, double averageAttention) {
+    public SeanceAnalytics(Seance seance, double[] analyticsData) {
         this.seance = seance;
         this.analyticsData = analyticsData;
-        this.averageAttention = averageAttention;
     }
-
-
+    
     public long getId() {
         return id;
     }
@@ -58,28 +53,19 @@ public class SeanceAnalytics implements Serializable {
         this.analyticsData = analyticsData;
     }
 
-    public double getAverageAttention() {
-        return averageAttention;
-    }
-
-    public void setAverageAttention(double averageAttention) {
-        this.averageAttention = averageAttention;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SeanceAnalytics that = (SeanceAnalytics) o;
         return id == that.id &&
-                Double.compare(that.averageAttention, averageAttention) == 0 &&
                 Objects.equals(seance, that.seance) &&
                 Arrays.equals(analyticsData, that.analyticsData);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, seance, averageAttention);
+        int result = Objects.hash(id, seance);
         result = 31 * result + Arrays.hashCode(analyticsData);
         return result;
     }
