@@ -14,8 +14,8 @@ public class SeanceAnalytics implements Serializable {
     @Column(updatable = false, nullable = false, unique = true)
     private long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false, mappedBy = "seanceAnalytics")
-    @JoinColumn(name="id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id")
     private Seance seance;
 
     @Column(nullable = true, unique = false)

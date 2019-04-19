@@ -19,7 +19,7 @@ public class User implements Serializable {
     @Column(length = 60, nullable = false)
     private String lastname;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(fetch = FetchType.EAGER, targetEntity=Seance.class, mappedBy = "user")
     private List<Seance> seance;
 
     public User() {
@@ -61,5 +61,17 @@ public class User implements Serializable {
 
     public List<Seance> getSeances() {
         return seance;
+    }
+
+    @Override
+    public String
+    toString() {
+        return "";
+        /*"User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", seance=" + seance +
+                '}';*/
     }
 }

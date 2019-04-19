@@ -1,5 +1,7 @@
 package miage.nanterre.m1app.realtimekeynote.Model;
 
+import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,15 +31,16 @@ public class Seance implements Serializable {
     private Date endingTime;
 
     @Column(length = 60, nullable = true)
-    private Date description;
+    private String description;
 
     @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "id", nullable = false)
+            cascade = CascadeType.ALL,
+            optional = false,
+            mappedBy = "seance")
     private SeanceAnalytics seanceAnalytics;
 
-    @ManyToOne
-    @JoinColumn(name="user", nullable=false)
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name="user")
     private User user;
 
     @Column(nullable = false)
@@ -46,18 +49,17 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
-    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, Date description, SeanceAnalytics seanceAnalytics, User user, int participants) {
+    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, String description, User user, int participants) {
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
         this.beginningTime = beginningTime;
         this.endingTime = endingTime;
         this.description = description;
-        this.seanceAnalytics = seanceAnalytics;
         this.user = user;
         this.participants = participants;
 
-        SeanceAnalytics analytics = new SeanceAnalytics();
+        seanceAnalytics = new SeanceAnalytics();
     }
 
     public long getId() {
@@ -104,11 +106,11 @@ public class Seance implements Serializable {
         this.endingTime = endingTime;
     }
 
-    public Date getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(Date description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -134,5 +136,22 @@ public class Seance implements Serializable {
 
     public void setParticipants(int participants) {
         this.participants = participants;
+    }
+
+    @Override
+    public String toString() {
+        return "";
+        /*Seance{" +
+                "id=" + id +
+                ", subject='" + subject + '\'' +
+                ", room='" + room + '\'' +
+                ", publiq='" + publiq + '\'' +
+                ", beginningTime=" + beginningTime +
+                ", endingTime=" + endingTime +
+                ", description='" + description + '\'' +
+                ", seanceAnalytics=" + seanceAnalytics +
+                ", user=" + user +
+                ", participants=" + participants +
+                '}';*/
     }
 }

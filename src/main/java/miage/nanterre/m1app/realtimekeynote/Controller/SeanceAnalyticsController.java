@@ -3,8 +3,11 @@ package miage.nanterre.m1app.realtimekeynote.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
+import miage.nanterre.m1app.realtimekeynote.DAO.UserDAO;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
+import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
+import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +52,6 @@ public class SeanceAnalyticsController {
         }
 
         return new ResponseEntity<Object>(response, HttpStatus.OK);
-
     }
 
 }
