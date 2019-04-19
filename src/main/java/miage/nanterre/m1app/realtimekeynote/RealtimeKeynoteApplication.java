@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan(basePackages = {"miage.nanterre.m1app.realtimekeynote.model", "miage.nanterre.m1app.realtimekeynote.DAO"})
+@EntityScan(basePackages = {"miage.nanterre.m1app.realtimekeynote.Model", "miage.nanterre.m1app.realtimekeynote.DAO"})
 public class RealtimeKeynoteApplication  {
 
 	public static void main(String[] args) {
