@@ -14,36 +14,40 @@ public class SeanceAnalytics implements Serializable {
     @Column(updatable = false, nullable = false, unique = true)
     private long id;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false, mappedBy = "seanceAnalytics")
+    @JoinColumn(name="id")
+    private Seance seance;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id", nullable = false)
-    private Seance seanceId;
-
-    @Column(nullable = false, unique = false)
+    @Column(nullable = true, unique = false)
     private double[] analyticsData;
 
-    @Column(nullable = false, unique = false)
+    @Column(nullable = true, unique = false)
     private double averageAttention;
 
     public SeanceAnalytics() {
     }
 
-    public SeanceAnalytics(Seance seanceId, double[] analyticsData, double averageAttention) {
-        this.seanceId = seanceId;
+    public SeanceAnalytics(Seance seance, double[] analyticsData, double averageAttention) {
+        this.seance = seance;
         this.analyticsData = analyticsData;
         this.averageAttention = averageAttention;
     }
+
 
     public long getId() {
         return id;
     }
 
-    public Seance getSeanceId() {
-        return seanceId;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setSeanceId(Seance seanceId) {
-        this.seanceId = seanceId;
+    public Seance getSeance() {
+        return seance;
+    }
+
+    public void setSeance(Seance seance) {
+        this.seance = seance;
     }
 
     public double[] getAnalyticsData() {
@@ -69,13 +73,13 @@ public class SeanceAnalytics implements Serializable {
         SeanceAnalytics that = (SeanceAnalytics) o;
         return id == that.id &&
                 Double.compare(that.averageAttention, averageAttention) == 0 &&
-                Objects.equals(seanceId, that.seanceId) &&
+                Objects.equals(seance, that.seance) &&
                 Arrays.equals(analyticsData, that.analyticsData);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, seanceId, averageAttention);
+        int result = Objects.hash(id, seance, averageAttention);
         result = 31 * result + Arrays.hashCode(analyticsData);
         return result;
     }

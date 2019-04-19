@@ -27,8 +27,7 @@ public class UserDAO {
 
     @RequestMapping("/add")
     public void createUser() {
-        User user = new User("Test");
-        repository.save(user);
+
     }
 
     @RequestMapping("/delete/userId")

@@ -20,39 +20,45 @@ public class Seance implements Serializable {
     @Column(length = 60, nullable = false)
     private String room;
 
-    @Column(length = 60, nullable = false)
+    @Column(name = "public", length = 60, nullable = false)
     private String publiq;
 
-    @Column(length = 60, nullable = true)
+    @Column(name="beginning_time", length = 60, nullable = true)
     private Date beginningTime;
 
-    @Column(length = 60, nullable = true)
+    @Column(name = "ending_time",length = 60, nullable = true)
     private Date endingTime;
 
     @Column(length = 60, nullable = true)
     private Date description;
 
     @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
-            mappedBy = "seanceId")
-    private SeanceAnalytics seanceAnalyticsId;
+            cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "id", nullable = false)
+    private SeanceAnalytics seanceAnalytics;
+
+    @ManyToOne
+    @JoinColumn(name="user", nullable=false)
+    private User user;
 
     @Column(nullable = false)
     private int participants;
 
-
     public Seance() {
     }
 
-    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, Date description, SeanceAnalytics seanceAnalyticsId, int participants) {
+    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, Date description, SeanceAnalytics seanceAnalytics, User user, int participants) {
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
         this.beginningTime = beginningTime;
         this.endingTime = endingTime;
         this.description = description;
-        this.seanceAnalyticsId = seanceAnalyticsId;
+        this.seanceAnalytics = seanceAnalytics;
+        this.user = user;
         this.participants = participants;
+
+        SeanceAnalytics analytics = new SeanceAnalytics();
     }
 
     public long getId() {
@@ -107,12 +113,20 @@ public class Seance implements Serializable {
         this.description = description;
     }
 
-    public SeanceAnalytics getSeanceAnalyticsId() {
-        return seanceAnalyticsId;
+    public SeanceAnalytics getSeanceAnalytics() {
+        return seanceAnalytics;
     }
 
-    public void setSeanceAnalyticsId(SeanceAnalytics seanceAnalyticsId) {
-        this.seanceAnalyticsId = seanceAnalyticsId;
+    public void setSeanceAnalytics(SeanceAnalytics seanceAnalytics) {
+        this.seanceAnalytics = seanceAnalytics;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getParticipants() {
@@ -121,26 +135,5 @@ public class Seance implements Serializable {
 
     public void setParticipants(int participants) {
         this.participants = participants;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Seance seance = (Seance) o;
-        return id == seance.id &&
-                seanceAnalyticsId == seance.seanceAnalyticsId &&
-                participants == seance.participants &&
-                Objects.equals(subject, seance.subject) &&
-                Objects.equals(room, seance.room) &&
-                Objects.equals(publiq, seance.publiq) &&
-                Objects.equals(beginningTime, seance.beginningTime) &&
-                Objects.equals(endingTime, seance.endingTime) &&
-                Objects.equals(description, seance.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, subject, room, publiq, beginningTime, endingTime, description, seanceAnalyticsId, participants);
     }
 }

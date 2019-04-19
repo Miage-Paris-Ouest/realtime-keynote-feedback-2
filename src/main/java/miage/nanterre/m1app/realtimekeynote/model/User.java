@@ -19,12 +19,24 @@ public class User implements Serializable {
     @Column(length = 60, nullable = false)
     private String lastname;
 
+    @OneToMany(mappedBy = "id")
+    private List<Seance> seance;
 
     public User() {
     }
 
-    public User(String name) {
+    public User(String name, String lastname, List<Seance> seance) {
         this.name = name;
+        this.lastname = lastname;
+        this.seance = seance;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -35,21 +47,19 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public long getId() {
-        return id;
+    public String getLastname() {
+        return lastname;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id &&
-                Objects.equals(name, user.name);
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public void setSeances(List<Seance> seance) {
+        this.seance = seance;
+    }
+
+    public List<Seance> getSeances() {
+        return seance;
     }
 }

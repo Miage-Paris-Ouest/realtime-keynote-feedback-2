@@ -14,6 +14,9 @@ public class SeanceDAO {
     @Autowired
     private SeanceRepository repository;
 
+    public SeanceDAO() {
+    }
+
     @RequestMapping("/list")
     public Iterable<Seance> getAllSeance() {
         return repository.findAll();
