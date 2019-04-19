@@ -11,7 +11,7 @@
             <v-container py-0>
               <v-layout wrap>
                 <v-flex xs12 md12>
-                  <form-file-upload></form-file-upload>
+                  <form-file-upload v-on:uploaded="uploadFinished"></form-file-upload>
                 </v-flex>
                 <v-flex xs12 md12>
                   <v-text-field class="purple-input" label="Sujet"/>
@@ -39,8 +39,13 @@
                   />
                 </v-flex>
                 <v-flex xs12 text-xs-right>
-                  <v-btn color="danger">Annuler</v-btn>
-                  <v-btn class="mx-0 font-weight-light" color="primary">C'est parti !</v-btn>
+                  <v-btn color="danger" to="/">Annuler</v-btn>
+                  <v-btn
+                    class="mx-0 font-weight-light"
+                    color="primary"
+                    to="/statistiques-seance"
+                    :disabled="uploadStatusFinished"
+                  >Valider</v-btn>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -53,16 +58,22 @@
 
 <script>
 import SessionCreationService from "../services/SessionCreation";
+
 import config from "../config";
 export default {
+  data: () => ({
+    uploadStatusFinished: false
+  }),
   //
-
   methods: {
     async createSession() {
       if (config.apiCallEnabled) {
         var response = await SessionCreationService.createSession();
         if (response.data) this.items = response.data;
       }
+    },
+    async uploadFinished(status) {
+      this.uploadStatusFinished = status;
     }
   }
 };

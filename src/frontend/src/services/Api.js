@@ -3,6 +3,9 @@ import config from "../config"
 
 export default () => {
     return axios.create({
-        baseURL: config.baseURL
+        baseURL: config.baseURL,
+        proxyHeaders: false,
+        credentials: false
+
     })
 }

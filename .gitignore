@@ -26,5 +26,7 @@ application.properties
 /.nb-gradle/
 /build/
 
+src/frontend/node_modules
+
 ### VS Code ###
 .vscode/
