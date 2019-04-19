@@ -18,4 +18,9 @@ Pour accéder à la base de donnée :
 - localhost --> PhpMyAdmin 
 
 Une fois ceci fait vous devriez pouvoir exécuter le projet. 
+
+Après avoir exécuté le projet, vous devrez aller dans le fichier *application.properties* qui est dans *ressources* et :
+- commenter : spring.jpa.hibernate.ddl-auto = create
+- Décommenter: spring.jpa.hibernate.ddl-auto=update
+
 Pour le moment, vous tomberez sur un hello world. La liaison entre back et front est en trian de s'effectuer ! 
