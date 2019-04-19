@@ -3,11 +3,12 @@ package miage.nanterre.m1app.realtimekeynote.DAO;
 import miage.nanterre.m1app.realtimekeynote.model.Seance;
 import miage.nanterre.m1app.realtimekeynote.repository.SeanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Service
 @RequestMapping("/seance")
 public class SeanceDAO {
 

@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 @RestController
+@RequestMapping(value = "/video")
 public class UploadController {
 
     private static final String uploadDir = "C:\\data\\";
@@ -32,5 +33,4 @@ public class UploadController {
         }
         return new ResponseEntity<Object>("Le fichier à été correctement transféré !", HttpStatus.OK);
     }
-
 }
