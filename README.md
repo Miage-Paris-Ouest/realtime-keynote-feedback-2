@@ -11,5 +11,11 @@ L'architecture du projet étant entièrement refaite, il vous faudra :
 - git pull
 - git fetch --prune 
 
+Pour accéder au projet : 
+- localhost:8080
+
+Pour accéder à la base de donnée : 
+- localhost --> PhpMyAdmin 
+
 Une fois ceci fait vous devriez pouvoir exécuter le projet. 
 Pour le moment, vous tomberez sur un hello world. La liaison entre back et front est en trian de s'effectuer ! 
