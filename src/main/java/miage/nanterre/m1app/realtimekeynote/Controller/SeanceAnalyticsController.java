@@ -1,10 +1,10 @@
-package miage.nanterre.m1app.realtimekeynote.controller;
+package miage.nanterre.m1app.realtimekeynote.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
-import miage.nanterre.m1app.realtimekeynote.model.SeanceAnalytics;
-import miage.nanterre.m1app.realtimekeynote.repository.SeanceAnalyticsRepository;
+import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
+import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

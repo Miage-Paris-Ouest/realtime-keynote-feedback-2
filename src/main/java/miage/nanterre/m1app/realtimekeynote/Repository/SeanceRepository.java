@@ -1,7 +1,6 @@
-package miage.nanterre.m1app.realtimekeynote.repository;
+package miage.nanterre.m1app.realtimekeynote.Repository;
 
-import miage.nanterre.m1app.realtimekeynote.model.Seance;
-import miage.nanterre.m1app.realtimekeynote.model.SeanceAnalytics;
+import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

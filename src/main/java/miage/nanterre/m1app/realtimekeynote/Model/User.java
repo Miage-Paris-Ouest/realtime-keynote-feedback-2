@@ -1,4 +1,4 @@
-package miage.nanterre.m1app.realtimekeynote.model;
+package miage.nanterre.m1app.realtimekeynote.Model;
 
 import javax.persistence.*;
 import java.io.Serializable;
