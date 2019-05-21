@@ -1,4 +1,4 @@
-package DAO;
+package miage.nanterre.m1app.realtimekeynote.Test.DAO;
 
 import miage.nanterre.m1app.realtimekeynote.DAO.SeanceDAO;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
@@ -7,7 +7,7 @@ import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SeanceDAOTest {
@@ -18,7 +18,7 @@ public class SeanceDAOTest {
     User user;
 
 
-    @Before
+    @BeforeClass
     public void setUp() throws Exception {
         seanceDAO = new SeanceDAO(seanceRepository);
     }
