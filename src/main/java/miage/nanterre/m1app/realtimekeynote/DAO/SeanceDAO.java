@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.PostConstruct;
-
 @Service
 @RequestMapping("/seance")
 public class SeanceDAO {
@@ -45,37 +43,4 @@ public class SeanceDAO {
         repository.deleteById(seanceId);
     }
 
-
-    @PostConstruct
-    public void testCreateSeance(){
-        User user = new User("Christelle","Ilunga",null);
-        userRepository.save(user);
-
-        Seance seance = new Seance(
-                "Test",
-                "2",
-                "Public",
-                null,
-                null,
-                null,
-                user,
-                50);
-        repository.save(seance);
-
-        seanceAnalyticsRepository.save(new SeanceAnalytics(seance, null));
-
-        User user1 = userRepository.findById((long)1).get();
-
-        }
-/*
-    @PostConstruct
-    public void testGetSeance(){
-       System.out.println("Seance : "+getSeance(1));
-    }
-
-    @PostConstruct
-    public void testDeleteSeance(){
-        deleteSeance(1);
-    }
-*/
 }
