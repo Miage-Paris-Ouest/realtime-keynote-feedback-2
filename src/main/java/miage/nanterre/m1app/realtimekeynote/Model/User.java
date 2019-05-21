@@ -1,5 +1,8 @@
 package miage.nanterre.m1app.realtimekeynote.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
@@ -19,6 +22,7 @@ public class User implements Serializable {
     @Column(length = 60, nullable = false)
     private String lastname;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, targetEntity=Seance.class, mappedBy = "user")
     private List<Seance> seance;
 
@@ -59,6 +63,7 @@ public class User implements Serializable {
         this.seance = seance;
     }
 
+    @JsonIgnore
     public List<Seance> getSeances() {
         return seance;
     }

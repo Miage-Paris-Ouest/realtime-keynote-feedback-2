@@ -1,5 +1,7 @@
 package miage.nanterre.m1app.realtimekeynote.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 
 import javax.persistence.*;
@@ -15,10 +17,13 @@ public class Seance implements Serializable {
     @Column(updatable = false, nullable = false, unique = true)
     private long id;
 
-    @Column(length = 60, nullable = false)
+    @Column(length = 60, nullable = true)
+    private String name;
+
+    @Column(length = 60, nullable = true)
     private String subject;
 
-    @Column(length = 60, nullable = false)
+    @Column(length = 60, nullable = true)
     private String room;
 
     @Column(name = "public", length = 60, nullable = false)
@@ -33,12 +38,14 @@ public class Seance implements Serializable {
     @Column(length = 60, nullable = true)
     private String description;
 
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             optional = false,
             mappedBy = "seance")
     private SeanceAnalytics seanceAnalytics;
 
+    @JsonBackReference
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name="user")
     private User user;
@@ -49,7 +56,8 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
-    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, String description, User user, int participants) {
+    public Seance(String name, String subject, String room, String publiq, Date beginningTime, Date endingTime, String description, User user, int participants) {
+        this.name = name;
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
@@ -136,6 +144,14 @@ public class Seance implements Serializable {
 
     public void setParticipants(int participants) {
         this.participants = participants;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.util.Arrays;
 @RequestMapping(value = "/analytics")
 public class SeanceAnalyticsController {
 
-    SeanceAnalyticsRepository analyticsRepository;
+    private SeanceAnalyticsRepository analyticsRepository;
 
     public SeanceAnalyticsController(SeanceAnalyticsRepository analyticsRepository) {
         this.analyticsRepository = analyticsRepository;

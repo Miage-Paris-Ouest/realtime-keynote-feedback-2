@@ -42,5 +42,4 @@ public class SeanceDAO {
     public void deleteSeance(@RequestParam("seanceId") long seanceId) {
         repository.deleteById(seanceId);
     }
-
 }
