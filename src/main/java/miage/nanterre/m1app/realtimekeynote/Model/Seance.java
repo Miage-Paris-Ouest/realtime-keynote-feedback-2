@@ -1,7 +1,5 @@
 package miage.nanterre.m1app.realtimekeynote.Model;
 
-import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -49,7 +47,8 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
-    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, String description, User user, int participants) {
+    public Seance(String subject, String room, String publiq, Date beginningTime, Date endingTime, String description,
+                  User user, int participants) {
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;

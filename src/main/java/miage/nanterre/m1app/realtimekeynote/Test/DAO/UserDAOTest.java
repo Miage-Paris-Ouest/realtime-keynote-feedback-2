@@ -1,28 +1,25 @@
 package DAO;
 
-
-import miage.nanterre.m1app.realtimekeynote.DAO.SeanceDAO;
 import miage.nanterre.m1app.realtimekeynote.DAO.UserDAO;
 import miage.nanterre.m1app.realtimekeynote.Model.User;
-import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
-
-import org.junit.Before;
+import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
 public class UserDAOTest {
 
-    SeanceRepository seanceRepository;
-    SeanceDAO seanceDAO;
-    UserDAO userDAO;
+    @Autowired
+    private static UserRepository userRepository;
+    private static UserDAO userDAO = new UserDAO(userRepository);
 
+    @Autowired
+    private static User user = new User("Christelle","Ilunga",null);;
 
-    @Before
-    public void setUp() throws Exception {
-        seanceDAO = new SeanceDAO(seanceRepository);
-    }
     @Test
     public void testAddUsers(){
-        User user = new User("Christelle","Ilunga",null);
         userDAO.createUser(user);
     }
 
@@ -33,7 +30,7 @@ public class UserDAOTest {
 
     @Test
     public void testDeleteUsers(){
-        userDAO.deleteUser(1);
+        userDAO.deleteUser(user.getId());
     }
 
     @Test
