@@ -52,6 +52,7 @@ public class SeanceDAO {
         userRepository.save(user);
 
         Seance seance = new Seance(
+                "test",
                 "Test",
                 "2",
                 "Public",
