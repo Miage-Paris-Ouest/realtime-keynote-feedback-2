@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
+clearimport java.util.List;
 
 @Service
 @RequestMapping("/user")
@@ -43,26 +42,5 @@ public class UserDAO {
         repository.save(user);
         return user;
     }
-/*
-    @PostConstruct
-    public void testAddUsers(){
-        User user = new User("Christelle","Ilunga",null);
-        createUser(user);
-    }
 
-    @PostConstruct
-    public void testGetAllUsers(){
-        System.out.println("Users : "+getAllUsers());
-    }
-
-    @PostConstruct
-    public void testDeleteUsers(){
-        deleteUser(1);
-    }
-
-    @PostConstruct
-    public void testUpdateUsers(){
-        updateUser(2);
-    }
-*/
 }
