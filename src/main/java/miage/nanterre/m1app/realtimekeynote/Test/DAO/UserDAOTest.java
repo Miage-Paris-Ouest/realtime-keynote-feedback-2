@@ -1,4 +1,4 @@
-package DAO;
+package miage.nanterre.m1app.realtimekeynote.Test.DAO;
 
 import miage.nanterre.m1app.realtimekeynote.DAO.UserDAO;
 import miage.nanterre.m1app.realtimekeynote.Model.User;

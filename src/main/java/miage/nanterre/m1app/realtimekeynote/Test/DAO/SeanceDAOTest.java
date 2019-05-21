@@ -2,12 +2,8 @@ package miage.nanterre.m1app.realtimekeynote.Test.DAO;
 
 import junit.framework.TestCase;
 import miage.nanterre.m1app.realtimekeynote.DAO.SeanceDAO;
-import miage.nanterre.m1app.realtimekeynote.Model.Seance;
-import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
-import miage.nanterre.m1app.realtimekeynote.Model.User;
-import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
-import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
-import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
+import miage.nanterre.m1app.realtimekeynote.Model.*;
+import miage.nanterre.m1app.realtimekeynote.Repository.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
