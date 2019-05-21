@@ -53,6 +53,7 @@ public class SeanceDAO {
 
         Seance seance = new Seance(
                 "Test",
+                "Test",
                 "2",
                 "Public",
                 null,

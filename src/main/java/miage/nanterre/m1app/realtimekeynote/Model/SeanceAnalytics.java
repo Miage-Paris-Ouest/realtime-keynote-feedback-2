@@ -1,5 +1,7 @@
 package miage.nanterre.m1app.realtimekeynote.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -14,6 +16,7 @@ public class SeanceAnalytics implements Serializable {
     @Column(updatable = false, nullable = false, unique = true)
     private long id;
 
+    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "id")
     private Seance seance;

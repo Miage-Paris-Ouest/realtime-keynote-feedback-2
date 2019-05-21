@@ -10,7 +10,6 @@ public class RealtimeKeynoteApplication  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RealtimeKeynoteApplication.class, args);
-
 	}
 
 }
