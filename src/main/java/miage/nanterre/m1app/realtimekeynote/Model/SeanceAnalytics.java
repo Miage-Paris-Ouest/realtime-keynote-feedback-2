@@ -53,6 +53,34 @@ public class SeanceAnalytics implements Serializable {
         this.analyticsData = analyticsData;
     }
 
+    public double calcMoyenne (){
+        double somm = 0;
+        for (int i=0; i<analyticsData.length; i++){
+            somm = somm + analyticsData[i];
+        }
+        return somm/analyticsData.length;
+    }
+
+    public double absMoyenne (int nbPart){
+        double max = 0;
+        for(int i = 0; i < analyticsData.length; i++)
+            if(analyticsData[i] < max) max = analyticsData[i];
+
+        return (double) (max*100)/nbPart;
+    }
+
+    public double stabAttention(){
+        double max = 0;
+        double min = 0;
+        for(int i = 0; i < analyticsData.length; i++){
+            if(analyticsData[i] < max)
+                max = analyticsData[i];
+            if(analyticsData[i] > min)
+                min = analyticsData[i];
+        }
+        return max-min;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

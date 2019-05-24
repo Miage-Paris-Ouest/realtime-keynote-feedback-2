@@ -3,11 +3,8 @@ package miage.nanterre.m1app.realtimekeynote.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
-import miage.nanterre.m1app.realtimekeynote.DAO.UserDAO;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
-import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
-import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +18,7 @@ import java.util.Arrays;
 @RequestMapping(value = "/analytics")
 public class SeanceAnalyticsController {
 
-    SeanceAnalyticsRepository analyticsRepository;
+    private SeanceAnalyticsRepository analyticsRepository;
 
     public SeanceAnalyticsController(SeanceAnalyticsRepository analyticsRepository) {
         this.analyticsRepository = analyticsRepository;
@@ -54,4 +51,11 @@ public class SeanceAnalyticsController {
         return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
 
+    public void EvalAttention (){
+        //Les statistiques des 6 derniers mois dans la base
+            //Requete
+    }
+
+
 }
+
