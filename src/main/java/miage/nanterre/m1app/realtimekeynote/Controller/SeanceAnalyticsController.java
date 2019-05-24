@@ -3,6 +3,7 @@ package miage.nanterre.m1app.realtimekeynote.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
+import miage.nanterre.m1app.realtimekeynote.DAO.SeanceAnalyticsDAO;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import org.springframework.http.HttpStatus;
@@ -12,13 +13,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/analytics")
 public class SeanceAnalyticsController {
 
     private SeanceAnalyticsRepository analyticsRepository;
+    private SeanceAnalyticsDAO dao = new SeanceAnalyticsDAO();
 
     public SeanceAnalyticsController(SeanceAnalyticsRepository analyticsRepository) {
         this.analyticsRepository = analyticsRepository;
@@ -51,11 +55,41 @@ public class SeanceAnalyticsController {
         return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
 
-    public void EvalAttention (){
-        //Les statistiques des 6 derniers mois dans la base
-            //Requete
+
+    public List<Double> EvalAttention() {
+        List<SeanceAnalytics> Analytics = dao.Get6LastMonth();
+        List<Double> evol = new ArrayList<>();
+
+        for (int i = 0; i<=Analytics.size(); i++){
+            evol.add(calculateAverageAttention(Analytics.get(i).getAnalyticsData()));
+        }
+
+        return evol;
     }
 
+    public List<Double> stabAttention(){
+        List<SeanceAnalytics> Analytics = dao.Get6LastMonth();
+        List<Double> att = new ArrayList<>();
 
+        SeanceAnalytics sa = new SeanceAnalytics();
+
+        att.add(sa.stabAttention());
+
+        return att;
+    }
+
+    public List<Double> absMoyenne(){
+        List<SeanceAnalytics> Analytics = dao.Get6LastMonth();
+        List<Double> stab = new ArrayList<>();
+
+        int nbPart = 0;
+        //Recuperer le nombre de participant
+
+        SeanceAnalytics sa = new SeanceAnalytics();
+
+        stab.add(sa.absMoyenne(nbPart));
+
+        return stab;
+    }
 }
 
