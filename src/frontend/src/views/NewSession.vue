@@ -48,7 +48,7 @@
                 </v-flex>
                 <v-flex xs12 md4>
                   <v-text-field
-                    v-model="begginingTime"
+                    v-model="beginningTime"
                     label="Heure de début"
                     type="time"
                     class="purple-input"
@@ -72,12 +72,11 @@
                   />
                 </v-flex>
                 <v-flex xs12 text-xs-right>
-                  <v-btn color="danger" to="/">Annuler</v-btn>
+                  <v-btn color="danger">Annuler</v-btn>
                   <v-btn
                     class="mx-0 font-weight-light"
                     color="primary"
-                    to="/statistiques-seance"
-                    :disabled="!uploadStatusFinished"
+                    @click.prevent="createSession"
                     :title="uploadStatusFinished ?   'Transmettez les données pour l\'analyse' :'Attendez la fin du téléchargement de la vidéo pour valider.' "
                   >Valider</v-btn>
                 </v-flex>
@@ -111,16 +110,15 @@ export default {
     async createSession() {
       if (config.apiCallEnabled) {
         var response = await SessionCreationService.createSession({
-          subject,
-          room,
-          publiq,
-          date,
-          beginningTime,
-          endingTime,
-          description,
-          participants
+          subject: this.subject,
+          room: this.room,
+          publiq: this.publiq,
+          date: this.date,
+          beginningTime: this.beginningTime,
+          endingTime: this.endingTime,
+          description: this.description,
+          participants: this.participants
         });
-        if (response.data) this.items = response.data;
       }
     },
     async uploadFinished(status) {
