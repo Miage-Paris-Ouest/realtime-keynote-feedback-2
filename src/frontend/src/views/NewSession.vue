@@ -27,41 +27,56 @@
             <v-container py-0>
               <v-layout wrap>
                 <v-flex xs12 md12>
-                  <v-text-field class="purple-input" label="Sujet"/>
+                  <v-text-field v-model="subject" class="purple-input" label="Sujet"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Salle" class="purple-input"/>
+                  <v-text-field v-model="room" label="Salle" class="purple-input"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Public" class="purple-input"/>
+                  <v-text-field v-model="publiq" label="Public" class="purple-input"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Nombre de participants" type="number" class="purple-input"/>
+                  <v-text-field
+                    v-model="participants"
+                    label="Nombre de participants"
+                    type="number"
+                    class="purple-input"
+                  />
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Date" type="date" class="purple-input"/>
+                  <v-text-field v-model="date" label="Date" type="date" class="purple-input"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Heure de début" type="time" class="purple-input"/>
+                  <v-text-field
+                    v-model="beginningTime"
+                    label="Heure de début"
+                    type="time"
+                    class="purple-input"
+                  />
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Heure de fin" type="time" class="purple-input"/>
+                  <v-text-field
+                    v-model="endingTime"
+                    label="Heure de fin"
+                    type="time"
+                    class="purple-input"
+                  />
                 </v-flex>
 
                 <v-flex xs12>
                   <v-textarea
                     class="purple-input"
+                    v-model="description"
                     label="Déscriptif"
                     value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                   />
                 </v-flex>
                 <v-flex xs12 text-xs-right>
-                  <v-btn color="danger" to="/">Annuler</v-btn>
+                  <v-btn color="danger">Annuler</v-btn>
                   <v-btn
                     class="mx-0 font-weight-light"
                     color="primary"
-                    to="/statistiques-seance"
-                    :disabled="!uploadStatusFinished"
+                    @click.prevent="createSession"
                     :title="uploadStatusFinished ?   'Transmettez les données pour l\'analyse' :'Attendez la fin du téléchargement de la vidéo pour valider.' "
                   >Valider</v-btn>
                 </v-flex>
@@ -80,14 +95,30 @@ import SessionCreationService from "../services/SessionCreation";
 import config from "../config";
 export default {
   data: () => ({
-    uploadStatusFinished: false
+    uploadStatusFinished: false,
+    subject: "",
+    room: "",
+    publiq: "",
+    date: "",
+    beginningTime: "",
+    endingTime: "",
+    description: "",
+    participants: 0
   }),
   //
   methods: {
     async createSession() {
       if (config.apiCallEnabled) {
-        var response = await SessionCreationService.createSession();
-        if (response.data) this.items = response.data;
+        var response = await SessionCreationService.createSession({
+          subject: this.subject,
+          room: this.room,
+          publiq: this.publiq,
+          date: this.date,
+          beginningTime: this.beginningTime,
+          endingTime: this.endingTime,
+          description: this.description,
+          participants: this.participants
+        });
       }
     },
     async uploadFinished(status) {
