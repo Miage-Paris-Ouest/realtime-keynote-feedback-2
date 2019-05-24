@@ -2,7 +2,6 @@ package miage.nanterre.m1app.realtimekeynote.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,6 +27,9 @@ public class Seance implements Serializable {
 
     @Column(name = "public", length = 60, nullable = false)
     private String publiq;
+
+    @Column(name="date", length = 60, nullable = true)
+    private Date date;
 
     @Column(name="beginning_time", length = 60, nullable = true)
     private Date beginningTime;
@@ -56,11 +58,11 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
-    public Seance(String name, String subject, String room, String publiq, Date beginningTime, Date endingTime, String description, User user, int participants) {
-        this.name = name;
+    public Seance(String subject, String room, String publiq, Date date, Date beginningTime, Date endingTime, String description, User user, int participants) {
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
+        this.date = date;
         this.beginningTime = beginningTime;
         this.endingTime = endingTime;
         this.description = description;
@@ -96,6 +98,14 @@ public class Seance implements Serializable {
 
     public void setPubliq(String publiq) {
         this.publiq = publiq;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getDate(){
+        return date;
     }
 
     public Date getBeginningTime() {

@@ -177,6 +177,14 @@ export default {
         }
       }
     };
+  },
+  async mounted() {
+    if (config.apiCallEnabled) {
+      var response = await SessionStatisticsService.getSeanceStatistics({
+        seanceId: this.$route.params.id
+      });
+      if (response.data) this.items = response.data;
+    }
   }
 };
 </script>

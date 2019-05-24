@@ -22,12 +22,12 @@ public class SeanceAnalytics implements Serializable {
     private Seance seance;
 
     @Column(nullable = true, unique = false)
-    private double[] analyticsData;
+    private String analyticsData;
 
     public SeanceAnalytics() {
     }
 
-    public SeanceAnalytics(Seance seance, double[] analyticsData) {
+    public SeanceAnalytics(Seance seance, String analyticsData) {
         this.seance = seance;
         this.analyticsData = analyticsData;
     }
@@ -48,11 +48,11 @@ public class SeanceAnalytics implements Serializable {
         this.seance = seance;
     }
 
-    public double[] getAnalyticsData() {
+    public String getAnalyticsData() {
         return analyticsData;
     }
 
-    public void setAnalyticsData(double[] analyticsData) {
+    public void setAnalyticsData(String analyticsData) {
         this.analyticsData = analyticsData;
     }
 
@@ -63,13 +63,13 @@ public class SeanceAnalytics implements Serializable {
         SeanceAnalytics that = (SeanceAnalytics) o;
         return id == that.id &&
                 Objects.equals(seance, that.seance) &&
-                Arrays.equals(analyticsData, that.analyticsData);
+                analyticsData.equals(that.analyticsData);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(id, seance);
-        result = 31 * result + Arrays.hashCode(analyticsData);
+        result = 31 * result ;
         return result;
     }
 }
