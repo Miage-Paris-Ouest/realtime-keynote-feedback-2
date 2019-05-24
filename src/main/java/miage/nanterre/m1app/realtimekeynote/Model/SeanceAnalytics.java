@@ -12,7 +12,7 @@ import java.util.Objects;
 public class SeanceAnalytics implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @Column(updatable = false, nullable = false, unique = true)
     private long id;
 
