@@ -25,7 +25,7 @@ public class SeanceDAOTest {
 
     @Test
     public void create(){
-        user = new User("Christelle","Ilunga",null);
+        /**user = new User("Christelle","Ilunga",null);
 
         userRepository.save(user);
 
@@ -44,6 +44,7 @@ public class SeanceDAOTest {
         seanceAnalyticsRepository.save(new SeanceAnalytics(seance, null));
 
         userRepository.findById((long)1).get();
+         */
     }
 
     @Test

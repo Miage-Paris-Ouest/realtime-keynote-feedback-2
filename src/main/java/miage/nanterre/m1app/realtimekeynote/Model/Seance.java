@@ -56,6 +56,8 @@ public class Seance implements Serializable {
     private int participants;
 
     public Seance() {
+        seanceAnalytics = new SeanceAnalytics(this, null);
+        this.setSeanceAnalytics(seanceAnalytics);
     }
 
     public Seance(String subject, String room, String publiq, Date date, Date beginningTime, Date endingTime, String description, User user, int participants) {
@@ -69,7 +71,8 @@ public class Seance implements Serializable {
         this.user = user;
         this.participants = participants;
 
-        seanceAnalytics = new SeanceAnalytics();
+        seanceAnalytics = new SeanceAnalytics(this, null);
+        this.setSeanceAnalytics(seanceAnalytics);
     }
 
     public long getId() {
@@ -178,18 +181,19 @@ public class Seance implements Serializable {
 
     @Override
     public String toString() {
-        return "";
-        /*Seance{" +
+        return "Seance{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", subject='" + subject + '\'' +
                 ", room='" + room + '\'' +
                 ", publiq='" + publiq + '\'' +
+                ", date=" + date +
                 ", beginningTime=" + beginningTime +
                 ", endingTime=" + endingTime +
                 ", description='" + description + '\'' +
                 ", seanceAnalytics=" + seanceAnalytics +
                 ", user=" + user +
                 ", participants=" + participants +
-                '}';*/
+                '}';
     }
 }

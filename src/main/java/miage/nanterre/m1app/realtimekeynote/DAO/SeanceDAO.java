@@ -53,22 +53,35 @@ public class SeanceDAO {
     public void testCreateSeance() {
         User user = new User("Christelle", "Ilunga", null);
         userRepository.save(user);
-        try {
-            Seance seance1 = new Seance(
-                    "Conférence espace des Science 1",
-                    "2",
-                    "Public",
-                    new Date(2018,01,12),
-                    new Date(2018,01,13, 13, 30),
-                    new Date(2018,01,13, 17, 30),
-                    "Description d'une conférence scientifique.",
-                    user,
-                    50);
-            repository.save(seance1);
+        String analytics1 = "34,27,39,45,23,19,34,34,35,26,45,45,45,45,45,45";
+        Seance seance1 = new Seance(
+                "Conférence espace des Science 1",
+                "2",
+                "Public",
+                new Date(2018,01,12),
+                new Date(2018,01,13, 13, 30),
+                new Date(2018,01,13, 17, 30),
+                "Description d'une conférence scientifique.",
+                user,
+                50);
+        seance1.getSeanceAnalytics().setAnalyticsData(analytics1);
+        repository.save(seance1);
+        User user1 = userRepository.findById((long) 1).get();
 
-            String analytics1 = "34,27,39,45,23,19,34,34,35,26,45,45,45,45,45,45";
-            SeanceAnalytics seanceAnalytics1 = new SeanceAnalytics(seance1, analytics1);
-            seanceAnalyticsRepository.save(seanceAnalytics1);
+    }
+/*
+    @PostConstruct
+    public void testGetSeance(){
+       System.out.println("Seance : "+getSeance(1));
+    }
+
+    @PostConstruct
+    public void testDeleteSeance(){
+        deleteSeance(1);
+    }
+
+
+
             Seance seance2 = new Seance(
                     "Conférence espace des Science 2",
                     "2",
@@ -78,7 +91,7 @@ public class SeanceDAO {
                     Helper.getTimeFromString("17:36:00"),
                     "Description d'une conférence scientifique.",
                     user,
-                    50);
+                    50  );
             repository.save(seance2);
 
             Seance seance3 = new Seance(
@@ -129,21 +142,14 @@ public class SeanceDAO {
                     48);
             repository.save(seance6);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        User user1 = userRepository.findById((long) 1).get();
 
-    }
-/*
-    @PostConstruct
-    public void testGetSeance(){
-       System.out.println("Seance : "+getSeance(1));
-    }
 
-    @PostConstruct
-    public void testDeleteSeance(){
-        deleteSeance(1);
-    }
+
+
+
+
+
+
+
 */
 }
