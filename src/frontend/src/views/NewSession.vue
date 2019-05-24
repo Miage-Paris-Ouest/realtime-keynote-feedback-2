@@ -27,30 +27,46 @@
             <v-container py-0>
               <v-layout wrap>
                 <v-flex xs12 md12>
-                  <v-text-field class="purple-input" label="Sujet"/>
+                  <v-text-field v-model="subject" class="purple-input" label="Sujet"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Salle" class="purple-input"/>
+                  <v-text-field v-model="room" label="Salle" class="purple-input"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Public" class="purple-input"/>
+                  <v-text-field v-model="publiq" label="Public" class="purple-input"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Nombre de participants" type="number" class="purple-input"/>
+                  <v-text-field
+                    v-model="participants"
+                    label="Nombre de participants"
+                    type="number"
+                    class="purple-input"
+                  />
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Date" type="date" class="purple-input"/>
+                  <v-text-field v-model="date" label="Date" type="date" class="purple-input"/>
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Heure de début" type="time" class="purple-input"/>
+                  <v-text-field
+                    v-model="begginingTime"
+                    label="Heure de début"
+                    type="time"
+                    class="purple-input"
+                  />
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field label="Heure de fin" type="time" class="purple-input"/>
+                  <v-text-field
+                    v-model="endingTime"
+                    label="Heure de fin"
+                    type="time"
+                    class="purple-input"
+                  />
                 </v-flex>
 
                 <v-flex xs12>
                   <v-textarea
                     class="purple-input"
+                    v-model="description"
                     label="Déscriptif"
                     value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                   />
@@ -80,13 +96,30 @@ import SessionCreationService from "../services/SessionCreation";
 import config from "../config";
 export default {
   data: () => ({
-    uploadStatusFinished: false
+    uploadStatusFinished: false,
+    subject: "",
+    room: "",
+    publiq: "",
+    date: "",
+    beginningTime: "",
+    endingTime: "",
+    description: "",
+    participants: 0
   }),
   //
   methods: {
     async createSession() {
       if (config.apiCallEnabled) {
-        var response = await SessionCreationService.createSession();
+        var response = await SessionCreationService.createSession({
+          subject,
+          room,
+          publiq,
+          date,
+          beginningTime,
+          endingTime,
+          description,
+          participants
+        });
         if (response.data) this.items = response.data;
       }
     },
