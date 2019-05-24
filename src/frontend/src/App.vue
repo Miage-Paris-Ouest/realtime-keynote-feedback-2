@@ -14,7 +14,7 @@
   vertical-align: unset;
 }
 body > #app {
-  //background: url("../public/img/montagne.jpg");
+  /* background: url("../public/img/montagne2.jpg");*/
   background-repeat: no-repeat;
   background-size: 2000px;
   background-attachment: fixed;

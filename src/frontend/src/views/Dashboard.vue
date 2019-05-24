@@ -10,7 +10,6 @@
         >
           <h4 class="title font-weight-light">Évolution de l'attention</h4>
           <p class="category d-inline-flex font-weight-light">Attention moyenne par mois.</p>
-
           <template slot="actions">
             <v-icon class="mr-2" small>mdi-clock-outline</v-icon>
             <span class="caption grey--text font-weight-light">Sur les 6 derniers mois</span>

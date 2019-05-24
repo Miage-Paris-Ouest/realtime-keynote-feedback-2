@@ -21,23 +21,23 @@ export default [
   },
   {
     path: '/mon-compte',
-    name: "Mon compte",
+    name: 'Mon compte',
     view: 'Account'
   },
   {
     path: '/video',
-    name: "Démarrer une vidéo",
+    name: 'Démarrer une vidéo',
     view: 'Video'
   },
   {
     path: '/seance-termine',
-    name: "Séance terminée",
+    name: 'Séance terminée',
     view: 'FinishedSession'
   },
 
   {
-    path: '/statistiques-seance',
-    name: "Statistiques de séance : Conférence Pierre et Marie Currie",
+    path: '/statistiques-seance/:id',
+    name: 'Statistiques de séance : Conférence Pierre et Marie Currie',
     view: 'SessionStatistics'
   }
 ]

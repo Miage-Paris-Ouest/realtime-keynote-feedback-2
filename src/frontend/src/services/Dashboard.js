@@ -1,7 +1,7 @@
 import Api from './Api'
 
 export default {
-    async getDashboard() {
-        return Api().get('/')
-    }
+  async getDashboard () {
+    return Api().get('/')
+  }
 }

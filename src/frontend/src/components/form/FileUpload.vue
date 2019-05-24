@@ -1,29 +1,42 @@
 <template>
   <div class="file-upload">
     <v-layout wrap v-if="!terminated">
-      <v-flex v-if="!uploading" xs12 style="text-align:center;">
+      <v-flex v-if="!uploading" xs12 class="text-xs-center">
         <input type="file" id="file" ref="file" style="display:none;" v-on:change="startUpload()">
-        <v-btn
-          align-center
-          color="primary"
-          v-on:click="handleFileUpload()"
-        >Choisissez une vidéo à uploader</v-btn>
+        <v-btn align-center color="primary" v-on:click="handleFileUpload()">
+          Choisir un fichier&nbsp;
+          <v-icon>mdi-arrow-collapse-down</v-icon>
+        </v-btn>
       </v-flex>
       <transition name="fade">
-        <v-flex xs12 v-if="uploading">
-          <span v-if="uploading">{{fileName}}</span>
-          <v-progress-linear v-if="uploading" :indeterminate="uploading"></v-progress-linear>
-          <span v-if="uploading">Patientez pendant le transfert...</span>
+        <v-flex xs12 v-if="uploading && uploadPercentage != 100">
+          <p>{{fileName}}</p>
+          <v-progress-linear :value="uploadPercentage"></v-progress-linear>
+
+          <p>
+            Patientez pendant le transfert...
+            <b class="body-2">{{uploadPercentage}} %</b>
+          </p>
+        </v-flex>
+        <v-flex v-else-if="uploadPercentage == 100" class="text-xs-center">
+          <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+          <p>
+            <br>Votre fichier est bientôt prêt pour l'analyse
+          </p>
         </v-flex>
       </transition>
     </v-layout>
     <transition name="fade">
       <v-layout v-if="terminated">
-        <v-flex xs12 style="text-align:center;">
-          <span>
-            Téléchargement de
-            {{this.file.name}} exécuté avec succès.
-          </span>
+        <v-flex xs12>
+          <p>
+            Transfert de :
+            <br>
+            <b class="body-2">{{this.file.name}}</b>
+            <br>exécuté avec succès.
+            <br>
+            <br>Pour que l'analyse puisse démarrer finalisez le formulaire de séance.
+          </p>
         </v-flex>
       </v-layout>
     </transition>
@@ -43,7 +56,8 @@ export default {
     return {
       file: null,
       uploading: false,
-      terminated: false
+      terminated: false,
+      uploadPercentage: 0
     };
   },
   methods: {
@@ -55,13 +69,13 @@ export default {
       this.uploading = true;
       let formData = new FormData();
       formData.append("file", this.file);
-      var response = await UploadVideoService.uploadVideo(formData);
+      var response = await UploadVideoService.uploadVideo(formData, this);
       if (response.data) {
         let state = response.data.success;
         this.terminated = state;
-        this.$emit("upload", state);
+        this.$emit("uploaded", true);
       } else {
-        this.$emit("upload", false);
+        this.$emit("uploaded", false);
       }
     }
   },

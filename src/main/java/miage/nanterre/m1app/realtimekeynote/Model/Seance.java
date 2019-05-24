@@ -29,11 +29,14 @@ public class Seance implements Serializable {
     @Column(name = "public", length = 60, nullable = false)
     private String publiq;
 
+    @Column(name="date", length = 60, nullable = true)
+    private java.sql.Date date;
+
     @Column(name="beginning_time", length = 60, nullable = true)
-    private Date beginningTime;
+    private java.sql.Time beginningTime;
 
     @Column(name = "ending_time",length = 60, nullable = true)
-    private Date endingTime;
+    private java.sql.Time endingTime;
 
     @Column(length = 60, nullable = true)
     private String description;
@@ -56,11 +59,16 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
+<<<<<<< HEAD
     public Seance(String name, String subject, String room, String publiq, Date beginningTime, Date endingTime, String description, User user, int participants) {
         this.name = name;
+=======
+    public Seance(String subject, String room, String publiq,java.sql.Date date, java.sql.Time beginningTime, java.sql.Time endingTime, String description, User user, int participants) {
+>>>>>>> modified stats
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
+        this.date = date;
         this.beginningTime = beginningTime;
         this.endingTime = endingTime;
         this.description = description;
@@ -98,11 +106,17 @@ public class Seance implements Serializable {
         this.publiq = publiq;
     }
 
+    public void setDate(java.sql.Date date) {
+        this.date = date;
+    }
+
+    public java.sql.Date getDate(){ return date;}
+
     public Date getBeginningTime() {
         return beginningTime;
     }
 
-    public void setBeginningTime(Date beginningTime) {
+    public void setBeginningTime(java.sql.Time beginningTime) {
         this.beginningTime = beginningTime;
     }
 
@@ -110,7 +124,7 @@ public class Seance implements Serializable {
         return endingTime;
     }
 
-    public void setEndingTime(Date endingTime) {
+    public void setEndingTime(java.sql.Time endingTime) {
         this.endingTime = endingTime;
     }
 

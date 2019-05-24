@@ -19,7 +19,7 @@
               <td :title="title">{{ item.duree }}</td>
               <td class="text-xs-right">{{ item.attention }}/50</td>
               <td :title="title" class="text-xs-right">
-                <v-btn color="primary" :small="true" to="/statistiques-seance">
+                <v-btn color="primary" :small="true" :to="`/statistiques-seance/${item.id}` ">
                   <v-icon>mdi-chart-bar</v-icon>&nbsp;Détails
                 </v-btn>
               </td>
@@ -72,6 +72,7 @@ export default {
     ],
     items: [
       {
+        id: 1,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
         debut: "15h",
@@ -80,6 +81,7 @@ export default {
         attention: "34"
       },
       {
+        id: 2,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
         debut: "15h",
@@ -88,6 +90,7 @@ export default {
         attention: "34"
       },
       {
+        id: 3,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
         debut: "15h",
@@ -96,6 +99,7 @@ export default {
         attention: "34"
       },
       {
+        id: 4,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
         debut: "15h",
@@ -104,6 +108,7 @@ export default {
         attention: "34"
       },
       {
+        id: 5,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
         debut: "15h",
@@ -112,6 +117,34 @@ export default {
         attention: "34"
       },
       {
+        id: 9,
+        titre: "Conférence à l'espace des sciences",
+        date: "12 mars 2019",
+        debut: "15h",
+        fin: "16h30",
+        duree: "1h30",
+        attention: "34"
+      },
+      { 
+        id: 9,
+        titre: "Conférence à l'espace des sciences",
+        date: "12 mars 2019",
+        debut: "15h",
+        fin: "16h30",
+        duree: "1h30",
+        attention: "34"
+      },
+      { 
+        id: 9,
+        titre: "Conférence à l'espace des sciences",
+        date: "12 mars 2019",
+        debut: "15h",
+        fin: "16h30",
+        duree: "1h30",
+        attention: "34"
+      },
+      { 
+        id: 9,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
         debut: "15h",
@@ -120,30 +153,7 @@ export default {
         attention: "34"
       },
       {
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
+        id: 9,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
         debut: "15h",
@@ -153,7 +163,7 @@ export default {
       }
     ]
   }),
-  async mounted() {
+  async created() {
     if (config.apiCallEnabled) {
       var response = await SeancesListService.getSeancesList();
       if (response.data) this.items = response.data;

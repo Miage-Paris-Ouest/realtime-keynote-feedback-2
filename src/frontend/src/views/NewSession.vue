@@ -1,6 +1,22 @@
 <template>
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
+      <v-flex xs12 md8 lg4>
+        <material-card
+          color="primary"
+          title="Uploadez un fichier vidéo"
+          text="Cette vidéo sera analysée."
+        >
+          <v-container py-0 px-0>
+            <v-layout wrap>
+              <v-flex xs12 md12>
+                <form-file-upload v-on:uploaded="uploadFinished"></form-file-upload>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </material-card>
+      </v-flex>
+
       <v-flex xs12 md8 lg6>
         <material-card
           color="primary"
@@ -11,16 +27,19 @@
             <v-container py-0>
               <v-layout wrap>
                 <v-flex xs12 md12>
-                  <form-file-upload v-on:uploaded="uploadFinished"></form-file-upload>
-                </v-flex>
-                <v-flex xs12 md12>
                   <v-text-field class="purple-input" label="Sujet"/>
                 </v-flex>
-                <v-flex xs12 md6>
+                <v-flex xs12 md4>
                   <v-text-field label="Salle" class="purple-input"/>
                 </v-flex>
-                <v-flex xs12 md6>
+                <v-flex xs12 md4>
                   <v-text-field label="Public" class="purple-input"/>
+                </v-flex>
+                <v-flex xs12 md4>
+                  <v-text-field label="Nombre de participants" type="number" class="purple-input"/>
+                </v-flex>
+                <v-flex xs12 md4>
+                  <v-text-field label="Date" type="date" class="purple-input"/>
                 </v-flex>
                 <v-flex xs12 md4>
                   <v-text-field label="Heure de début" type="time" class="purple-input"/>
@@ -28,9 +47,7 @@
                 <v-flex xs12 md4>
                   <v-text-field label="Heure de fin" type="time" class="purple-input"/>
                 </v-flex>
-                <v-flex xs12 md4>
-                  <v-text-field label="Nombre de participants" type="number" class="purple-input"/>
-                </v-flex>
+
                 <v-flex xs12>
                   <v-textarea
                     class="purple-input"
@@ -44,7 +61,8 @@
                     class="mx-0 font-weight-light"
                     color="primary"
                     to="/statistiques-seance"
-                    :disabled="uploadStatusFinished"
+                    :disabled="!uploadStatusFinished"
+                    :title="uploadStatusFinished ?   'Transmettez les données pour l\'analyse' :'Attendez la fin du téléchargement de la vidéo pour valider.' "
                   >Valider</v-btn>
                 </v-flex>
               </v-layout>
