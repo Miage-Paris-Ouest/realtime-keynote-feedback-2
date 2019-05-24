@@ -49,7 +49,7 @@ public class SeanceAnalyticsController {
 
         //double[] analyticsData = analytics.getAnalyticsData();
         // double average = this.calculateAverageAttention(analyticsData);
-        HashMap<String,ArrayList<>>
+        /*HashMap<String,ArrayList<>>
         for(int i = 0 ; i < months.length; i++){
             HashMap<String,Integer> hash = new HashMap<String,Integer>();
             for(SeanceAnalytics analytic : analytics){
@@ -62,7 +62,7 @@ public class SeanceAnalyticsController {
                 }
 
             }
-        }
+        }*/
 
         JsonArray response = new JsonArray();
         //response.add(average);

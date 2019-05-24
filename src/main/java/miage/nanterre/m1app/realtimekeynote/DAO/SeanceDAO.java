@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.PostConstruct;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 @RequestMapping("/seance")
@@ -53,18 +53,14 @@ public class SeanceDAO {
     public void testCreateSeance() {
         User user = new User("Christelle", "Ilunga", null);
         userRepository.save(user);
-
-
         try {
-
-
             Seance seance1 = new Seance(
                     "Conférence espace des Science 1",
                     "2",
                     "Public",
-                    Helper.getDateFromString("2018-01-12"),
-                    Helper.getTimeFromString("13:30"),
-                    Helper.getTimeFromString("16:36"),
+                    new Date(2018,01,12),
+                    new Date(2018,01,13, 13, 30),
+                    new Date(2018,01,13, 17, 30),
                     "Description d'une conférence scientifique.",
                     user,
                     50);
@@ -78,8 +74,8 @@ public class SeanceDAO {
                     "2",
                     "Public",
                     Helper.getDateFromString("2018-02-20"),
-                    Helper.getTimeFromString("14:30"),
-                    Helper.getTimeFromString("17:36"),
+                    Helper.getTimeFromString("14:30:00"),
+                    Helper.getTimeFromString("17:36:00"),
                     "Description d'une conférence scientifique.",
                     user,
                     50);
@@ -90,8 +86,8 @@ public class SeanceDAO {
                     "2",
                     "Public",
                     Helper.getDateFromString("2018-03-12"),
-                    Helper.getTimeFromString("12:30"),
-                    Helper.getTimeFromString("17:15"),
+                    Helper.getTimeFromString("12:30:00"),
+                    Helper.getTimeFromString("17:15:00"),
                     "Description d'une conférence scientifique.",
                     user,
                     50);
@@ -102,8 +98,8 @@ public class SeanceDAO {
                     "2",
                     "Public",
                     Helper.getDateFromString("2018-04-12"),
-                    Helper.getTimeFromString("12:30"),
-                    Helper.getTimeFromString("17:15"),
+                    Helper.getTimeFromString("12:30:00"),
+                    Helper.getTimeFromString("17:15:00"),
                     "Description d'une conférence scientifique.",
                     user,
                     50);
@@ -114,8 +110,8 @@ public class SeanceDAO {
                     "2",
                     "Public",
                     Helper.getDateFromString("2018-05-12"),
-                    Helper.getTimeFromString("12:30"),
-                    Helper.getTimeFromString("17:15"),
+                    Helper.getTimeFromString("12:30:00"),
+                    Helper.getTimeFromString("17:15:00"),
                     "Description d'une conférence scientifique.",
                     user,
                     50);
@@ -126,8 +122,8 @@ public class SeanceDAO {
                     "2",
                     "Public",
                     Helper.getDateFromString("2018-06-12"),
-                    Helper.getTimeFromString("12:30"),
-                    Helper.getTimeFromString("17:15"),
+                    Helper.getTimeFromString("12:30:22"),
+                    Helper.getTimeFromString("17:15:11"),
                     "Description d'une conférence scientifique.",
                     user,
                     48);

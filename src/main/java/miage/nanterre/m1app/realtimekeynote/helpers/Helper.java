@@ -2,16 +2,25 @@ package miage.nanterre.m1app.realtimekeynote.helpers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Helper {
-    public static java.sql.Date getDateFromString(String dateString) throws ParseException {
+    public static Date getDateFromString(String dateString) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        java.sql.Date date = new java.sql.Date(format.parse(dateString).getTime());
+        Date date = new Date(format.parse(dateString).getTime());
         return date;
     }
-    public static java.sql.Time getTimeFromString(String timeString){
+    public static Time getTimeFromString(String timeString){
         String[] partsTime = timeString.split(":");
-        return new java.sql.Time((Integer.parseInt(partsTime[0])*3600 +
-                Integer.parseInt(partsTime[1])*60)*1000);
+        int[] time = Arrays.stream(partsTime).mapToInt(Integer::parseInt).toArray();
+
+        if (time.length==2) {
+            time[2] = 00;
+        }
+
+        return new Time(time[0], time[1], time[2]);
     }
 }

@@ -2,7 +2,6 @@ package miage.nanterre.m1app.realtimekeynote.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,13 +29,13 @@ public class Seance implements Serializable {
     private String publiq;
 
     @Column(name="date", length = 60, nullable = true)
-    private java.sql.Date date;
+    private Date date;
 
     @Column(name="beginning_time", length = 60, nullable = true)
-    private java.sql.Time beginningTime;
+    private Date beginningTime;
 
     @Column(name = "ending_time",length = 60, nullable = true)
-    private java.sql.Time endingTime;
+    private Date endingTime;
 
     @Column(length = 60, nullable = true)
     private String description;
@@ -59,9 +58,7 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
-
-    public Seance(String subject, String room, String publiq,java.sql.Date date, java.sql.Time beginningTime, java.sql.Time endingTime, String description, User user, int participants) {
-
+    public Seance(String subject, String room, String publiq, Date date, Date beginningTime, Date endingTime, String description, User user, int participants) {
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
@@ -103,17 +100,19 @@ public class Seance implements Serializable {
         this.publiq = publiq;
     }
 
-    public void setDate(java.sql.Date date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public java.sql.Date getDate(){ return date;}
+    public Date getDate(){
+        return date;
+    }
 
     public Date getBeginningTime() {
         return beginningTime;
     }
 
-    public void setBeginningTime(java.sql.Time beginningTime) {
+    public void setBeginningTime(Date beginningTime) {
         this.beginningTime = beginningTime;
     }
 
@@ -121,7 +120,7 @@ public class Seance implements Serializable {
         return endingTime;
     }
 
-    public void setEndingTime(java.sql.Time endingTime) {
+    public void setEndingTime(Date endingTime) {
         this.endingTime = endingTime;
     }
 
