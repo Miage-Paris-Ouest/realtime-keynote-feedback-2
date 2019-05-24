@@ -59,12 +59,9 @@ public class Seance implements Serializable {
     public Seance() {
     }
 
-<<<<<<< HEAD
-    public Seance(String name, String subject, String room, String publiq, Date beginningTime, Date endingTime, String description, User user, int participants) {
-        this.name = name;
-=======
+
     public Seance(String subject, String room, String publiq,java.sql.Date date, java.sql.Time beginningTime, java.sql.Time endingTime, String description, User user, int participants) {
->>>>>>> modified stats
+
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
