@@ -1,8 +1,13 @@
 import Api from './Api'
 
 export default {
-  async createSession (sessionData) {
-    console.log(sessionData);
-    return Api().post('/seance/create', sessionData)
+  async createSession(sessionData) {
+    return Api().post('/seance/create', sessionData,
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      }
+    )
   }
 }
