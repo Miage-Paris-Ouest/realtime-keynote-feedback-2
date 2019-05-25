@@ -12,7 +12,7 @@ import java.util.Date;
 public class Seance implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @Column(updatable = false, nullable = false, unique = true)
     private long id;
 
@@ -56,6 +56,8 @@ public class Seance implements Serializable {
     private int participants;
 
     public Seance() {
+        seanceAnalytics = new SeanceAnalytics(this, null);
+        this.setSeanceAnalytics(seanceAnalytics);
     }
 
     public Seance(String subject, String room, String publiq, Date date, Date beginningTime, Date endingTime, String description, User user, int participants) {
@@ -69,7 +71,8 @@ public class Seance implements Serializable {
         this.user = user;
         this.participants = participants;
 
-        seanceAnalytics = new SeanceAnalytics();
+        seanceAnalytics = new SeanceAnalytics(this, null);
+        this.setSeanceAnalytics(seanceAnalytics);
     }
 
     public long getId() {
@@ -80,28 +83,32 @@ public class Seance implements Serializable {
         return subject;
     }
 
-    public void setSubject(String subject) {
+    public Seance setSubject(String subject) {
         this.subject = subject;
+        return this;
     }
 
     public String getRoom() {
         return room;
     }
 
-    public void setRoom(String room) {
+    public Seance setRoom(String room) {
         this.room = room;
+        return this;
     }
 
     public String getPubliq() {
         return publiq;
     }
 
-    public void setPubliq(String publiq) {
+    public Seance setPubliq(String publiq) {
         this.publiq = publiq;
+        return this;
     }
 
-    public void setDate(Date date) {
+    public Seance setDate(Date date) {
         this.date = date;
+        return this;
     }
 
     public Date getDate(){
@@ -112,72 +119,81 @@ public class Seance implements Serializable {
         return beginningTime;
     }
 
-    public void setBeginningTime(Date beginningTime) {
+    public Seance setBeginningTime(Date beginningTime) {
+
         this.beginningTime = beginningTime;
+        return this;
     }
 
     public Date getEndingTime() {
         return endingTime;
     }
 
-    public void setEndingTime(Date endingTime) {
+    public Seance setEndingTime(Date endingTime) {
         this.endingTime = endingTime;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Seance setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public SeanceAnalytics getSeanceAnalytics() {
         return seanceAnalytics;
     }
 
-    public void setSeanceAnalytics(SeanceAnalytics seanceAnalytics) {
+    public Seance setSeanceAnalytics(SeanceAnalytics seanceAnalytics) {
         this.seanceAnalytics = seanceAnalytics;
+        return this;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public Seance setUser(User user) {
         this.user = user;
+        return this;
     }
 
     public int getParticipants() {
         return participants;
     }
 
-    public void setParticipants(int participants) {
+    public Seance setParticipants(int participants) {
         this.participants = participants;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Seance setName(String name) {
         this.name = name;
+        return this;
     }
 
     @Override
     public String toString() {
-        return "";
-        /*Seance{" +
+        return "Seance{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", subject='" + subject + '\'' +
                 ", room='" + room + '\'' +
                 ", publiq='" + publiq + '\'' +
+                ", date=" + date +
                 ", beginningTime=" + beginningTime +
                 ", endingTime=" + endingTime +
                 ", description='" + description + '\'' +
                 ", seanceAnalytics=" + seanceAnalytics +
                 ", user=" + user +
                 ", participants=" + participants +
-                '}';*/
+                '}';
     }
 }
