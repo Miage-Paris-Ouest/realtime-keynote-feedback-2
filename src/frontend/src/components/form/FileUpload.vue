@@ -69,13 +69,17 @@ export default {
       this.uploading = true;
       let formData = new FormData();
       formData.append("file", this.file);
-      var response = await UploadVideoService.uploadVideo(formData, this);
-      if (response.data) {
-        let state = response.data.success;
-        this.terminated = state;
-        this.$emit("uploaded", true);
-      } else {
-        this.$emit("uploaded", false);
+      try {
+        var response = await UploadVideoService.uploadVideo(formData, this);
+        if (response.data) {
+          let state = response.data.success;
+          this.terminated = state;
+          this.$emit("uploaded", true);
+        } else {
+          this.$emit("uploaded", false);
+        }
+      } catch (err) {
+        console.trace(err);
       }
     }
   },

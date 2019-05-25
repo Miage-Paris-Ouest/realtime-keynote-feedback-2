@@ -37,7 +37,7 @@
                 </v-flex>
                 <v-flex xs12 md4>
                   <v-text-field
-                    v-model="participants"
+                    v-model.number="participants"
                     label="Nombre de participants"
                     type="number"
                     class="purple-input"
@@ -105,11 +105,10 @@ export default {
     description: "",
     participants: 0
   }),
-  //
   methods: {
     async createSession() {
       if (config.apiCallEnabled) {
-        var response = await SessionCreationService.createSession({
+        const sessionData = {
           subject: this.subject,
           room: this.room,
           publiq: this.publiq,
@@ -118,7 +117,15 @@ export default {
           endingTime: this.endingTime,
           description: this.description,
           participants: this.participants
-        });
+        };
+        console.log(sessionData);
+        try {
+          var response = await SessionCreationService.createSession(
+            sessionData
+          );
+        } catch (error) {
+          console.trace(error);
+        }
       }
     },
     async uploadFinished(status) {
