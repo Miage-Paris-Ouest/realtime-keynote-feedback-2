@@ -28,13 +28,12 @@ public class SeanceAnalyticsService {
     private static final String SESSION_KEY = "session";
     private static final String SESSION_ANALYTICS_DATA = "analyticsData";
 
-
-
     public static HashMap<String, Object> getDashboardStatistics(SeanceAnalyticsRepository analyticsRepository) {
+
         HashMap<String, Object> response = new HashMap<String, Object>();
         ArrayList<LocalDate> months = getSixLastMonthsLabels();
-        ArrayList<SeanceAnalytics> analytics  = (ArrayList<SeanceAnalytics>)analyticsRepository.findAll();
-        HashMap<LocalDate, ArrayList> sessionsPerMonths = getSessionsPerMonths(analytics,months);
+        ArrayList<SeanceAnalytics> analytics = (ArrayList<SeanceAnalytics>) analyticsRepository.findAll();
+        HashMap<LocalDate, ArrayList> sessionsPerMonths = getSessionsPerMonths(analytics, months);
         ArrayList<Double> AvgPerMonthList = new ArrayList<Double>();
         ArrayList<Double> AttentionPerMonthList = new ArrayList<Double>();
         ArrayList<Double> AbsentPerMonthList = new ArrayList<Double>();
@@ -58,31 +57,32 @@ public class SeanceAnalyticsService {
         return response;
     }
 
-    public static HashMap<String,Object> getSessionStatistics(SeanceRepository seanceRepository, long sessionId){
+    public static HashMap<String, Object> getSessionStatistics(SeanceRepository seanceRepository, long sessionId) {
+
         HashMap<String, Object> response = new HashMap<String, Object>();
         Seance seance = seanceRepository.findById(sessionId).get();
-        if(seance != null) {
-            HashMap<String,Object> seanceData  = new HashMap<String,Object>();
-            seanceData.put("subject",seance.getSubject());
-            seanceData.put("public",seance.getPubliq());
+
+        if (seance != null) {
+            HashMap<String, Object> seanceData = new HashMap<String, Object>();
+            seanceData.put("subject", seance.getSubject());
+            seanceData.put("public", seance.getPubliq());
             seanceData.put("room", seance.getRoom());
-            seanceData.put("participants",seance.getParticipants());
-            seanceData.put("date",seance.getDate());
-            seanceData.put("begginingTime",seance.getBeginningTime());
-            seanceData.put("endingTime",seance.getEndingTime());
-            response.put(ATTENTION_AVG_KEY, getAverageSessionAttention(seance.getParticipants(),
-                    parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData())));
-            response.put(ATTENTION_MAX_KEY, getBestSessionAttention(seance.getParticipants(),
-                    parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData())));
-            response.put(ATTENTION_MIN_KEY, getWorstSessionAttention(seance.getParticipants(),
-                    parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData())));
+            seanceData.put("participants", seance.getParticipants());
+            seanceData.put("date", seance.getDate());
+            seanceData.put("begginingTime", seance.getBeginningTime());
+            seanceData.put("endingTime", seance.getEndingTime());
+
+            int participants = seance.getParticipants();
+            ArrayList<Integer> parsedAnalytics = parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData());
+
+            response.put(ATTENTION_AVG_KEY, getAverageSessionAttention(participants,parsedAnalytics ));
+            response.put(ATTENTION_MAX_KEY, getBestSessionAttention(participants,parsedAnalytics ));
+            response.put(ATTENTION_MIN_KEY, getWorstSessionAttention(participants,parsedAnalytics ));
             response.put(SESSION_KEY, seanceData);
-            response.put(SESSION_ANALYTICS_DATA, seance.getSeanceAnalytics().getAnalyticsData());
-            return response;
+            response.put(SESSION_ANALYTICS_DATA, parsedAnalytics);
         }
-        else{
-            return response;
-        }
+
+        return response;
     }
 
     private static double getAttentionAveragePerMonth(ArrayList<SeanceAnalytics> sessions) {
@@ -93,7 +93,8 @@ public class SeanceAnalyticsService {
         }
         return collector
                 .stream()
-                .reduce(0., (a, b) -> a + b) / collector.size();
+                .reduce(0., (a, b) -> a + b)
+                / collector.size();
     }
 
     private static double getAttentionDiffPerMonth(ArrayList<SeanceAnalytics> sessions) {
@@ -128,26 +129,31 @@ public class SeanceAnalyticsService {
                 .stream()
                 .reduce(0, (a, b) -> a + b) * 1.)
                 / (dataAnalytics.size() * 1.))
-                / (participants * 1.)) * MAX_ATTENTION;
+                / (participants * 1.))
+                * MAX_ATTENTION;
     }
 
     private static double getBestSessionAttention(int participants, ArrayList<Integer> dataAnalytics) {
-        return ((Collections.max(dataAnalytics)*1.)
-                /(participants*1.)) * MAX_ATTENTION;
+        return ((Collections.max(dataAnalytics) * 1.)
+                / (participants * 1.))
+                * MAX_ATTENTION;
     }
 
     private static double getWorstSessionAttention(int participants, ArrayList<Integer> dataAnalytics) {
-        return ((Collections.min(dataAnalytics)*1.)
-                / (participants*1.)) * MAX_ATTENTION;
+        return ((Collections.min(dataAnalytics) * 1.)
+                / (participants * 1.))
+                * MAX_ATTENTION;
     }
 
     private static double getAverageAbsentParticipants(int participants, ArrayList<Integer> dataAnalytics) {
-        double data = participants * 1. - ((dataAnalytics.stream().reduce(0, (a, b) -> a + b) * 1.)
-                / (dataAnalytics.size() * 1.));
-     return data;
+        double data = participants * 1. -
+                ((dataAnalytics.stream()
+                        .reduce(0, (a, b) -> a + b) * 1.)
+                        / (dataAnalytics.size() * 1.));
+        return data;
     }
 
-    private static HashMap<LocalDate, ArrayList> getSessionsPerMonths(ArrayList<SeanceAnalytics> analytics,ArrayList<LocalDate> months) {
+    private static HashMap<LocalDate, ArrayList> getSessionsPerMonths(ArrayList<SeanceAnalytics> analytics, ArrayList<LocalDate> months) {
         HashMap<LocalDate, ArrayList> datasets = new HashMap<LocalDate, ArrayList>();
         for (LocalDate date : months) {
             datasets.put(date, getSessionPerMonth(analytics, date));
