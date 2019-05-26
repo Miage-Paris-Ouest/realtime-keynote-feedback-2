@@ -23,4 +23,5 @@ public class Helper {
 
         return new Time(time[0], time[1], time[2]);
     }
+
 }

@@ -8,7 +8,9 @@ import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
+import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
+import miage.nanterre.m1app.realtimekeynote.Service.SeanceAnalyticsService;
 import miage.nanterre.m1app.realtimekeynote.helpers.AnalyticsHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,69 +29,22 @@ import java.util.HashMap;
 public class SeanceAnalyticsController {
 
     private SeanceAnalyticsRepository analyticsRepository;
+    private SeanceRepository seanceRepository;
 
-    public SeanceAnalyticsController(SeanceAnalyticsRepository analyticsRepository) {
+    public SeanceAnalyticsController(SeanceAnalyticsRepository analyticsRepository, SeanceRepository seanceRepository) {
         this.analyticsRepository = analyticsRepository;
-    }
-
-    private double calculateAverageAttention(double[] analyticsData) {
-        if (analyticsData.length == 0) {
-            return Double.parseDouble(null);
-        }
-
-        return Arrays.stream(analyticsData).sum();
+        this.seanceRepository = seanceRepository;
     }
 
     @RequestMapping(value = "/get/dashboard", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<Object> sendAnalyticsData() {
-
-        ArrayList<SeanceAnalytics> analytics = (ArrayList<SeanceAnalytics>) analyticsRepository.findAll();
-        ObjectMapper mapper = new ObjectMapper();
-        int months[] = AnalyticsHelper.getSixLastMonthsLabels();
-
-        //double[] analyticsData = analytics.getAnalyticsData();
-        // double average = this.calculateAverageAttention(analyticsData);
-        /*HashMap<String,ArrayList<>>
-        for(int i = 0 ; i < months.length; i++){
-            HashMap<String,Integer> hash = new HashMap<String,Integer>();
-            for(SeanceAnalytics analytic : analytics){
-                Seance seance =  analytic.getSeance();
-                java.sql.Date date =  seance.getDate();
-                LocalDate localDate = date.toLocalDate();
-                int month = localDate.getMonthValue();
-                if(months[i] == month){
-                    hash.put("absences", );
-                }
-
-            }
-        }*/
-
-        JsonArray response = new JsonArray();
-        //response.add(average);
-        try {
-            response.add(mapper.writeValueAsString(months));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return new ResponseEntity<Object>(months, HttpStatus.OK);
+         HashMap<String, Object> response = SeanceAnalyticsService.getDashboardStatistics(analyticsRepository);
+        return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get/data", method = RequestMethod.GET, headers = "Accept=application/json")
-    public ResponseEntity<Object> sendAnalyticsData(@RequestParam("seanceId") long seanceId) {
-        SeanceAnalytics analytics = analyticsRepository.findById(seanceId).get();
-        ObjectMapper mapper = new ObjectMapper();
-
-        double average = 12;
-
-        JsonArray response = new JsonArray();
-        response.add(average);
-        try {
-            response.add(mapper.writeValueAsString(analytics));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
+    public ResponseEntity<Object> sendAnalyticsData(@RequestParam("id") long id) {
+        HashMap<String, Object> response = SeanceAnalyticsService.getSessionStatistics(seanceRepository,id);
         return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
 
