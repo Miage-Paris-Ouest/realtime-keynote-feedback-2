@@ -62,7 +62,6 @@ public class SeanceAnalyticsService {
         HashMap<String, Object> response = new HashMap<String, Object>();
         Seance seance = seanceRepository.findById(sessionId).get();
         if(seance != null) {
-            
             HashMap<String,Object> seanceData  = new HashMap<String,Object>();
             seanceData.put("subject",seance.getSubject());
             seanceData.put("public",seance.getPubliq());
