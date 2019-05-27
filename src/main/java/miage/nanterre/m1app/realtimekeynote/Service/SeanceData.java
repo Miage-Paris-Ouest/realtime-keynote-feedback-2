@@ -8,7 +8,8 @@ public enum SeanceData {
     PARTICIPANTS("participants"),
     DATE("date"),
     BEGGINING_TIME("begginingTime"),
-    ENDING_TIME("endingTime");
+    ENDING_TIME("endingTime"),
+    DURATION("duration");
 
     private final String value;
 
