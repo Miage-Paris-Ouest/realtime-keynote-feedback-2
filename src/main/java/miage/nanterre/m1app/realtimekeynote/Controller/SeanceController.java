@@ -28,17 +28,20 @@ public class SeanceController extends SeanceBuilder {
         this.seanceRepository = seanceRepository;
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value = "/all/user/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<Object> getSeanceByUser(@PathVariable("id") long userId) {
         User user = userRepository.findById(userId).get();
         return new ResponseEntity<Object>(user.getSeances(), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value = "/all", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<Object> getAllSeance() {
         return new ResponseEntity<>(seanceRepository.findAll(), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(path= "/create")
     public Seance createSeance(@RequestBody SeanceView seanceView) {
     User user = userRepository

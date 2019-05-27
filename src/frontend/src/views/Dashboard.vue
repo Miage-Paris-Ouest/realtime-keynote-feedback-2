@@ -66,24 +66,6 @@
           Si vous souhaitez en savoir plus, consultez nos conseils pour améliorer l'attention de votre public.
         </v-alert>
       </v-flex>
-      <!--
-      <v-flex md12 sm12 lg4>
-        <material-chart-card
-          :data="dataPublic.data"
-          :options="dataPublic.options"
-          color="#666"
-          type="Pie"
-        >
-          <h3 class="title font-weight-light">Type de public</h3>
-          <p class="category d-inline-flex font-weight-light">Répartition de votre type de public.</p>
-
-          <template slot="actions">
-            <v-icon class="mr-2" small>mdi-clock-outline</v-icon>
-            <span class="caption grey--text font-weight-light">Sur les 6 derniers mois</span>
-          </template>
-        </material-chart-card>
-      </v-flex>
-      -->
     </v-layout>
   </v-container>
 </template>
@@ -182,6 +164,14 @@ export default {
   methods: {
     complete(index) {
       this.list[index] = !this.list[index];
+    }
+  },
+  async created() {
+    try {
+      var response = await DashboardService.getDashboard();
+      console.log(response);
+    } catch (error) {
+      console.trace(error);
     }
   }
 };

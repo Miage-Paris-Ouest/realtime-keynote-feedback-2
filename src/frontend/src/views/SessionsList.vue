@@ -125,7 +125,7 @@ export default {
         duree: "1h30",
         attention: "34"
       },
-      { 
+      {
         id: 9,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
@@ -134,7 +134,7 @@ export default {
         duree: "1h30",
         attention: "34"
       },
-      { 
+      {
         id: 9,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
@@ -143,7 +143,7 @@ export default {
         duree: "1h30",
         attention: "34"
       },
-      { 
+      {
         id: 9,
         titre: "Conférence à l'espace des sciences",
         date: "12 mars 2019",
@@ -165,8 +165,13 @@ export default {
   }),
   async created() {
     if (config.apiCallEnabled) {
-      var response = await SeancesListService.getSeancesList();
-      if (response.data) this.items = response.data;
+      try {
+        var response = await SessionsListService.getSessionsList();
+        console.log(response.data);
+        //if (response.data) this.items = response.data;
+      } catch (error) {
+        console.trace(error);
+      }
     }
   }
 };
