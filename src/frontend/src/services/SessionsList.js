@@ -1,7 +1,12 @@
 import Api from './Api'
 
 export default {
-  async getSeancesList () {
-    return Api().get('/mes-seances')
+  async getSessionsList () {
+    return Api().get('/seance/all', {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    }
+    )
   }
 }
