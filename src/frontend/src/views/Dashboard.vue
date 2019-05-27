@@ -18,9 +18,9 @@
       </v-flex>
       <v-flex md12 sm12 lg4>
         <material-chart-card
-          :data="absencesChart.data"
-          :options="absencesChart.options"
-          :responsive-options="absencesChart.responsiveOptions"
+          :data="absentChart.data"
+          :options="absentChart.options"
+          :responsive-options="absentChart.responsiveOptions"
           color="red"
           type="Bar"
         >
@@ -54,7 +54,7 @@
           color="primary"
           icon="mdi-account-group"
           title="Attention moyenne"
-          value="34.6/50"
+          :value="avgAttention+'/50'"
           sub-icon="mdi-information-outline"
           sub-text="sur les 6 derniers mois"
         />
@@ -72,13 +72,18 @@
 
 <script>
 import DashboardService from "../services/Dashboard";
+import StatisticsHelper from "../helpers/StatisticsHelper";
+import FormatterHelper from "../helpers/FormatterHelper";
+
 export default {
   data() {
     return {
+      responseData: [],
+      avgAttention: "",
       attentionChart: {
         data: {
-          labels: ["Jan", "Fev", "Mar", "Avr", "Mai", "Juin", "Jui"],
-          series: [[12, 17, 7, 17, 23, 18, 38]]
+          labels: [],
+          series: [[]]
         },
         options: {
           lineSmooth: this.$chartist.Interpolation.cardinal({
@@ -96,8 +101,8 @@ export default {
       },
       attentionVariationChart: {
         data: {
-          labels: ["Jan", "Fev", "Mar", "Avr", "Mai", "Juin", "Jui"],
-          series: [[4, 10, 30, 5, 20, 15, 30]]
+          labels: [],
+          series: [[]]
         },
         options: {
           lineSmooth: this.$chartist.Interpolation.cardinal({
@@ -113,17 +118,10 @@ export default {
           }
         }
       },
-      dataPublic: {
+      absentChart: {
         data: {
-          labels: ["étudiants", "Professionnels", "Retraités"],
-          series: [45, 35, 20]
-        },
-        options: {}
-      },
-      absencesChart: {
-        data: {
-          labels: ["Jan", "Fev", "Mar", "Avr", "Mai", "Juin", "Jui"],
-          series: [[5, 15, 12, 20, 30, 10, 2]]
+          labels: [],
+          series: [[]]
         },
         options: {
           axisX: {
@@ -169,7 +167,25 @@ export default {
   async created() {
     try {
       var response = await DashboardService.getDashboard();
-      console.log(response);
+      if (response.data) {
+        this.responseData = response.data;
+        this.attentionChart.data.series = [
+          this.responseData.attentionAvgPerMonth
+        ];
+        var labels = FormatterHelper.getMonthsLabelsFromMonthsString(
+          this.responseData.months
+        );
+        this.attentionChart.data.labels = [...labels];
+        this.absentChart.data.series = [this.responseData.absentAvgPerMonth];
+        this.absentChart.data.labels = [...labels];
+        this.attentionVariationChart.data.series = [
+          this.responseData.attentionDiffPerMonth
+        ];
+        this.attentionVariationChart.data.labels = [...labels];
+        this.avgAttention = StatisticsHelper.roundStat(
+          this.responseData.attentionAverage
+        );
+      }
     } catch (error) {
       console.trace(error);
     }

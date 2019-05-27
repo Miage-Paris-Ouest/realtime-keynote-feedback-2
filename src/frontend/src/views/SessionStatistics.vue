@@ -3,7 +3,7 @@
     <v-layout wrap>
       <v-flex md4>
         <material-card color="primary" title="Conférence Pierre et Marie Currie" text>
-          <v-data-table :headers="headers" :items="items" hide-actions>
+          <v-data-table :headers="headers" :items="itemsComputed" hide-actions>
             <template slot="headerCell" slot-scope="{ header }">
               <span class="subheading font-weight-light text--darken-3" v-text="header.text"/>
             </template>
@@ -17,7 +17,7 @@
           color="primary"
           icon="mdi-account-group"
           title="Attention moyenne"
-          value="34.6/50"
+          :value="attentionAverage+'/50'"
           sub-icon="mdi-information-outline"
           sub-text="sur les 2 dernieres heures"
         />
@@ -25,7 +25,7 @@
           color="blue"
           icon="mdi-arrow-up"
           title="Attention maximum"
-          value="43/50"
+          :value="attentionMin+'/50'"
           sub-icon="mdi-information-outline"
           sub-text="sur les 2 dernieres heures"
         />
@@ -33,7 +33,7 @@
           color="red"
           icon="mdi-arrow-down"
           title="Attention minimum"
-          value="2/50"
+          :value="attentionMin+'/50'"
           sub-icon="mdi-information-outline"
           sub-text="sur les 2 dernieres heures"
         />
@@ -88,39 +88,20 @@
 <script>
 import SessionStatisticsService from "../services/SessionStatistics";
 import config from "../config";
+import FormatterHelper from "../helpers/FormatterHelper";
+import StatisticsHelper from "../helpers/StatisticsHelper";
 
 var chartColor = "#2196f3";
 chartColor = "#fff";
 export default {
   data() {
     return {
-      items: [
-        {
-          label: "Public",
-          value: "M1 miage"
-        },
-        {
-          label: "Salle",
-          value: "210 A"
-        },
-        {
-          label: "Durée",
-          value: "2h"
-        },
-        {
-          label: "Effectif",
-          value: "38"
-        },
-
-        {
-          label: "Début",
-          value: "15h"
-        },
-        {
-          label: "Fin",
-          value: "17h"
-        }
-      ],
+      responseData: null,
+      subject: "",
+      items: [],
+      attentionAverage: 0,
+      attentionMax: 0,
+      attentionMin: 0,
       dispersionChart: {
         data: {
           arc: {
@@ -149,7 +130,6 @@ export default {
         options: {
           legend: {
             labels: {
-              // This more specific font property overrides the global property
               fontColor: "white"
             }
           }
@@ -180,10 +160,86 @@ export default {
   },
   async mounted() {
     if (config.apiCallEnabled) {
-      var response = await SessionStatisticsService.getSeanceStatistics({
-        seanceId: this.$route.params.id
-      });
-      if (response.data) this.items = response.data;
+      try {
+        var response = await SessionStatisticsService.getSeanceStatistics(
+          this.$route.params.id
+        );
+        if (response.data) {
+          this.responseData = response.data;
+          this.attentionAverage = StatisticsHelper.roundStat(
+            this.responseData.attentionAverage
+          );
+          this.attentionMax = StatisticsHelper.roundStat(
+            this.responseData.attentionMax
+          );
+          this.attentionMin = StatisticsHelper.roundStat(
+            this.responseData.attentionMin
+          );
+        }
+      } catch (error) {
+        console.trace(error);
+      }
+    }
+  },
+
+  computed: {
+    itemsComputed() {
+      if (this.responseData) {
+        const session = this.responseData.session;
+        return [
+          {
+            label: "Public",
+            value: session.public
+          },
+          {
+            label: "Salle",
+            value: session.room
+          },
+          {
+            label: "Durée",
+            value: "2h"
+          },
+          {
+            label: "Effectif",
+            value: session.participants
+          },
+          {
+            label: "Début",
+            value: FormatterHelper.getTimeFromDateTime(session.begginingTime)
+          },
+          {
+            label: "Fin",
+            value: FormatterHelper.getTimeFromDateTime(session.endingTime)
+          }
+        ];
+      } else {
+        return [
+          {
+            label: "Public",
+            value: ""
+          },
+          {
+            label: "Salle",
+            value: ""
+          },
+          {
+            label: "Durée",
+            value: ""
+          },
+          {
+            label: "Effectif",
+            value: ""
+          },
+          {
+            label: "Début",
+            value: ""
+          },
+          {
+            label: "Fin",
+            value: ""
+          }
+        ];
+      }
     }
   }
 };
