@@ -2,6 +2,7 @@ package miage.nanterre.m1app.realtimekeynote.Controller;
 
 import miage.nanterre.m1app.realtimekeynote.Builder.SeanceBuilder;
 
+import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
@@ -40,14 +41,10 @@ public class SeanceController extends SeanceBuilder {
     }
 
     @PostMapping(path= "/create")
-    public Seance createSeance(@RequestBody SeanceView seanceView) {
+    public Seance createSeance(@RequestBody SeanceView seanceView) throws UserNotFoundException {
     User user = userRepository
                 .findById(Long.parseLong(seanceView.getUser()))
-                .orElse(new User(
-                        "Basile",
-                        "Mauvieux",
-                        null)
-                );
+                .orElseThrow(UserNotFoundException::new);
 
         Date beginnningDate = new Date();
         beginnningDate.setHours(12);
@@ -68,41 +65,5 @@ public class SeanceController extends SeanceBuilder {
 
         seanceRepository.save(seance);
         return seance;
-
     }
-
-
-
-
-
-
-
-
-     /* User user = userRepository
-                .findById((long)1)
-                .orElse(new User(
-                        "Basile",
-                        "Mauvieux",
-                        null)
-                );
-
-        Date beginnningDate = new Date();
-        beginnningDate.setHours(12);
-        beginnningDate.setMinutes(30);
-
-        Seance seance = new Seance();
-        seance
-                .setName("Test")
-                .setSubject("Je suis une séance de test")
-                .setDescription("Lorem ipsum dotrhari manawe")
-                .setPubliq("Promotion de M1")
-                .setParticipants(412)
-                .setDate(new Date())
-                .setBeginningTime(beginnningDate)
-                .setEndingTime(Helper.getTimeFromString("12:30:45"))
-                .setRoom("123")
-                .setUser(user);
-
-        seanceRepository.save(seance);*/
-
 }
