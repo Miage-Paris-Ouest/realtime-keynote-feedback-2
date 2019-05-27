@@ -64,7 +64,6 @@ public class SeanceController extends SeanceBuilder {
                 .setRoom(seanceView.getRoom())
                 .setUser(user);
 
-
         seanceRepository.save(seance);
         return seance;
     }
