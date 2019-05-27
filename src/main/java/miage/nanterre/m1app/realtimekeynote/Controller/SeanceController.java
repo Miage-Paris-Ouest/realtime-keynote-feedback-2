@@ -2,22 +2,23 @@ package miage.nanterre.m1app.realtimekeynote.Controller;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import miage.nanterre.m1app.realtimekeynote.Builder.SeanceBuilder;
-
 import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
+import miage.nanterre.m1app.realtimekeynote.Service.SeanceService;
 import miage.nanterre.m1app.realtimekeynote.View.SeanceView;
-import miage.nanterre.m1app.realtimekeynote.helpers.Helper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping(value = "/seance")
@@ -43,6 +44,14 @@ public class SeanceController extends SeanceBuilder {
     public ResponseEntity<Object> getAllSeance() {
         return new ResponseEntity<>(seanceRepository.findAll(), HttpStatus.OK);
     }
+
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET, headers = "Accept=application/json")
+    public ResponseEntity<Object> getAllSeanceData() {
+        ArrayList<HashMap> response = SeanceService.getDurationSession(seanceRepository);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(path= "/create")
