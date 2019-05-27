@@ -66,7 +66,7 @@ export default {
     },
     async startUpload() {
       this.file = this.$refs.file.files[0];
-      this.uploading = true;
+        this.uploading = true;
       let formData = new FormData();
       formData.append("file", this.file);
       try {
@@ -74,7 +74,7 @@ export default {
         if (response.data) {
           let state = response.data.success;
           this.terminated = state;
-          this.$emit("uploaded", true);
+          this.$emit("uploaded", true, this.file.name);
         } else {
           this.$emit("uploaded", false);
         }
