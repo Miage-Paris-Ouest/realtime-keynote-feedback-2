@@ -39,6 +39,7 @@ public class SeanceController extends SeanceBuilder {
         return new ResponseEntity<Object>(user.getSeances(), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value = "/all", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<Object> getAllSeanceData() {
         ArrayList<HashMap> response = SeanceService.getDurationSession(seanceRepository);

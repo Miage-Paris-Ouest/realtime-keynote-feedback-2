@@ -95,15 +95,15 @@ export default {
         var computed = [...this.responseData];
         return computed.map(data => {
           return {
-            subject: data.subject,
-            date: FormatterHelper.getDateFromDateTime(data.date),
+            subject: data.SUBJECT,
+            date: FormatterHelper.getDateFromDateTime(data.DATE),
             beginningTime: FormatterHelper.getTimeFromDateTime(
-              data.beginningTime
+              data.BEGINNING_TIME
             ),
-            endingTime: FormatterHelper.getTimeFromDateTime(data.endingTime),
-            duration: "2h 30",
-            attention: 40,
-            sessionId: data.id
+            endingTime: FormatterHelper.getTimeFromDateTime(data.ENDING_TIME),
+            duration: data.DURATION,
+            attention: StatisticsHelper.roundStat(data.ATTENTION_AVG),
+            sessionId: data.ID
           };
         });
       }

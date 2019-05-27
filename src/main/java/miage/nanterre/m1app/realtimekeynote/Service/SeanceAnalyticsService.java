@@ -12,11 +12,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static miage.nanterre.m1app.realtimekeynote.Service.SeanceAnalyticsData.*;
-import static miage.nanterre.m1app.realtimekeynote.Service.SeanceData.*;
+import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceAnalyticsEnum.*;
+import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceEnum.*;
 
 public class SeanceAnalyticsService {
-
+    public final static int MAX_ATTENTION = 50;
+    public final static String STATISTICS_SEPARATOR = ",";
 
     public static HashMap<String, Object> getDashboardStatistics(SeanceAnalyticsRepository analyticsRepository)
             throws AnalyticsException {
@@ -29,22 +30,18 @@ public class SeanceAnalyticsService {
         ArrayList<Double> AttentionPerMonthList = new ArrayList<Double>();
         ArrayList<Double> AbsentPerMonthList = new ArrayList<Double>();
 
+        for (LocalDate date : months) {
+            ArrayList sessions = sessionsPerMonths.get(date);
+            AvgPerMonthList.add(getAttentionAveragePerMonth(sessions));
+            AttentionPerMonthList.add(getAttentionDiffPerMonth(sessions));
+            AbsentPerMonthList.add(getAbsentAveragePerMonth(sessions));
+        }
 
-            for (LocalDate date : months) {
-                if (months.isEmpty())
-                    throw new AnalyticsException("Aucune session à analyser !");
-
-                ArrayList sessions = sessionsPerMonths.get(date);
-                AvgPerMonthList.add(getAttentionAveragePerMonth(sessions));
-                AttentionPerMonthList.add(getAttentionDiffPerMonth(sessions));
-                AbsentPerMonthList.add(getAbsentAveragePerMonth(sessions));
-            }
-
-        response.put(String.valueOf(MONTHS_KEY), months);
-        response.put(String.valueOf(ATTENTION_AVG_PER_MONTH_KEY), AvgPerMonthList);
-        response.put(String.valueOf(ATTENTION_DIFF_PER_MONTH_KEY), AttentionPerMonthList);
-        response.put(String.valueOf(ABSENT_AVG_PER_MONTH_KEY), AbsentPerMonthList);
-        response.put(String.valueOf(ATTENTION_AVG_KEY), AvgPerMonthList
+        response.put(String.valueOf(MONTHS), months);
+        response.put(String.valueOf(ATTENTION_AVG_PER_MONTH), AvgPerMonthList);
+        response.put(String.valueOf(ATTENTION_DIFF_PER_MONTH), AttentionPerMonthList);
+        response.put(String.valueOf(ABSENT_AVG_PER_MONTH), AbsentPerMonthList);
+        response.put(String.valueOf(ATTENTION_AVG), AvgPerMonthList
                 .stream()
                 .reduce(0., (a, b) -> a + b)
                 / AvgPerMonthList.size());
@@ -58,34 +55,36 @@ public class SeanceAnalyticsService {
         HashMap<String, Object> response = new HashMap<String, Object>();
         Seance seance = seanceRepository.findById(sessionId).get();
 
-        if (seance != null) {
+        if (seance != null && seance.getSeanceAnalytics().getAnalyticsData() != null) {
             HashMap<String, Object> seanceData = new HashMap<String, Object>();
             seanceData.put(String.valueOf(SUBJECT), seance.getSubject());
             seanceData.put(String.valueOf(PUBLIC), seance.getPubliq());
             seanceData.put(String.valueOf(ROOM), seance.getRoom());
             seanceData.put(String.valueOf(PARTICIPANTS), seance.getParticipants());
             seanceData.put(String.valueOf(DATE), seance.getDate());
-            seanceData.put(String.valueOf(BEGGINING_TIME), seance.getBeginningTime());
+            seanceData.put(String.valueOf(BEGINNING_TIME), seance.getBeginningTime());
             seanceData.put(String.valueOf(ENDING_TIME), seance.getEndingTime());
+            seanceData.put(String.valueOf(DURATION), SeanceService.CalcDuration(seance));
 
             int participants = seance.getParticipants();
             ArrayList<Integer> parsedAnalytics = parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData());
 
-            response.put(String.valueOf(ATTENTION_AVG_KEY), getAverageSessionAttention(participants,parsedAnalytics ));
-            response.put(String.valueOf(ATTENTION_MAX_KEY), getBestSessionAttention(participants,parsedAnalytics ));
-            response.put(String.valueOf(ATTENTION_MIN_KEY), getWorstSessionAttention(participants,parsedAnalytics ));
-            response.put(String.valueOf(SESSION_KEY), seanceData);
-            response.put(String.valueOf(SESSION_ANALYTICS_DATA), parsedAnalytics);
+            response.put(String.valueOf(ATTENTION_AVG), getAverageSessionAttention(participants, parsedAnalytics));
+            response.put(String.valueOf(ATTENTION_MAX), getBestSessionAttention(participants, parsedAnalytics));
+            response.put(String.valueOf(ATTENTION_MIN), getWorstSessionAttention(participants, parsedAnalytics));
+            response.put(String.valueOf(SESSION), seanceData);
+            response.put(String.valueOf(SESSION_ANALYTICS_DATA), parseAnalyticsResume(seance,parsedAnalytics));
         } else {
-            throw new AnalyticsException("Aucune seance à analyser !");
+            //throw new AnalyticsException("Aucune seance à analyser !");
+
         }
 
         return response;
     }
 
     private static double getAttentionAveragePerMonth(ArrayList<SeanceAnalytics> sessions) throws AnalyticsException {
-        if (sessions.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+       /* if (sessions.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
@@ -99,8 +98,8 @@ public class SeanceAnalyticsService {
     }
 
     private static double getAttentionDiffPerMonth(ArrayList<SeanceAnalytics> sessions) throws AnalyticsException {
-        if (sessions.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+       /* if (sessions.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
@@ -116,8 +115,8 @@ public class SeanceAnalyticsService {
     }
 
     private static double getAbsentAveragePerMonth(ArrayList<SeanceAnalytics> sessions) throws AnalyticsException {
-        if (sessions.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+       /* if (sessions.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
@@ -131,43 +130,42 @@ public class SeanceAnalyticsService {
                 / (collector.size() * 1.);
     }
 
-    private static double getAverageSessionAttention(int participants, ArrayList<Integer> dataAnalytics)
-            throws AnalyticsException {
-        if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+    public static double getAverageSessionAttention(int participants, ArrayList<Integer> dataAnalytics) {
+       /* if (dataAnalytics.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         return (((dataAnalytics
                 .stream()
                 .reduce(0, (a, b) -> a + b) * 1.)
                 / (dataAnalytics.size() * 1.))
                 / (participants * 1.))
-                * Integer.parseInt(String.valueOf(MAX_ATTENTION));
+                * MAX_ATTENTION;
     }
 
     private static double getBestSessionAttention(int participants, ArrayList<Integer> dataAnalytics)
             throws AnalyticsException {
-        if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+      /*  if (dataAnalytics.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         return ((Collections.max(dataAnalytics) * 1.)
                 / (participants * 1.))
-                * Integer.parseInt(String.valueOf(MAX_ATTENTION));
+                * MAX_ATTENTION;
     }
 
     private static double getWorstSessionAttention(int participants, ArrayList<Integer> dataAnalytics)
             throws AnalyticsException {
-        if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+       /* if (dataAnalytics.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         return ((Collections.min(dataAnalytics) * 1.)
                 / (participants * 1.))
-                * Integer.parseInt(String.valueOf(MAX_ATTENTION));
+                * MAX_ATTENTION;
     }
 
     private static double getAverageAbsentParticipants(int participants, ArrayList<Integer> dataAnalytics)
             throws AnalyticsException {
-        if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+       /* if (dataAnalytics.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         double data = participants * 1. -
                 ((dataAnalytics.stream()
@@ -177,9 +175,9 @@ public class SeanceAnalyticsService {
     }
 
     private static HashMap<LocalDate, ArrayList> getSessionsPerMonths(ArrayList<SeanceAnalytics> analytics, ArrayList<LocalDate> months)
-            throws AnalyticsException{
-        if (months.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");
+            throws AnalyticsException {
+      /*  if (months.isEmpty())
+            throw new AnalyticsException("Aucune session à analyser !");*/
 
         HashMap<LocalDate, ArrayList> datasets = new HashMap<LocalDate, ArrayList>();
         for (LocalDate date : months) {
@@ -213,12 +211,38 @@ public class SeanceAnalyticsService {
         return sessions;
     }
 
-    private static ArrayList<Integer> parseAnalytics(String analytics) {
+    public static ArrayList<Integer> parseAnalytics(String analytics) {
         ArrayList<Integer> parsed = new ArrayList<Integer>();
-        String[] parts = analytics.split(String.valueOf(STATISTICS_SEPARATOR));
+        String[] parts = analytics.split(STATISTICS_SEPARATOR);
         for (String str : parts) {
             parsed.add(Integer.valueOf(str));
         }
         return parsed;
+    }
+
+    public static ArrayList<Double> parseAnalyticsResume(Seance seance, ArrayList<Integer> parsed) {
+        ArrayList<Double> collector = new ArrayList<>();
+        int count = 0;
+        long durationMin = (seance.getEndingTime().getTime()
+                - seance.getBeginningTime().getTime())
+                / 1000
+                / 60;
+        long partsNumber = durationMin / 15;
+        long frameByParts = parsed.size()/partsNumber;
+        ArrayList<Double> part;
+        while (count < partsNumber) {
+             part = new ArrayList<Double>();
+            for (long i = count * frameByParts; i < ((count + 1) * frameByParts )
+                    && i <parsed.size(); i++) {
+                part.add(parsed.get((int) i) * 1.);
+            }
+            collector.add(part.stream()
+                    .reduce(0.,(a,b)-> (a+b))* 1.
+                    /part.size()
+                    /seance.getParticipants()
+                    *MAX_ATTENTION);
+            count++;
+        }
+        return collector;
     }
 }

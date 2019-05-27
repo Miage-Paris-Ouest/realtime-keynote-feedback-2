@@ -1,11 +1,14 @@
 package miage.nanterre.m1app.realtimekeynote.helpers;
 
+import miage.nanterre.m1app.realtimekeynote.Model.Seance;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Helper {
     public static Date getDateFromString(String dateString) throws ParseException {
@@ -22,6 +25,21 @@ public class Helper {
         }
 
         return new Time(time[0], time[1], time[2]);
+    }
+
+    public static String getRandomData(Seance seance){
+        String str = "";
+        long framesNumber = ((seance.getEndingTime().getTime() - seance.getBeginningTime().getTime()) / 1000 )*3;
+        Random rand = new Random();
+        for(int i = 0 ; i < framesNumber; i++){
+            if(i != framesNumber - 1){
+                str+=rand.nextInt(51)+",";
+            }
+            else{
+                str+=rand.nextInt(51);
+            }
+        }
+        return str;
     }
 
 }

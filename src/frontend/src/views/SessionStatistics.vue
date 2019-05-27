@@ -25,7 +25,7 @@
           color="blue"
           icon="mdi-arrow-up"
           title="Attention maximum"
-          :value="attentionMin+'/50'"
+          :value="attentionMax+'/50'"
           sub-icon="mdi-information-outline"
           sub-text="sur les 2 dernieres heures"
         />
@@ -54,6 +54,7 @@
         </material-complex-chart-card>
         <v-layout wrap row>
           <v-flex md6>
+            <!--
             <material-complex-chart-card
               color="white"
               chart-type="Polar"
@@ -77,7 +78,7 @@
               <p
                 class="category d-inline-flex font-weight-light"
               >Nombre d'absents pendant la séance.</p>
-            </material-complex-chart-card>
+            </material-complex-chart-card>-->
           </v-flex>
         </v-layout>
       </v-flex>
@@ -101,8 +102,8 @@ export default {
       items: [],
       attentionAverage: 0,
       attentionMax: 0,
-      attentionMin: 0,
-      dispersionChart: {
+      attentionMin: 0
+      /* dispersionChart: {
         data: {
           arc: {
             custom: false
@@ -115,47 +116,7 @@ export default {
           ],
           labels: ["Latéral", "Frontal", "Bavardage"]
         }
-      },
-      attentionChart: {
-        data: {
-          labels: ["15h", "15h15", "15h30", "15h45", "16h", "17h", "18h"],
-          datasets: [
-            {
-              label: "Attention lors de la séance",
-              backgroundColor: "#b8efe2",
-              data: [40, 39, 10, 40, 39, 80, 40]
-            }
-          ]
-        },
-        options: {
-          legend: {
-            labels: {
-              fontColor: "white"
-            }
-          }
-        }
-      },
-      absenceChart: {
-        data: {
-          labels: ["15h", "15h15", "15h30", "15h45", "16h", "17h", "18h"],
-          datasets: [
-            {
-              label: "Absences lors de la séance",
-              backgroundColor: ["#00c292", "#2196f3"],
-              data: [40, 10]
-            }
-          ],
-          labels: ["Présents", "Absents"]
-        },
-        options: {
-          legend: {
-            labels: {
-              // This more specific font property overrides the global property
-              fontColor: "white"
-            }
-          }
-        }
-      }
+      },*/
     };
   },
   async mounted() {
@@ -167,14 +128,39 @@ export default {
         if (response.data) {
           this.responseData = response.data;
           this.attentionAverage = StatisticsHelper.roundStat(
-            this.responseData.attentionAverage
+            this.responseData.ATTENTION_AVG
           );
           this.attentionMax = StatisticsHelper.roundStat(
-            this.responseData.attentionMax
+            this.responseData.ATTENTION_MAX
           );
           this.attentionMin = StatisticsHelper.roundStat(
-            this.responseData.attentionMin
+            this.responseData.ATTENTION_MIN
           );
+          this.attentionChart = {
+            data: {
+              labels: this.getTimeLabels(
+                response.data.SESSION.BEGINNING_TIME,
+                response.data.SESSION.ENDING_TIME,
+                response.data.SESSION.DURATION
+              ),
+              datasets: [
+                {
+                  label: "Attention lors de la séance",
+                  backgroundColor: "#b8efe2",
+                  data: response.data.SESSION_ANALYTICS_DATA.map(stat => {
+                    return StatisticsHelper.roundStat(stat);
+                  })
+                }
+              ]
+            },
+            options: {
+              legend: {
+                labels: {
+                  fontColor: "white"
+                }
+              }
+            }
+          };
         }
       } catch (error) {
         console.trace(error);
@@ -185,31 +171,31 @@ export default {
   computed: {
     itemsComputed() {
       if (this.responseData) {
-        const session = this.responseData.session;
+        const session = this.responseData.SESSION;
         return [
           {
             label: "Public",
-            value: session.public
+            value: session.PUBLIC
           },
           {
             label: "Salle",
-            value: session.room
+            value: session.ROOM
           },
           {
             label: "Durée",
-            value: "2h"
+            value: FormatterHelper.getDurationFromString(session.DURATION)
           },
           {
             label: "Effectif",
-            value: session.participants
+            value: session.PARTICIPANTS
           },
           {
             label: "Début",
-            value: FormatterHelper.getTimeFromDateTime(session.begginingTime)
+            value: FormatterHelper.getTimeFromDateTime(session.BEGINNING_TIME)
           },
           {
             label: "Fin",
-            value: FormatterHelper.getTimeFromDateTime(session.endingTime)
+            value: FormatterHelper.getTimeFromDateTime(session.ENDING_TIME)
           }
         ];
       } else {
@@ -240,6 +226,33 @@ export default {
           }
         ];
       }
+    }
+  },
+  methods: {
+    getTimeLabels(bTime, eTime, duration) {
+      var partsBTime = bTime.split(":");
+      var partsETime = eTime.split(":");
+      var partsDuration = duration.split(":");
+      var diff = parseInt(partsDuration[0]) * 60 + parseInt(partsDuration[1]);
+      var labels = [];
+      var minutesSplit = ["", "15", "30", "45"];
+      var count = parseInt(partsBTime[1]) / 3;
+      var currentHour = parseInt(partsBTime[0]);
+
+      while (count < diff) {
+        if (count % minutesSplit.length === 0 && count > 0) {
+          currentHour++;
+          if (currentHour == 24) {
+            currentHour = 0;
+          }
+        }
+        labels.push(
+          currentHour + "h" + minutesSplit[count % minutesSplit.length]
+        );
+        count += 15;
+      }
+      console.log(JSON.stringify(labels));
+      return labels;
     }
   }
 };
