@@ -1,5 +1,6 @@
 package miage.nanterre.m1app.realtimekeynote.Controller;
 
+import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import miage.nanterre.m1app.realtimekeynote.Builder.SeanceBuilder;
 
 import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
@@ -46,12 +48,8 @@ public class SeanceController extends SeanceBuilder {
     @PostMapping(path= "/create")
     public Seance createSeance(@RequestBody SeanceView seanceView) throws UserNotFoundException {
     User user = userRepository
-                .findById(Long.parseLong(seanceView.getUser()))
+                .findById((long)1)
                 .orElseThrow(UserNotFoundException::new);
-
-        Date beginnningDate = new Date();
-        beginnningDate.setHours(12);
-        beginnningDate.setMinutes(30);
 
         Seance seance = new Seance();
         seance
@@ -65,6 +63,7 @@ public class SeanceController extends SeanceBuilder {
                 .setEndingTime(seanceView.getEndingTime())
                 .setRoom(seanceView.getRoom())
                 .setUser(user);
+
 
         seanceRepository.save(seance);
         return seance;

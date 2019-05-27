@@ -138,11 +138,6 @@ public class SeanceDAO {
                 50);
         seance6.getSeanceAnalytics().setAnalyticsData(analytics6);
         repository.save(seance6);
-
-
-
-
-
         User user1 = userRepository.findById((long) 1).get();
 
     }
