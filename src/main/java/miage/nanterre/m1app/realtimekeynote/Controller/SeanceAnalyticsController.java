@@ -57,15 +57,15 @@ public class SeanceAnalyticsController {
     }
 
 
-    @RequestMapping(value = "/analyse/{path}")
+    @RequestMapping(value = "/analyse/{path}/{id}")
 
-    public  String analyse(@PathVariable("path") String path     ) throws UnsupportedEncodingException {
+    public  String analyse(@PathVariable("path") String path, @PathVariable("id") long id     ) throws UnsupportedEncodingException {
 
         //String chemin ="C:\\Users\\amine\\Desktop\\VID_20190417_112105.mp4";
         String nb = "";
         String chemin = path.replace("~","\\");
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
+        SeanceAnalytics s = seanceRepository.findById(id).get().getSeanceAnalytics();
         //Create new MAT object
         Mat frame = new Mat();
         //Create new VideoCapture object
@@ -95,6 +95,8 @@ public class SeanceAnalyticsController {
         }
 
 
+        s.setAnalyticsData(nb);
+        analyticsRepository.save(s) ;
 
         System.out.println(nb);
         return "susscess";
