@@ -197,6 +197,7 @@ public class SeanceAnalyticsService {
         dates.add(dateNow.minusMonths(3));
         dates.add(dateNow.minusMonths(4));
         dates.add(dateNow.minusMonths(5));
+        Collections.reverse(dates);
         return dates;
     }
 

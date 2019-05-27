@@ -1,5 +1,6 @@
 package miage.nanterre.m1app.realtimekeynote.Controller;
 
+import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import miage.nanterre.m1app.realtimekeynote.Builder.SeanceBuilder;
 import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -29,16 +32,19 @@ public class SeanceController extends SeanceBuilder {
         this.seanceRepository = seanceRepository;
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value = "/all/user/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<Object> getSeanceByUser(@PathVariable("id") long userId) {
         User user = userRepository.findById(userId).get();
         return new ResponseEntity<Object>(user.getSeances(), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value = "/all", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<Object> getAllSeance() {
         return new ResponseEntity<>(seanceRepository.findAll(), HttpStatus.OK);
     }
+
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<Object> getAllSeanceData() {
@@ -46,15 +52,13 @@ public class SeanceController extends SeanceBuilder {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(path= "/create")
     public Seance createSeance(@RequestBody SeanceView seanceView) throws UserNotFoundException {
     User user = userRepository
-                .findById(Long.parseLong(seanceView.getUser()))
+                .findById((long)1)
                 .orElseThrow(UserNotFoundException::new);
-
-        Date beginnningDate = new Date();
-        beginnningDate.setHours(12);
-        beginnningDate.setMinutes(30);
 
         Seance seance = new Seance();
         seance

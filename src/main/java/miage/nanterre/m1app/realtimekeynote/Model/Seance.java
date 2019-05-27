@@ -28,12 +28,15 @@ public class Seance implements Serializable {
     @Column(name = "public", length = 60, nullable = false)
     private String publiq;
 
+    @Temporal(TemporalType.DATE)
     @Column(name="date", length = 60, nullable = true)
     private Date date;
 
+    @Temporal(TemporalType.TIME)
     @Column(name="beginning_time", length = 60, nullable = true)
     private Date beginningTime;
 
+    @Temporal(TemporalType.TIME)
     @Column(name = "ending_time",length = 60, nullable = true)
     private Date endingTime;
 

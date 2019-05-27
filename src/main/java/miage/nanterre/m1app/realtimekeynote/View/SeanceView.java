@@ -1,7 +1,13 @@
 package miage.nanterre.m1app.realtimekeynote.View;
 
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import javax.xml.crypto.Data;
+import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class SeanceView {

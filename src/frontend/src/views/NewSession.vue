@@ -113,8 +113,8 @@ export default {
           room: this.room,
           publiq: this.publiq,
           date: this.date,
-          beginningTime: this.beginningTime,
-          endingTime: this.endingTime,
+          beginningTime: this.date + "T" + this.beginningTime,
+          endingTime: this.date + "T" + this.endingTime,
           description: this.description,
           participants: this.participants
         };

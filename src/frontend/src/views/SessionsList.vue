@@ -1,25 +1,29 @@
 <template>
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
-      <v-flex md10>
+      <v-flex md10 v-if="responseData.length">
         <material-card
           color="primary"
           title="Liste de vos séances"
           text="Ci-dessous la liste de vos séances. cliquez sur une ligne pour voir plus de détails."
         >
-          <v-data-table :headers="headers" :items="items" hide-actions>
+          <v-data-table :headers="headers" :items="responseDataComputed" hide-actions>
             <template slot="headerCell" slot-scope="{ header }">
               <span class="subheading font-weight-light text--darken-3" v-text="header.text"/>
             </template>
             <template slot="items" slot-scope="{ item }">
-              <td :title="title">{{ item.titre }}</td>
+              <td :title="title">{{ item.subject}}</td>
               <td :title="title">{{ item.date }}</td>
-              <td :title="title">{{ item.debut }}</td>
-              <td :title="title">{{ item.fin }}</td>
-              <td :title="title">{{ item.duree }}</td>
+              <td :title="title">{{ item.beginningTime }}</td>
+              <td :title="title">{{ item.endingTime}}</td>
+              <td :title="title">{{ item.duration }}</td>
               <td class="text-xs-right">{{ item.attention }}/50</td>
               <td :title="title" class="text-xs-right">
-                <v-btn color="primary" :small="true" :to="`/statistiques-seance/${item.id}` ">
+                <v-btn
+                  color="primary"
+                  :small="true"
+                  :to="`/statistiques-seance/${item.sessionId}` "
+                >
                   <v-icon>mdi-chart-bar</v-icon>&nbsp;Détails
                 </v-btn>
               </td>
@@ -34,6 +38,8 @@
 <script>
 import SessionsListService from "../services/SessionsList";
 import config from "../config";
+import StatisticsHelper from "../helpers/StatisticsHelper";
+import FormatterHelper from "../helpers/FormatterHelper";
 export default {
   data: () => ({
     title: "Cliquez pour accéder aux statistiques de cette séance",
@@ -70,103 +76,37 @@ export default {
         align: "right"
       }
     ],
-    items: [
-      {
-        id: 1,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        id: 2,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        id: 3,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        id: 4,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        id: 5,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        id: 9,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      { 
-        id: 9,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      { 
-        id: 9,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      { 
-        id: 9,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      },
-      {
-        id: 9,
-        titre: "Conférence à l'espace des sciences",
-        date: "12 mars 2019",
-        debut: "15h",
-        fin: "16h30",
-        duree: "1h30",
-        attention: "34"
-      }
-    ]
+    responseData: []
   }),
   async created() {
     if (config.apiCallEnabled) {
-      var response = await SeancesListService.getSeancesList();
-      if (response.data) this.items = response.data;
+      try {
+        var response = await SessionsListService.getSessionsList();
+        console.log(response.data);
+        if (response.data) this.responseData = response.data;
+      } catch (error) {
+        console.trace(error);
+      }
+    }
+  },
+  computed: {
+    responseDataComputed() {
+      if (this.responseData && this.responseData.length) {
+        var computed = [...this.responseData];
+        return computed.map(data => {
+          return {
+            subject: data.subject,
+            date: FormatterHelper.getDateFromDateTime(data.date),
+            beginningTime: FormatterHelper.getTimeFromDateTime(
+              data.beginningTime
+            ),
+            endingTime: FormatterHelper.getTimeFromDateTime(data.endingTime),
+            duration: "2h 30",
+            attention: 40,
+            sessionId: data.id
+          };
+        });
+      }
     }
   }
 };
