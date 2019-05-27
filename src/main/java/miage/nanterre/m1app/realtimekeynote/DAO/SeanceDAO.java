@@ -66,7 +66,7 @@ public class SeanceDAO {
                 "Description d'une conférence scientifique.",
                 user,
                 50);
-        seance1.getSeanceAnalytics().setAnalyticsData(analytics1);
+        seance1.getSeanceAnalytics().setAnalyticsData(Helper.getRandomData(seance1));
         repository.save(seance1);
 
         String analytics2 = "30,30,30,30,30,30,30,30,30,30,30,35";
@@ -80,7 +80,7 @@ public class SeanceDAO {
                 "Description d'une conférence scientifique.",
                 user,
                 50);
-        seance2.getSeanceAnalytics().setAnalyticsData(analytics2);
+        seance2.getSeanceAnalytics().setAnalyticsData(Helper.getRandomData(seance2));
         repository.save(seance2);
 
         String analytics3 = "40,40,40,40,40,40,40,40,40,40,40,45";
@@ -89,12 +89,12 @@ public class SeanceDAO {
                 "2",
                 "Public",
                 DateHelper.asDate(LocalDate.of(2019, 2, 28)),
-                new Date(2018,1,13, 13, 30),
-                new Date(2018,1,13, 17, 30),
+                new Date(2018,1,13, 18, 30),
+                new Date(2018,1,13, 19, 45),
                 "Description d'une conférence scientifique.",
                 user,
                 50);
-        seance3.getSeanceAnalytics().setAnalyticsData(analytics3);
+        seance3.getSeanceAnalytics().setAnalyticsData(Helper.getRandomData(seance3));
         repository.save(seance3);
 
         String analytics4 = "42,42,42,42,42,42,42,42,42,43";
@@ -103,12 +103,12 @@ public class SeanceDAO {
                 "2",
                 "Public",
                 DateHelper.asDate(LocalDate.of(2019, 3, 28)),
-                new Date(2018,1,13, 13, 30),
-                new Date(2018,1,13, 17, 30),
+                new Date(2018,1,13, 10, 12),
+                new Date(2018,1,13, 12, 30),
                 "Description d'une conférence scientifique.",
                 user,
                 50);
-        seance4.getSeanceAnalytics().setAnalyticsData(analytics4);
+        seance4.getSeanceAnalytics().setAnalyticsData(Helper.getRandomData(seance4));
         repository.save(seance4);
 
         String analytics5 = "45,45,45,45,45,45";
@@ -117,15 +117,14 @@ public class SeanceDAO {
                 "2",
                 "Public",
                 DateHelper.asDate(LocalDate.of(2019, 4, 28)),
-                new Date(2018,1,13, 13, 30),
-                new Date(2018,1,13, 17, 30),
+                new Date(2018,1,13, 11, 30),
+                new Date(2018,1,13, 19, 30),
                 "Description d'une conférence scientifique.",
                 user,
                 50);
-        seance5.getSeanceAnalytics().setAnalyticsData(analytics5);
+        seance5.getSeanceAnalytics().setAnalyticsData(Helper.getRandomData(seance5));
         repository.save(seance5);
 
-        String analytics6 = "47,47,47,47,47,47";
         Seance seance6 = new Seance(
                 "Conférence espace des Science 1",
                 "2",
@@ -136,9 +135,8 @@ public class SeanceDAO {
                 "Description d'une conférence scientifique.",
                 user,
                 50);
-        seance6.getSeanceAnalytics().setAnalyticsData(analytics6);
+        seance6.getSeanceAnalytics().setAnalyticsData(Helper.getRandomData(seance6));
         repository.save(seance6);
         User user1 = userRepository.findById((long) 1).get();
-
     }
 }

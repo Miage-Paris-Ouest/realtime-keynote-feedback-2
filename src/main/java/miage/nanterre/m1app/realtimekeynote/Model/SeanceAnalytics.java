@@ -21,7 +21,7 @@ public class SeanceAnalytics implements Serializable {
     @JoinColumn(referencedColumnName = "id")
     private Seance seance;
 
-    @Column(nullable = true, unique = false)
+    @Column(nullable = true, length=260000,unique = false)
     private String analyticsData;
 
     public SeanceAnalytics() {

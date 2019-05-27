@@ -170,20 +170,20 @@ export default {
       if (response.data) {
         this.responseData = response.data;
         this.attentionChart.data.series = [
-          this.responseData.attentionAvgPerMonth
+          this.responseData.ATTENTION_AVG_PER_MONTH
         ];
         var labels = FormatterHelper.getMonthsLabelsFromMonthsString(
-          this.responseData.months
+          this.responseData.MONTHS
         );
         this.attentionChart.data.labels = [...labels];
-        this.absentChart.data.series = [this.responseData.absentAvgPerMonth];
+        this.absentChart.data.series = [this.responseData.ABSENT_AVG_PER_MONTH];
         this.absentChart.data.labels = [...labels];
         this.attentionVariationChart.data.series = [
-          this.responseData.attentionDiffPerMonth
+          this.responseData.ATTENTION_DIFF_PER_MONTH
         ];
         this.attentionVariationChart.data.labels = [...labels];
         this.avgAttention = StatisticsHelper.roundStat(
-          this.responseData.attentionAverage
+          this.responseData.ATTENTION_AVG
         );
       }
     } catch (error) {
