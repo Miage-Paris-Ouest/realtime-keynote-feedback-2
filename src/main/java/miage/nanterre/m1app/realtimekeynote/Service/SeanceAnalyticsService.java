@@ -1,15 +1,17 @@
 package miage.nanterre.m1app.realtimekeynote.Service;
 
-import com.mysql.cj.x.protobuf.MysqlxExpr;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.helpers.DateHelper;
-import org.hibernate.type.DateType;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+import static miage.nanterre.m1app.realtimekeynote.Service.SeanceService.*;
 
 public class SeanceAnalyticsService {
     // attention maximum
@@ -64,13 +66,13 @@ public class SeanceAnalyticsService {
 
         if (seance != null) {
             HashMap<String, Object> seanceData = new HashMap<String, Object>();
-            seanceData.put("subject", seance.getSubject());
-            seanceData.put("public", seance.getPubliq());
-            seanceData.put("room", seance.getRoom());
-            seanceData.put("participants", seance.getParticipants());
-            seanceData.put("date", seance.getDate());
-            seanceData.put("begginingTime", seance.getBeginningTime());
-            seanceData.put("endingTime", seance.getEndingTime());
+            seanceData.put(SUBJECT, seance.getSubject());
+            seanceData.put(PUBLIC, seance.getPubliq());
+            seanceData.put(ROOM, seance.getRoom());
+            seanceData.put(PARTICIPANTS, seance.getParticipants());
+            seanceData.put(DATE, seance.getDate());
+            seanceData.put(BEGGINING_TIME, seance.getBeginningTime());
+            seanceData.put(ENDING_TIME, seance.getEndingTime());
 
             int participants = seance.getParticipants();
             ArrayList<Integer> parsedAnalytics = parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData());
