@@ -11,24 +11,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static miage.nanterre.m1app.realtimekeynote.Service.SeanceService.*;
+import static miage.nanterre.m1app.realtimekeynote.Service.SeanceData.*;
+import static miage.nanterre.m1app.realtimekeynote.Service.SeanceAnalyticsData.*;
 
 public class SeanceAnalyticsService {
-    // attention maximum
-    private static final int MAX_ATTENTION = 50;
-    //separator
-    private static final String STATISTICS_SEPARATOR = ",";
-    //dashboard data keys
-    private static final String MONTHS_KEY = "months";
-    private static final String ATTENTION_AVG_PER_MONTH_KEY = "attentionAvgPerMonth";
-    private static final String ATTENTION_DIFF_PER_MONTH_KEY = "attentionDiffPerMonth";
-    private static final String ABSENT_AVG_PER_MONTH_KEY = "absentAvgPerMonth";
-    private static final String ATTENTION_AVG_KEY = "attentionAverage";
-    //Session analytics data keys
-    private static final String ATTENTION_MAX_KEY = "attentionMax";
-    private static final String ATTENTION_MIN_KEY = "attentionMin";
-    private static final String SESSION_KEY = "session";
-    private static final String SESSION_ANALYTICS_DATA = "analyticsData";
+
 
     public static HashMap<String, Object> getDashboardStatistics(SeanceAnalyticsRepository analyticsRepository) {
 
@@ -47,11 +34,11 @@ public class SeanceAnalyticsService {
             AbsentPerMonthList.add(getAbsentAveragePerMonth(sessions));
         }
 
-        response.put(MONTHS_KEY, months);
-        response.put(ATTENTION_AVG_PER_MONTH_KEY, AvgPerMonthList);
-        response.put(ATTENTION_DIFF_PER_MONTH_KEY, AttentionPerMonthList);
-        response.put(ABSENT_AVG_PER_MONTH_KEY, AbsentPerMonthList);
-        response.put(ATTENTION_AVG_KEY, AvgPerMonthList
+        response.put(String.valueOf(MONTHS_KEY), months);
+        response.put(String.valueOf(ATTENTION_AVG_PER_MONTH_KEY), AvgPerMonthList);
+        response.put(String.valueOf(ATTENTION_DIFF_PER_MONTH_KEY), AttentionPerMonthList);
+        response.put(String.valueOf(ABSENT_AVG_PER_MONTH_KEY), AbsentPerMonthList);
+        response.put(String.valueOf(ATTENTION_AVG_KEY), AvgPerMonthList
                 .stream()
                 .reduce(0., (a, b) -> a + b)
                 / AvgPerMonthList.size());
@@ -66,22 +53,22 @@ public class SeanceAnalyticsService {
 
         if (seance != null) {
             HashMap<String, Object> seanceData = new HashMap<String, Object>();
-            seanceData.put(SUBJECT, seance.getSubject());
-            seanceData.put(PUBLIC, seance.getPubliq());
-            seanceData.put(ROOM, seance.getRoom());
-            seanceData.put(PARTICIPANTS, seance.getParticipants());
-            seanceData.put(DATE, seance.getDate());
-            seanceData.put(BEGGINING_TIME, seance.getBeginningTime());
-            seanceData.put(ENDING_TIME, seance.getEndingTime());
+            seanceData.put(String.valueOf(SUBJECT), seance.getSubject());
+            seanceData.put(String.valueOf(PUBLIC), seance.getPubliq());
+            seanceData.put(String.valueOf(ROOM), seance.getRoom());
+            seanceData.put(String.valueOf(PARTICIPANTS), seance.getParticipants());
+            seanceData.put(String.valueOf(DATE), seance.getDate());
+            seanceData.put(String.valueOf(BEGGINING_TIME), seance.getBeginningTime());
+            seanceData.put(String.valueOf(ENDING_TIME), seance.getEndingTime());
 
             int participants = seance.getParticipants();
             ArrayList<Integer> parsedAnalytics = parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData());
 
-            response.put(ATTENTION_AVG_KEY, getAverageSessionAttention(participants,parsedAnalytics ));
-            response.put(ATTENTION_MAX_KEY, getBestSessionAttention(participants,parsedAnalytics ));
-            response.put(ATTENTION_MIN_KEY, getWorstSessionAttention(participants,parsedAnalytics ));
-            response.put(SESSION_KEY, seanceData);
-            response.put(SESSION_ANALYTICS_DATA, parsedAnalytics);
+            response.put(String.valueOf(ATTENTION_AVG_KEY), getAverageSessionAttention(participants,parsedAnalytics ));
+            response.put(String.valueOf(ATTENTION_MAX_KEY), getBestSessionAttention(participants,parsedAnalytics ));
+            response.put(String.valueOf(ATTENTION_MIN_KEY), getWorstSessionAttention(participants,parsedAnalytics ));
+            response.put(String.valueOf(SESSION_KEY), seanceData);
+            response.put(String.valueOf(SESSION_ANALYTICS_DATA), parsedAnalytics);
         }
 
         return response;
@@ -132,19 +119,19 @@ public class SeanceAnalyticsService {
                 .reduce(0, (a, b) -> a + b) * 1.)
                 / (dataAnalytics.size() * 1.))
                 / (participants * 1.))
-                * MAX_ATTENTION;
+                * Integer.parseInt(String.valueOf(MAX_ATTENTION));
     }
 
     private static double getBestSessionAttention(int participants, ArrayList<Integer> dataAnalytics) {
         return ((Collections.max(dataAnalytics) * 1.)
                 / (participants * 1.))
-                * MAX_ATTENTION;
+                * Integer.parseInt(String.valueOf(MAX_ATTENTION));
     }
 
     private static double getWorstSessionAttention(int participants, ArrayList<Integer> dataAnalytics) {
         return ((Collections.min(dataAnalytics) * 1.)
                 / (participants * 1.))
-                * MAX_ATTENTION;
+                * Integer.parseInt(String.valueOf(MAX_ATTENTION));
     }
 
     private static double getAverageAbsentParticipants(int participants, ArrayList<Integer> dataAnalytics) {
@@ -189,7 +176,7 @@ public class SeanceAnalyticsService {
 
     private static ArrayList<Integer> parseAnalytics(String analytics) {
         ArrayList<Integer> parsed = new ArrayList<Integer>();
-        String[] parts = analytics.split(STATISTICS_SEPARATOR);
+        String[] parts = analytics.split(String.valueOf(STATISTICS_SEPARATOR));
         for (String str : parts) {
             parsed.add(Integer.valueOf(str));
         }
