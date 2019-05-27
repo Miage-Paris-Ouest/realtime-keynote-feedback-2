@@ -1,16 +1,10 @@
 package miage.nanterre.m1app.realtimekeynote.View;
 
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.*;
-import javax.xml.crypto.Data;
-import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class SeanceView {
+
+    private String file;
 
     private String name;
 
@@ -32,7 +26,7 @@ public class SeanceView {
 
     private int participants;
 
-    public SeanceView(String name, String subject, String room, String publiq, Date date, Date beginningTime, Date endingTime, String description, String user, int participants) {
+    public SeanceView(String name, String subject, String room, String publiq, Date date, Date beginningTime, Date endingTime, String description, String user, int participants, String file) {
         this.name = name;
         this.subject = subject;
         this.room = room;
@@ -43,6 +37,7 @@ public class SeanceView {
         this.description = description;
         this.user = user;
         this.participants = participants;
+        this.file = file;
     }
 
     public String getName() {
@@ -83,5 +78,9 @@ public class SeanceView {
 
     public int getParticipants() {
         return participants;
+    }
+
+    public String getFile() {
+        return file;
     }
 }

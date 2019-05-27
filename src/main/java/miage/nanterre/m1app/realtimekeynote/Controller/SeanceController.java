@@ -56,9 +56,11 @@ public class SeanceController extends SeanceBuilder {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(path= "/create")
     public Seance createSeance(@RequestBody SeanceView seanceView) throws UserNotFoundException {
-    User user = userRepository
-                .findById((long)1)
-                .orElseThrow(UserNotFoundException::new);
+        User user = userRepository
+                    .findById((long)1)
+                    .orElseThrow(UserNotFoundException::new);
+
+        String fileToAnalyse = seanceView.getFile();
 
         Seance seance = new Seance();
         seance

@@ -67,7 +67,7 @@
                   <v-textarea
                     class="purple-input"
                     v-model="description"
-                    label="Déscriptif"
+                    label="Descriptif"
                     value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                   />
                 </v-flex>
@@ -94,52 +94,56 @@ import SessionCreationService from "../services/SessionCreation";
 
 import config from "../config";
 export default {
-  data: () => ({
-    uploadStatusFinished: false,
-    subject: "",
-    room: "",
-    publiq: "",
-    date: "",
-    beginningTime: "",
-    endingTime: "",
-    description: "",
-    participants: 0
-  }),
-  methods: {
-    async createSession() {
-      if (config.apiCallEnabled) {
-        const sessionData = {
-          subject: this.subject,
-          room: this.room,
-          publiq: this.publiq,
-          date: this.date,
-          beginningTime: this.date + "T" + this.beginningTime,
-          endingTime: this.date + "T" + this.endingTime,
-          description: this.description,
-          participants: this.participants
-        };
-        console.log(sessionData);
-        try {
-          var response = await SessionCreationService.createSession(
-            sessionData
-          );
-        } catch (error) {
-          console.trace(error);
+    data: () => ({
+        uploadStatusFinished: false,
+        subject: "",
+        room: "",
+        publiq: "",
+        date: "",
+        beginningTime: "",
+        endingTime: "",
+        description: "",
+        participants: 0,
+        file: '',
+    }),
+    methods: {
+        async createSession() {
+            if (config.apiCallEnabled) {
+                const sessionData = {
+                    subject: this.subject,
+                    room: this.room,
+                    publiq: this.publiq,
+                    date: this.date,
+                    beginningTime: this.date + "T" + this.beginningTime,
+                    endingTime: this.date + "T" + this.endingTime,
+                    description: this.description,
+                    participants: this.participants,
+                    file: this.file,
+                };
+                console.log(sessionData);
+                try {
+                    var response = await SessionCreationService.createSession(
+                        sessionData
+                    );
+                } catch (error) {
+                    console.trace(error);
+                }
+                window.location="http://localhost:8080/mes-seances";
+            }
+        },
+        async uploadFinished(status, file) {
+            this.uploadStatusFinished = status;
+            this.file = file;
         }
-      }
-    },
-    async uploadFinished(status) {
-      this.uploadStatusFinished = status;
     }
-  }
 };
 </script>
 
 <style lang="css">
-h3 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 14px;
-  color: #555;
-}
+  h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #555;
+  }
 </style>
