@@ -43,8 +43,7 @@ public class SeanceDAOTest {
 
         seanceAnalyticsRepository.save(new SeanceAnalytics(seance, null));
 
-        userRepository.findById((long)1).get();
-         */
+        userRepository.findById((long)1).get();*/
     }
 
     @Test
