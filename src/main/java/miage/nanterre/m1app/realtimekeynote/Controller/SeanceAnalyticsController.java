@@ -1,6 +1,7 @@
 package miage.nanterre.m1app.realtimekeynote.Controller;
 
 import miage.nanterre.m1app.realtimekeynote.Exception.AnalyticsException;
+import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Service.SeanceAnalyticsService;
@@ -52,7 +53,7 @@ public class SeanceAnalyticsController {
 
     @RequestMapping(value = "/analyse/{path}/{id}")
 
-    public  String analyse(@PathVariable("path") String path, @PathVariable("id") long id     ) throws UnsupportedEncodingException {
+    public void analyse(@PathVariable("path") String path, @PathVariable("id") long id) throws UnsupportedEncodingException {
 
         //String chemin ="C:\\Users\\amine\\Desktop\\VID_20190417_112105.mp4";
         String nb = "";
@@ -65,37 +66,23 @@ public class SeanceAnalyticsController {
         VideoCapture camera = new VideoCapture(chemin);
         String xmlFile = "XML\\lbpcascade_frontalface.xml";
 
-
         int batch=0 ;
         MatOfRect faceDetection = new MatOfRect();
         while (camera.read(frame)) {
             //If next video frame is available
-
             if (batch % 10 == 0 )
             if (camera.read(frame)) {
-
-
                 CascadeClassifier cc = new CascadeClassifier(xmlFile);
-
-
                 cc.detectMultiScale(frame, faceDetection);
 
-                nb=nb+","+faceDetection.toArray().length;
-
-
-            }else {break;}
-
+                if (nb != null) {
+                    nb= nb+","+faceDetection.toArray().length;
+                }
+            } else {
+                break;
+            }
         }
-
-
         s.setAnalyticsData(nb);
         analyticsRepository.save(s) ;
-
-        System.out.println(nb);
-        return "susscess";
-
     }
-
-
-
 }

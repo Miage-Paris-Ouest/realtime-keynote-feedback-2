@@ -6,8 +6,10 @@ import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Model.User;
+import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
+import miage.nanterre.m1app.realtimekeynote.Service.SeanceAnalyticsService;
 import miage.nanterre.m1app.realtimekeynote.Service.SeanceService;
 import miage.nanterre.m1app.realtimekeynote.View.SeanceView;
 import miage.nanterre.m1app.realtimekeynote.helpers.Helper;
@@ -28,10 +30,12 @@ public class SeanceController extends SeanceBuilder {
 
     private UserRepository userRepository;
     private SeanceRepository seanceRepository;
+    private SeanceAnalyticsRepository analyticsRepo;
 
-    public SeanceController(UserRepository userRepository, SeanceRepository seanceRepository) {
+    public SeanceController(UserRepository userRepository, SeanceRepository seanceRepository, SeanceAnalyticsRepository analyticsRepo) {
         this.userRepository = userRepository;
         this.seanceRepository = seanceRepository;
+        this.analyticsRepo = analyticsRepo;
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -58,7 +62,6 @@ public class SeanceController extends SeanceBuilder {
 
         String fileToAnalyse = seanceView.getFile();
 
-        System.out.print(seanceView.getParticipants());
         Seance seance = new Seance();
         seance
                 .setName(seanceView.getName())
@@ -79,6 +82,9 @@ public class SeanceController extends SeanceBuilder {
         SeanceAnalytics analytics = seance.getSeanceAnalytics();
         analytics.setAnalyticsData(Helper.getRandomData(seance));
         seanceRepository.save(seance);
+
+        SeanceAnalyticsService service = new SeanceAnalyticsService(analyticsRepo, seanceRepository);
+        service.analyse(fileToAnalyse, seance.getId());
         return seance;
     }
 }
