@@ -23,23 +23,25 @@ public class Helper {
         if (time.length==2) {
             time[2] = 00;
         }
-
         return new Time(time[0], time[1], time[2]);
     }
 
     public static String getRandomData(Seance seance){
-        String str = "";
+        StringBuilder str = new StringBuilder();
+        int participants = seance.getParticipants();
+        System.out.println(participants);
+        //Get number of frames
         long framesNumber = ((seance.getEndingTime().getTime() - seance.getBeginningTime().getTime()) / 1000 )*3;
         Random rand = new Random();
         for(int i = 0 ; i < framesNumber; i++){
             if(i != framesNumber - 1){
-                str+=rand.nextInt(51)+",";
+                str.append(rand.nextInt(participants + 1)).append(",");
             }
             else{
-                str+=rand.nextInt(51);
+                str.append(rand.nextInt(participants + 1));
             }
         }
-        return str;
+        return str.toString();
     }
 
 }

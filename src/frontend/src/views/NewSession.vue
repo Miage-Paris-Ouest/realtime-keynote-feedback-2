@@ -76,6 +76,7 @@
                   <v-btn
                     class="mx-0 font-weight-light"
                     color="primary"
+                    :disabled="!isFormFullyCompleted || !uploadStatusFinished || !isLegalDate"
                     @click.prevent="createSession"
                     :title="uploadStatusFinished ?   'Transmettez les données pour l\'analyse' :'Attendez la fin du téléchargement de la vidéo pour valider.' "
                   >Valider</v-btn>
@@ -105,6 +106,8 @@ export default {
         description: "",
         participants: 0,
         file: '',
+        isFormFullyCompleted: false,
+        isLegalDate: false,
     }),
     methods: {
         async createSession() {
@@ -134,6 +137,20 @@ export default {
         async uploadFinished(status, file) {
             this.uploadStatusFinished = status;
             this.file = file;
+        },
+    },
+
+    watch: {
+        participants(val) {
+            this.isFormFullyCompleted = val > 0;
+        },
+
+        beginningTime(val) {
+            this.isLegalDate = this.endingTime > val;
+        },  
+
+        endingTime(val) {
+            this.isLegalDate = this.beginningTime < val;
         }
     }
 };

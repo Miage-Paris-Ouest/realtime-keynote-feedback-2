@@ -103,20 +103,6 @@ export default {
       attentionAverage: 0,
       attentionMax: 0,
       attentionMin: 0
-      /* dispersionChart: {
-        data: {
-          arc: {
-            custom: false
-          },
-          datasets: [
-            {
-              data: [40, 30, 21],
-              backgroundColor: ["#00c292", "#2196f3", "#eb4a46"]
-            }
-          ],
-          labels: ["Latéral", "Frontal", "Bavardage"]
-        }
-      },*/
     };
   },
   async mounted() {
@@ -125,6 +111,7 @@ export default {
         var response = await SessionStatisticsService.getSeanceStatistics(
           this.$route.params.id
         );
+        console.log(response.data);
         if (response.data) {
           this.responseData = response.data;
           this.attentionAverage = StatisticsHelper.roundStat(
