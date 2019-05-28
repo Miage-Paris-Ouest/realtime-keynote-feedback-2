@@ -101,7 +101,7 @@ export default {
               data.BEGINNING_TIME
             ),
             endingTime: FormatterHelper.getTimeFromDateTime(data.ENDING_TIME),
-            duration: data.DURATION,
+            duration: FormatterHelper.getDurationFromString(data.DURATION),
             attention: StatisticsHelper.roundStat(data.ATTENTION_AVG),
             sessionId: data.ID
           };
