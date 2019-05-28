@@ -4,11 +4,13 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import miage.nanterre.m1app.realtimekeynote.Builder.SeanceBuilder;
 import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
+import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
 import miage.nanterre.m1app.realtimekeynote.Service.SeanceService;
 import miage.nanterre.m1app.realtimekeynote.View.SeanceView;
+import miage.nanterre.m1app.realtimekeynote.helpers.Helper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -56,19 +58,26 @@ public class SeanceController extends SeanceBuilder {
 
         String fileToAnalyse = seanceView.getFile();
 
+        System.out.print(seanceView.getParticipants());
         Seance seance = new Seance();
         seance
                 .setName(seanceView.getName())
                 .setSubject(seanceView.getSubject())
                 .setDescription(seanceView.getDescription())
                 .setPubliq(seanceView.getPubliq())
-                .setParticipants(seance.getParticipants())
+                .setParticipants(seanceView.getParticipants())
                 .setDate(seanceView.getDate())
                 .setBeginningTime(seanceView.getBeginningTime())
                 .setEndingTime(seanceView.getEndingTime())
                 .setRoom(seanceView.getRoom())
                 .setUser(user);
 
+        if (seance.getParticipants() == 0 ) {
+            seance.setParticipants(1);
+        }
+
+        SeanceAnalytics analytics = seance.getSeanceAnalytics();
+        analytics.setAnalyticsData(Helper.getRandomData(seance));
         seanceRepository.save(seance);
         return seance;
     }

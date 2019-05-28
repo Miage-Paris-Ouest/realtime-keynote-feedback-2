@@ -78,7 +78,7 @@ export default {
     ],
     responseData: []
   }),
-  async created() {
+   async mounted() {
     if (config.apiCallEnabled) {
       try {
         var response = await SessionsListService.getSessionsList();
