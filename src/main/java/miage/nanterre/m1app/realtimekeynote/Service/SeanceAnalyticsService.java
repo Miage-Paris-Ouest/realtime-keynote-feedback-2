@@ -267,7 +267,7 @@ public class SeanceAnalyticsService {
         }
         Date date = seance.getBeginningTime();
         SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-        date.setTime(date.getTime()+3600000);
+       // date = new Date(date.getTime()+3600000);
         for(int i =0 ; i < collector.size(); i++){
              collector.get(i).put(String.valueOf(LABEL),localDateFormat.format(date));
             date =  new Date(date.getTime()+60000*15);

@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
-      <v-flex xs12 md8 lg4>
+      <v-flex xs12 md8 lg4 v-if="!isParsing">
         <material-card
           color="primary"
           title="Uploadez un fichier vidéo"
@@ -17,7 +17,7 @@
         </material-card>
       </v-flex>
 
-      <v-flex xs12 md8 lg6>
+      <v-flex xs12 md8 lg6  v-if="!isParsing">
         <material-card
           color="primary"
           title="Informations sur la séance"
@@ -81,9 +81,33 @@
                     :title="uploadStatusFinished ?   'Transmettez les données pour l\'analyse' :'Attendez la fin du téléchargement de la vidéo pour valider.' "
                   >Valider</v-btn>
                 </v-flex>
+
               </v-layout>
             </v-container>
           </v-form>
+        </material-card>
+
+      </v-flex>
+      <v-flex xs12 md8 lg4 v-if="isParsing">
+        <material-card
+                color="primary"
+                title="Upload réussi !"
+                text="Veuillez attendre la fin de l'analyse de votre séance."
+        >
+          <v-container py-0 px-0>
+            <v-layout wrap justify-center>
+              <v-flex xs2 md2>
+                <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+
+
+              </v-flex>
+            </v-layout>
+            <v-layout wrap justify-center>
+            <v-flex xs4 md4>  <h4>
+              <br>Votre fichier est en cours d'analyse...
+            </h4></v-flex>
+              </v-layout>
+          </v-container>
         </material-card>
       </v-flex>
     </v-layout>
@@ -107,7 +131,8 @@ export default {
     participants: 0,
     file: "",
     isFormFullyCompleted: false,
-    isLegalDate: false
+    isLegalDate: false,
+      isParsing : false
   }),
   methods: {
     async createSession() {
@@ -123,8 +148,9 @@ export default {
           participants: this.participants,
           file: this.file
         };
-        console.log(sessionData);
+
         try {
+            this.isParsing = true;
           var response = await SessionCreationService.createSession(
             sessionData
           );
