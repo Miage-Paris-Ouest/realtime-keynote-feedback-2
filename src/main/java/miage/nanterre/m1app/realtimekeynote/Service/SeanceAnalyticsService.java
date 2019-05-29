@@ -73,7 +73,7 @@ public class SeanceAnalyticsService {
         HashMap<String, Object> response = new HashMap<String, Object>();
         Seance seance = seanceRepository.findById(sessionId).get();
 
-        if (seance != null && seance.getSeanceAnalytics().getAnalyticsData() != null) {
+        if (seance.getSeanceAnalytics().getAnalyticsData() != null) {
             HashMap<String, Object> seanceData = new HashMap<String, Object>();
             seanceData.put(String.valueOf(SUBJECT), seance.getSubject());
             seanceData.put(String.valueOf(PUBLIC), seance.getPubliq());
@@ -93,7 +93,7 @@ public class SeanceAnalyticsService {
             response.put(String.valueOf(SESSION), seanceData);
             response.put(String.valueOf(SESSION_ANALYTICS_DATA), parseAnalyticsResume(seance,parsedAnalytics));
         } else {
-            //throw new AnalyticsException("Aucune seance à analyser !");
+            throw new AnalyticsException("Aucune seance à analyser !");
 
         }
 
@@ -116,9 +116,6 @@ public class SeanceAnalyticsService {
     }
 
     private static double getAttentionDiffPerMonth(ArrayList<SeanceAnalytics> sessions) throws AnalyticsException {
-       /* if (sessions.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
-
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
             collector.add(getBestSessionAttention(session.getSeance().getParticipants(),
@@ -241,6 +238,7 @@ public class SeanceAnalyticsService {
     public static ArrayList<HashMap> parseAnalyticsResume(Seance seance, ArrayList<Integer> parsed) {
         ArrayList<HashMap> collector = new ArrayList<>();
         int count = 0;
+
         long durationMin = (seance.getEndingTime().getTime()
                 - seance.getBeginningTime().getTime())
                 / 1000
@@ -292,21 +290,25 @@ public class SeanceAnalyticsService {
         VideoCapture camera = new VideoCapture(chemin);
         String xmlFile = "XML\\lbpcascade_frontalface.xml";
 
-
         int batch=0 ;
         MatOfRect faceDetection = new MatOfRect();
+        CascadeClassifier cc = new CascadeClassifier(xmlFile);
+        int i = 0;
         while (camera.read(frame)) {
             //If next video frame is available
-
             if (batch % 10 == 0 ) {
                 if (camera.read(frame)) {
-                    CascadeClassifier cc = new CascadeClassifier(xmlFile);
                     cc.detectMultiScale(frame, faceDetection);
-                    nb = nb + "," + faceDetection.toArray().length;
+                    if (i == 0) {
+                        nb = nb + faceDetection.toArray().length;
+                    } else {
+                        nb = nb + "," + faceDetection.toArray().length;
+                    }
                 } else {
                     break;
                 }
             }
+            i++;
         }
 
         s.setAnalyticsData(nb);

@@ -32,6 +32,8 @@ public class SeanceController extends SeanceBuilder {
     private SeanceRepository seanceRepository;
     private SeanceAnalyticsRepository analyticsRepo;
 
+    private static final boolean ENABLE_VIDEO_ANALYSIS = false;
+
     public SeanceController(UserRepository userRepository, SeanceRepository seanceRepository, SeanceAnalyticsRepository analyticsRepo) {
         this.userRepository = userRepository;
         this.seanceRepository = seanceRepository;
@@ -83,8 +85,11 @@ public class SeanceController extends SeanceBuilder {
         analytics.setAnalyticsData(Helper.getRandomData(seance));
         seanceRepository.save(seance);
 
-        SeanceAnalyticsService service = new SeanceAnalyticsService(analyticsRepo, seanceRepository);
-        service.analyse(fileToAnalyse, seance.getId());
+        if (ENABLE_VIDEO_ANALYSIS == true) {
+            SeanceAnalyticsService service = new SeanceAnalyticsService(analyticsRepo, seanceRepository);
+            service.analyse(fileToAnalyse, seance.getId());
+        }
+
         return seance;
     }
 }
