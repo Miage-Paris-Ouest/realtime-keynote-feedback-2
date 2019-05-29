@@ -7,9 +7,13 @@ import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.helpers.DateHelper;
 
+import javax.persistence.TemporalType;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceAnalyticsEnum.*;
@@ -220,29 +224,43 @@ public class SeanceAnalyticsService {
         return parsed;
     }
 
-    public static ArrayList<Double> parseAnalyticsResume(Seance seance, ArrayList<Integer> parsed) {
-        ArrayList<Double> collector = new ArrayList<>();
+    public static ArrayList<HashMap> parseAnalyticsResume(Seance seance, ArrayList<Integer> parsed) {
+        ArrayList<HashMap> collector = new ArrayList<>();
         int count = 0;
         long durationMin = (seance.getEndingTime().getTime()
                 - seance.getBeginningTime().getTime())
                 / 1000
                 / 60;
-        long partsNumber = durationMin / 15;
+        long partsNumber = (long)Math.ceil(durationMin*1. / 15*1.);
         long frameByParts = parsed.size()/partsNumber;
         ArrayList<Double> part;
+        HashMap datas = new HashMap();
+        datas.put(String.valueOf(DATA),(double)25.);
+        collector.add(datas);
         while (count < partsNumber) {
              part = new ArrayList<Double>();
             for (long i = count * frameByParts; i < ((count + 1) * frameByParts )
                     && i <parsed.size(); i++) {
                 part.add(parsed.get((int) i) * 1.);
             }
-            collector.add(part.stream()
+            datas = new HashMap();
+            double value = part.stream()
                     .reduce(0.,(a,b)-> (a+b))* 1.
                     /part.size()
                     /seance.getParticipants()
-                    *MAX_ATTENTION);
+                    *MAX_ATTENTION;
+            datas.put(String.valueOf(DATA),value);
+            collector.add(datas);
             count++;
         }
+        Date date = seance.getBeginningTime();
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+        date.setTime(date.getTime()+3600000);
+        for(int i =0 ; i < collector.size(); i++){
+             collector.get(i).put(String.valueOf(LABEL),localDateFormat.format(date));
+            date =  new Date(date.getTime()+60000*15);
+        }
+        collector.get(collector.size()-1).replace(String.valueOf(LABEL),seance.getEndingTime());
         return collector;
     }
 }
