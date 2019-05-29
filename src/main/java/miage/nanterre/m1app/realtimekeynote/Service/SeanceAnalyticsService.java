@@ -6,6 +6,11 @@ import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.helpers.DateHelper;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfRect;
+import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.videoio.VideoCapture;
 
 import javax.persistence.TemporalType;
 import java.text.SimpleDateFormat;
@@ -22,6 +27,15 @@ import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceEnum.*;
 public class SeanceAnalyticsService {
     public final static int MAX_ATTENTION = 50;
     public final static String STATISTICS_SEPARATOR = ",";
+
+    private SeanceAnalyticsRepository analyticsRepository;
+    private SeanceRepository seanceRepository;
+
+    public SeanceAnalyticsService(SeanceAnalyticsRepository analyticsRepository, SeanceRepository seanceRepository) {
+        this.analyticsRepository = analyticsRepository;
+        this.seanceRepository = seanceRepository;
+    }
+
 
     public static HashMap<String, Object> getDashboardStatistics(SeanceAnalyticsRepository analyticsRepository)
             throws AnalyticsException {
@@ -59,7 +73,7 @@ public class SeanceAnalyticsService {
         HashMap<String, Object> response = new HashMap<String, Object>();
         Seance seance = seanceRepository.findById(sessionId).get();
 
-        if (seance != null && seance.getSeanceAnalytics().getAnalyticsData() != null) {
+        if (seance.getSeanceAnalytics().getAnalyticsData() != null) {
             HashMap<String, Object> seanceData = new HashMap<String, Object>();
             seanceData.put(String.valueOf(SUBJECT), seance.getSubject());
             seanceData.put(String.valueOf(PUBLIC), seance.getPubliq());
@@ -79,7 +93,7 @@ public class SeanceAnalyticsService {
             response.put(String.valueOf(SESSION), seanceData);
             response.put(String.valueOf(SESSION_ANALYTICS_DATA), parseAnalyticsResume(seance,parsedAnalytics));
         } else {
-            //throw new AnalyticsException("Aucune seance à analyser !");
+            throw new AnalyticsException("Aucune seance à analyser !");
 
         }
 
@@ -102,9 +116,6 @@ public class SeanceAnalyticsService {
     }
 
     private static double getAttentionDiffPerMonth(ArrayList<SeanceAnalytics> sessions) throws AnalyticsException {
-       /* if (sessions.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
-
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
             collector.add(getBestSessionAttention(session.getSeance().getParticipants(),
@@ -227,6 +238,7 @@ public class SeanceAnalyticsService {
     public static ArrayList<HashMap> parseAnalyticsResume(Seance seance, ArrayList<Integer> parsed) {
         ArrayList<HashMap> collector = new ArrayList<>();
         int count = 0;
+
         long durationMin = (seance.getEndingTime().getTime()
                 - seance.getBeginningTime().getTime())
                 / 1000
@@ -262,5 +274,46 @@ public class SeanceAnalyticsService {
         }
         collector.get(collector.size()-1).replace(String.valueOf(LABEL),seance.getEndingTime());
         return collector;
+    }
+
+    public  void analyse(String nom,long id) {
+
+        String path ="C:\\data\\"+nom;
+        String nb = "";
+
+        String chemin = path.replace("~","\\");
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        SeanceAnalytics s = this.seanceRepository.findById(id).get().getSeanceAnalytics();
+        //Create new MAT object
+        Mat frame = new Mat();
+        //Create new VideoCapture object
+        VideoCapture camera = new VideoCapture(chemin);
+        String xmlFile = "XML\\lbpcascade_frontalface.xml";
+
+        int batch=0 ;
+        MatOfRect faceDetection = new MatOfRect();
+        CascadeClassifier cc = new CascadeClassifier(xmlFile);
+        int i = 0;
+        while (camera.read(frame)) {
+            //If next video frame is available
+            if (batch % 10 == 0 ) {
+                if (camera.read(frame)) {
+                    cc.detectMultiScale(frame, faceDetection);
+                    if (i == 0) {
+                        nb = nb + faceDetection.toArray().length;
+                    } else {
+                        nb = nb + "," + faceDetection.toArray().length;
+                    }
+                } else {
+                    break;
+                }
+            }
+            i++;
+        }
+
+        s.setAnalyticsData(nb);
+        analyticsRepository.save(s) ;
+
+        System.out.println(nb);
     }
 }
