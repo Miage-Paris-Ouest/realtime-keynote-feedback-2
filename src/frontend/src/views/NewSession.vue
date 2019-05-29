@@ -72,7 +72,7 @@
                   />
                 </v-flex>
                 <v-flex xs12 text-xs-right>
-                  <v-btn color="danger">Annuler</v-btn>
+                  <v-btn color="danger" @click="cancel">Annuler</v-btn>
                   <v-btn
                     class="mx-0 font-weight-light"
                     color="primary"
@@ -95,72 +95,75 @@ import SessionCreationService from "../services/SessionCreation";
 
 import config from "../config";
 export default {
-    data: () => ({
-        uploadStatusFinished: false,
-        subject: "",
-        room: "",
-        publiq: "",
-        date: "",
-        beginningTime: "",
-        endingTime: "",
-        description: "",
-        participants: 0,
-        file: '',
-        isFormFullyCompleted: false,
-        isLegalDate: false,
-    }),
-    methods: {
-        async createSession() {
-            if (config.apiCallEnabled) {
-                const sessionData = {
-                    subject: this.subject,
-                    room: this.room,
-                    publiq: this.publiq,
-                    date: this.date,
-                    beginningTime: this.date + "T" + this.beginningTime,
-                    endingTime: this.date + "T" + this.endingTime,
-                    description: this.description,
-                    participants: this.participants,
-                    file: this.file,
-                };
-                console.log(sessionData);
-                try {
-                    var response = await SessionCreationService.createSession(
-                        sessionData
-                    );
-                } catch (error) {
-                    console.trace(error);
-                }
-                window.location="http://localhost:8080/mes-seances";
-            }
-        },
-        async uploadFinished(status, file) {
-            this.uploadStatusFinished = status;
-            this.file = file;
-        },
+  data: () => ({
+    uploadStatusFinished: false,
+    subject: "",
+    room: "",
+    publiq: "",
+    date: new Date().toISOString().slice(0, 10),
+    beginningTime: "",
+    endingTime: "",
+    description: "",
+    participants: 0,
+    file: "",
+    isFormFullyCompleted: false,
+    isLegalDate: false
+  }),
+  methods: {
+    async createSession() {
+      if (config.apiCallEnabled) {
+        const sessionData = {
+          subject: this.subject,
+          room: this.room,
+          publiq: this.publiq,
+          date: this.date,
+          beginningTime: this.date + "T" + this.beginningTime,
+          endingTime: this.date + "T" + this.endingTime,
+          description: this.description,
+          participants: this.participants,
+          file: this.file
+        };
+        console.log(sessionData);
+        try {
+          var response = await SessionCreationService.createSession(
+            sessionData
+          );
+        } catch (error) {
+          console.trace(error);
+        }
+        this.$router.push("/mes-seances");
+      }
+    },
+    async uploadFinished(status, file) {
+      this.uploadStatusFinished = status;
+      this.file = file;
+    },
+    cancel() {
+      this.$router.push("/");
+    }
+  },
+
+  watch: {
+    participants(val) {
+      this.isFormFullyCompleted = val > 0;
     },
 
-    watch: {
-        participants(val) {
-            this.isFormFullyCompleted = val > 0;
-        },
+    beginningTime(val) {
+      this.isLegalDate = this.endingTime > val;
+    },
 
-        beginningTime(val) {
-            this.isLegalDate = this.endingTime > val;
-        },  
-
-        endingTime(val) {
-            this.isLegalDate = this.beginningTime < val;
-        }
+    endingTime(val) {
+      this.isLegalDate = this.beginningTime < val;
     }
+  }
 };
 </script>
 
 <style lang="css">
-  h3 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 14px;
-    color: #555;
-  }
+h3 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: #555;
+}
 </style>

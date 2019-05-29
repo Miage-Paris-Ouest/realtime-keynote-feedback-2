@@ -125,17 +125,15 @@ export default {
           );
           this.attentionChart = {
             data: {
-              labels: this.getTimeLabels(
-                response.data.SESSION.BEGINNING_TIME,
-                response.data.SESSION.ENDING_TIME,
-                response.data.SESSION.DURATION
-              ),
+              labels: response.data.SESSION_ANALYTICS_DATA.map(item => {
+                return FormatterHelper.getTimeFromDateTime(item.LABEL);
+              }),
               datasets: [
                 {
                   label: "Attention lors de la séance",
                   backgroundColor: "#b8efe2",
-                  data: response.data.SESSION_ANALYTICS_DATA.map(stat => {
-                    return StatisticsHelper.roundStat(stat);
+                  data: response.data.SESSION_ANALYTICS_DATA.map(item => {
+                    return StatisticsHelper.roundStat(item.DATA);
                   })
                 }
               ]
@@ -213,33 +211,6 @@ export default {
           }
         ];
       }
-    }
-  },
-  methods: {
-    getTimeLabels(bTime, eTime, duration) {
-      var partsBTime = bTime.split(":");
-      var partsETime = eTime.split(":");
-      var partsDuration = duration.split(":");
-      var diff = parseInt(partsDuration[0]) * 60 + parseInt(partsDuration[1]);
-      var labels = [];
-      var minutesSplit = ["", "15", "30", "45"];
-      var count = parseInt(partsBTime[1]) / 3;
-      var currentHour = parseInt(partsBTime[0]);
-
-      while (count < diff) {
-        if (count % minutesSplit.length === 0 && count > 0) {
-          currentHour++;
-          if (currentHour == 24) {
-            currentHour = 0;
-          }
-        }
-        labels.push(
-          currentHour + "h" + minutesSplit[count % minutesSplit.length]
-        );
-        count += 15;
-      }
-      console.log(JSON.stringify(labels));
-      return labels;
     }
   }
 };

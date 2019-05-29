@@ -9,5 +9,7 @@ public enum SeanceAnalyticsEnum {
     ATTENTION_MAX,
     ATTENTION_MIN,
     SESSION,
-    SESSION_ANALYTICS_DATA;
+    SESSION_ANALYTICS_DATA,
+    DATA,
+    LABEL;
 }
