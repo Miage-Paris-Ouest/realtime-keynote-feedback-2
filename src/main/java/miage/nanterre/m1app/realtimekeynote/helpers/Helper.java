@@ -31,7 +31,7 @@ public class Helper {
         int participants = seance.getParticipants();
         System.out.println(participants);
         //Get number of frames
-        long framesNumber = ((seance.getEndingTime().getTime() - seance.getBeginningTime().getTime()) / 1000 )*3;
+        long framesNumber = 100000;
         Random rand = new Random();
         for(int i = 0 ; i < framesNumber; i++){
             if(i != framesNumber - 1){

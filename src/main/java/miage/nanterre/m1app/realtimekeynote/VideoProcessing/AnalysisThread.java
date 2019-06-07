@@ -37,10 +37,7 @@ public class AnalysisThread extends Thread {
     @Override
     public void run(){
         //EntityManager manager = (EntityManager) ;
-        VideoProcessState videoProcessState = new VideoProcessState(seance);
-        videoProcessState.setActive(true);
-        videoProcessStateRepository.save(videoProcessState);
-
+        VideoProcessState videoProcessState = seance.getVideoProcessState();
         nu.pattern.OpenCV.loadShared();
         //String path ="C:\\data\\"+nom;
         String path ="C:\\data\\" + videoName;
@@ -48,7 +45,7 @@ public class AnalysisThread extends Thread {
 
         String chemin = path.replace("~","\\");
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        System.loadLibrary("opencv_java342");
+        System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
 
         //Create new MAT object
         Mat frame = new Mat();
@@ -67,7 +64,7 @@ public class AnalysisThread extends Thread {
                 if(fPos % secondRatio == 0) {
                     cc.detectMultiScale(frame, faceDetection);
                     strAnalytics+=faceDetection.total()+",";
-                    //System.out.println(fPos);
+                    System.out.println(fPos);
                 }
                 fPos++;
             } else {
@@ -79,6 +76,7 @@ public class AnalysisThread extends Thread {
         videoProcessStateRepository.save(videoProcessState);
         SeanceAnalytics seanceAnalytics = seance.getSeanceAnalytics();
         seanceAnalytics.setAnalyticsData(strAnalytics.substring(0, strAnalytics.length() - 1));
+        seanceAnalytics.setDuration(fPos/secondRatio);
         seanceAnalyticsRepository.save(seanceAnalytics);
         System.out.println(nb);
     }

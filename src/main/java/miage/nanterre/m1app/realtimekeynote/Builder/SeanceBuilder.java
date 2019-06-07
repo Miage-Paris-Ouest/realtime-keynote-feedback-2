@@ -7,7 +7,6 @@ import miage.nanterre.m1app.realtimekeynote.Model.User;
 import java.util.Date;
 
 public class SeanceBuilder implements SeanceBuilderInterface {
-
     private Seance seance;
 
     public SeanceBuilder() {
@@ -39,10 +38,6 @@ public class SeanceBuilder implements SeanceBuilderInterface {
         return this;
     }
 
-    public SeanceBuilder setEndingDate(Date date) {
-        seance.setEndingTime(date);
-        return this;
-    }
 
     public SeanceBuilder setDescription(String description) {
         seance.setDescription(description);

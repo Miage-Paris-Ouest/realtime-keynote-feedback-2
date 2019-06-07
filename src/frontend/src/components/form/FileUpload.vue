@@ -9,6 +9,9 @@
         </v-btn>
       </v-flex>
       <transition name="fade">
+        <v-flex xs12 v-if="!uploading && uploadPercentage == 0">
+          <p class="text-xs-center">Uploadez un fichier vidéo au format (mp4, avi, mov)</p>
+        </v-flex>
         <v-flex xs12 v-if="uploading && uploadPercentage != 100">
           <p>{{fileName}}</p>
           <v-progress-linear :value="uploadPercentage"></v-progress-linear>
@@ -66,7 +69,7 @@ export default {
     },
     async startUpload() {
       this.file = this.$refs.file.files[0];
-        this.uploading = true;
+      this.uploading = true;
       let formData = new FormData();
       formData.append("file", this.file);
       try {

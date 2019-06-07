@@ -167,6 +167,10 @@ export default {
             value: session.ROOM
           },
           {
+            label: "Date",
+            value: FormatterHelper.getDurationFromString(session.DATE)
+          },
+          {
             label: "Durée",
             value: FormatterHelper.getDurationFromString(session.DURATION)
           },
@@ -177,10 +181,6 @@ export default {
           {
             label: "Début",
             value: FormatterHelper.getTimeFromDateTime(session.BEGINNING_TIME)
-          },
-          {
-            label: "Fin",
-            value: FormatterHelper.getTimeFromDateTime(session.ENDING_TIME)
           }
         ];
       } else {
@@ -191,6 +191,10 @@ export default {
           },
           {
             label: "Salle",
+            value: ""
+          },
+          {
+            label: "Date",
             value: ""
           },
           {

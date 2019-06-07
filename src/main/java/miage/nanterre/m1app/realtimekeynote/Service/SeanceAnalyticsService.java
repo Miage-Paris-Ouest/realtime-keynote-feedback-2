@@ -18,10 +18,7 @@ import javax.persistence.TemporalType;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceAnalyticsEnum.*;
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceEnum.*;
@@ -61,8 +58,10 @@ public class SeanceAnalyticsService {
         response.put(String.valueOf(ATTENTION_AVG_PER_MONTH), AvgPerMonthList);
         response.put(String.valueOf(ATTENTION_DIFF_PER_MONTH), AttentionPerMonthList);
         response.put(String.valueOf(ABSENT_AVG_PER_MONTH), AbsentPerMonthList);
+        System.out.println(AvgPerMonthList);
         response.put(String.valueOf(ATTENTION_AVG), AvgPerMonthList
                 .stream()
+                .filter(mean -> !Double.isNaN(mean))
                 .reduce(0., (a, b) -> a + b)
                 / AvgPerMonthList.size());
 
@@ -83,7 +82,7 @@ public class SeanceAnalyticsService {
             seanceData.put(String.valueOf(PARTICIPANTS), seance.getParticipants());
             seanceData.put(String.valueOf(DATE), seance.getDate());
             seanceData.put(String.valueOf(BEGINNING_TIME), seance.getBeginningTime());
-            seanceData.put(String.valueOf(ENDING_TIME), seance.getEndingTime());
+            //seanceData.put(String.valueOf(ENDING_TIME), seance.getEndingTime());
             seanceData.put(String.valueOf(DURATION), SeanceService.CalcDuration(seance));
 
             int participants = seance.getParticipants();
@@ -93,7 +92,7 @@ public class SeanceAnalyticsService {
             response.put(String.valueOf(ATTENTION_MAX), getBestSessionAttention(participants, parsedAnalytics));
             response.put(String.valueOf(ATTENTION_MIN), getWorstSessionAttention(participants, parsedAnalytics));
             response.put(String.valueOf(SESSION), seanceData);
-            response.put(String.valueOf(SESSION_ANALYTICS_DATA), parseAnalyticsResume(seance,parsedAnalytics));
+            response.put(String.valueOf(SESSION_ANALYTICS_DATA), parseAnalyticsResume(seance, parsedAnalytics));
         } else {
             throw new AnalyticsException("Aucune seance à analyser !");
 
@@ -221,7 +220,8 @@ public class SeanceAnalyticsService {
         for (SeanceAnalytics analytic : analytics) {
             LocalDate current = DateHelper.asLocalDate(analytic.getSeance().getDate());
             if (current.getMonthValue() == date.getMonthValue() &&
-                    current.getYear() == date.getYear()) {
+                    current.getYear() == date.getYear() && analytic.getSeance()
+                    .getVideoProcessState().getActive() == false) {
                 sessions.add(analytic);
             }
         }
@@ -240,88 +240,55 @@ public class SeanceAnalyticsService {
     public static ArrayList<HashMap> parseAnalyticsResume(Seance seance, ArrayList<Integer> parsed) {
         ArrayList<HashMap> collector = new ArrayList<>();
         int count = 0;
+        long durationSecond = seance.getSeanceAnalytics().getDuration();
+        long durationMin = (long) Math.ceil(durationSecond / 60);
+        long partsNumber = 0;
+        long milliSecondsSeparation = 0;
 
-        long durationMin = (seance.getEndingTime().getTime()
-                - seance.getBeginningTime().getTime())
-                / 1000
-                / 60;
-        long partsNumber = (long)Math.ceil(durationMin*1. / 15*1.);
-        long frameByParts = parsed.size()/partsNumber;
+        if (durationMin >= 15) {
+            partsNumber = (long) Math.ceil(durationMin * 1. / 15 * 1.);
+            milliSecondsSeparation = 60000 * 15;
+        } else {
+            partsNumber = durationMin;
+            milliSecondsSeparation = 60000;
+        }
+
+        partsNumber = partsNumber > 0 ? partsNumber : 1;
+        long frameByParts = parsed.size() / partsNumber;
         ArrayList<Double> part;
         HashMap datas = new HashMap();
-        datas.put(String.valueOf(DATA),(double)25.);
+        datas.put(String.valueOf(DATA), (double) 25.);
         collector.add(datas);
         while (count < partsNumber) {
-             part = new ArrayList<Double>();
-            for (long i = count * frameByParts; i < ((count + 1) * frameByParts )
-                    && i <parsed.size(); i++) {
+            part = new ArrayList<Double>();
+            for (long i = count * frameByParts; i < ((count + 1) * frameByParts)
+                    && i < parsed.size(); i++) {
                 part.add(parsed.get((int) i) * 1.);
             }
             datas = new HashMap();
             double value = part.stream()
-                    .reduce(0.,(a,b)-> (a+b))* 1.
-                    /part.size()
-                    /seance.getParticipants()
-                    *MAX_ATTENTION;
-            datas.put(String.valueOf(DATA),value);
+                    .reduce(0., (a, b) -> (a + b)) * 1.
+                    / part.size()
+                    / seance.getParticipants()
+                    * MAX_ATTENTION;
+            datas.put(String.valueOf(DATA), value);
             collector.add(datas);
             count++;
         }
         Date date = seance.getBeginningTime();
         SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-       // date = new Date(date.getTime()+3600000);
-        for(int i =0 ; i < collector.size(); i++){
-             collector.get(i).put(String.valueOf(LABEL),localDateFormat.format(date));
-            date =  new Date(date.getTime()+60000*15);
+        // date = new Date(date.getTime()+3600000);
+        for (int i = 0; i < collector.size(); i++) {
+            collector.get(i).put(String.valueOf(LABEL), localDateFormat.format(date));
+            date = new Date(date.getTime() + milliSecondsSeparation);
         }
-        collector.get(collector.size()-1).replace(String.valueOf(LABEL),seance.getEndingTime());
+        collector.get(collector.size() - 1).replace(
+                String.valueOf(LABEL),
+                localDateFormat.format(new Date(seance.
+                        getBeginningTime().
+                        getTime() + durationSecond * 1000)));
         return collector;
     }
 
 
-
-    public void analyse2(String nom,long id) {
-        nu.pattern.OpenCV.loadShared();
-        //String path ="C:\\data\\"+nom;
-        String path ="C:\\data\\" + "WIN_20181223_15_29_59_Pro.mp4";
-        String nb = "";
-
-        String chemin = path.replace("~","\\");
-        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        System.loadLibrary("opencv_java342");
-
-        // SeanceAnalytics s = this.seanceRepository.findById(id).get().getSeanceAnalytics();
-        //Create new MAT object
-        Mat frame = new Mat();
-        //Create new VideoCapture object
-        VideoCapture camera = new VideoCapture(chemin);
-        int secondRatio = (int) camera.get(Videoio.CAP_PROP_FPS);
-        System.out.println(secondRatio);
-        String xmlFile = "XML\\lbpcascade_frontalface.xml";
-
-        MatOfRect faceDetection = new MatOfRect();
-        CascadeClassifier cc = new CascadeClassifier(xmlFile);
-        int fPos = 0;
-        ArrayList<Integer> arr = new ArrayList<Integer>();
-        while (true) {
-            if (camera.read(frame)) {
-                if(fPos % secondRatio == 0) {
-                    cc.detectMultiScale(frame, faceDetection);
-                    System.out.println(nb);
-                    arr.add((int)faceDetection.total());
-                    System.out.println(arr);
-                    System.out.println(fPos);
-                }
-                fPos++;
-            } else {
-                break;
-            }
-        }
-        System.out.println("Video fini");
-
-        // s.setAnalyticsData(nb);
-        // analyticsRepository.save(s) ;
-
-        System.out.println(nb);
-    }
 }

@@ -15,7 +15,6 @@
               <td :title="title">{{ item.subject}}</td>
               <td :title="title">{{ item.date }}</td>
               <td :title="title">{{ item.beginningTime }}</td>
-              <td :title="title">{{ item.endingTime}}</td>
               <td :title="title">{{ item.duration }}</td>
               <td class="text-xs-right">{{ item.attention }}/50</td>
               <td :title="title" class="text-xs-right">
@@ -46,39 +45,29 @@ export default {
     headers: [
       {
         sortable: false,
-        text: "Titre",
-        value: "name"
+        text: "Titre"
       },
       {
         sortable: false,
-        text: "Date",
-        value: "country"
+        text: "Date"
       },
       {
         sortable: false,
-        text: "Heure de début",
-        value: "city"
+        text: "Heure de début"
       },
       {
         sortable: false,
-        text: "Heure de fin",
-        value: "salary"
-      },
-      {
-        sortable: false,
-        text: "Durée",
-        value: "salary"
+        text: "Durée"
       },
       {
         sortable: false,
         text: "Indice d'attention",
-        value: "salary",
         align: "right"
       }
     ],
     responseData: []
   }),
-   async mounted() {
+  async mounted() {
     if (config.apiCallEnabled) {
       try {
         var response = await SessionsListService.getSessionsList();
@@ -100,7 +89,6 @@ export default {
             beginningTime: FormatterHelper.getTimeFromDateTime(
               data.BEGINNING_TIME
             ),
-            endingTime: FormatterHelper.getTimeFromDateTime(data.ENDING_TIME),
             duration: FormatterHelper.getDurationFromString(data.DURATION),
             attention: StatisticsHelper.roundStat(data.ATTENTION_AVG),
             sessionId: data.ID

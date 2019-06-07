@@ -17,7 +17,7 @@
         </material-card>
       </v-flex>
 
-      <v-flex xs12 md8 lg6  v-if="!isParsing">
+      <v-flex xs12 md8 lg6 v-if="!isParsing">
         <material-card
           color="primary"
           title="Informations sur la séance"
@@ -27,42 +27,68 @@
             <v-container py-0>
               <v-layout wrap>
                 <v-flex xs12 md12>
-                  <v-text-field v-model="subject" class="purple-input" label="Sujet"/>
+                  <v-text-field
+                    :error-messages="subjectError.messages"
+                    :rules="[subjectRules.required, subjectRules.min]"
+                    :hint="'Ajoutez le sujet de cette séance'"
+                    v-model="subject"
+                    class="purple-input"
+                    label="Sujet"
+                  />
                 </v-flex>
-                <v-flex xs12 md4>
-                  <v-text-field v-model="room" label="Salle" class="purple-input"/>
+                <v-flex xs12 md6>
+                  <v-text-field
+                    :error="roomError.state"
+                    :error-messages="roomError.messages"
+                    :rules="[roomRules.required, roomRules.min]"
+                    v-model="room"
+                    label="Salle"
+                    :hint="'Ajoutez le nom de salle de cette séance.'"
+                    class="purple-input"
+                  />
                 </v-flex>
-                <v-flex xs12 md4>
-                  <v-text-field v-model="publiq" label="Public" class="purple-input"/>
+                <v-flex xs12 md6>
+                  <v-text-field
+                    :error-messages="publicError.messages"
+                    :rules="[publicRules.required, publicRules.min]"
+                    v-model="publiq"
+                    label="Public"
+                    :hint="'Ajoutez le nom du public de cette séance.'"
+                    class="purple-input"
+                  />
                 </v-flex>
                 <v-flex xs12 md4>
                   <v-text-field
+                    :error-messages="participantsError.messages"
+                    :rules="[participantsRules.required, participantsRules.min]"
                     v-model.number="participants"
                     label="Nombre de participants"
                     type="number"
+                    :hint="'Ajoutez le nombre de participants attendus pour cette séance.'"
                     class="purple-input"
                   />
                 </v-flex>
                 <v-flex xs12 md4>
-                  <v-text-field v-model="date" label="Date" type="date" class="purple-input"/>
+                  <v-text-field
+                    :error-messages="dateError.messages"
+                    :rules="[dateRules.required]"
+                    v-model="date"
+                    label="Date"
+                    type="date"
+                    class="purple-input"
+                  />
                 </v-flex>
                 <v-flex xs12 md4>
                   <v-text-field
+                    :error-messages="beginningTimeError.messages"
                     v-model="beginningTime"
+                    :rules="[beginningTimeRules.required]"
                     label="Heure de début"
+                    :hint="'Ajoutez l\'heure de début pour cette séance.'"
                     type="time"
                     class="purple-input"
                   />
                 </v-flex>
-                <v-flex xs12 md4>
-                  <v-text-field
-                    v-model="endingTime"
-                    label="Heure de fin"
-                    type="time"
-                    class="purple-input"
-                  />
-                </v-flex>
-
                 <v-flex xs12>
                   <v-textarea
                     class="purple-input"
@@ -76,37 +102,35 @@
                   <v-btn
                     class="mx-0 font-weight-light"
                     color="primary"
-                    :disabled="!isFormFullyCompleted || !uploadStatusFinished || !isLegalDate"
                     @click.prevent="createSession"
-                    :title="uploadStatusFinished ?   'Transmettez les données pour l\'analyse' :'Attendez la fin du téléchargement de la vidéo pour valider.' "
+                    :disabled="!uploadStatusFinished"
+                    :title="uploadStatusFinished ? 'Transmettez les données pour l\'analyse' :'Attendez la fin du téléchargement de la vidéo pour valider.' "
                   >Valider</v-btn>
                 </v-flex>
-
               </v-layout>
             </v-container>
           </v-form>
         </material-card>
-
       </v-flex>
       <v-flex xs12 md8 lg4 v-if="isParsing">
         <material-card
-                color="primary"
-                title="Upload réussi !"
-                text="Veuillez attendre la fin de l'analyse de votre séance."
+          color="primary"
+          title="Upload réussi !"
+          text="Veuillez attendre la fin de l'analyse de votre séance."
         >
           <v-container py-0 px-0>
             <v-layout wrap justify-center>
               <v-flex xs2 md2>
                 <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-
-
               </v-flex>
             </v-layout>
             <v-layout wrap justify-center>
-            <v-flex xs4 md4>  <h4>
-              <br>Votre fichier est en cours d'analyse...
-            </h4></v-flex>
-              </v-layout>
+              <v-flex xs4 md4>
+                <h4>
+                  <br>Votre fichier est en cours d'analyse...
+                </h4>
+              </v-flex>
+            </v-layout>
           </v-container>
         </material-card>
       </v-flex>
@@ -116,6 +140,7 @@
 
 <script>
 import SessionCreationService from "../services/SessionCreation";
+import store from "../store.js";
 
 import config from "../config";
 export default {
@@ -125,39 +150,159 @@ export default {
     room: "",
     publiq: "",
     date: new Date().toISOString().slice(0, 10),
-    beginningTime: "",
-    endingTime: "",
+    beginningTime: "12:30",
     description: "",
-    participants: 0,
+    participants: 1,
     file: "",
-    isFormFullyCompleted: false,
-    isLegalDate: false,
-      isParsing : false
+    isParsing: false,
+    store,
+    subjectRules: {
+      required: value => !!value || "Champs requis.",
+      min: v =>
+        v.length >= 8 ||
+        "Entrez au moins 8 charactères pour le sujet de la séance.",
+      emailMatch: () => "The email and password you entered don't match"
+    },
+    roomRules: {
+      required: value => !!value || "Champs requis.",
+      min: v =>
+        v.length >= 3 ||
+        "Entrez au moins 3 charactères pour le nom de la salle.",
+      emailMatch: () => "The email and password you entered don't match"
+    },
+    publicRules: {
+      required: value => !!value || "Champs requis.",
+      min: v =>
+        v.length >= 4 ||
+        "Entrez au moins 4 charactères pour le public de la séance.",
+      emailMatch: () => "The email and password you entered don't match"
+    },
+    participantsRules: {
+      required: value => !!value || value === 0 || "Champs requis.",
+      min: v =>
+        v > 0 || "Le nombre de participants doit être strictement positif.",
+      emailMatch: () => "The email and password you entered don't match"
+    },
+    dateRules: {
+      required: value => !!value || "Champs requis."
+    },
+    beginningTimeRules: {
+      required: value => !!value || "Champs requis."
+    },
+    subjectError: {
+      messages: []
+    },
+    roomError: {
+      messages: []
+    },
+    publicError: {
+      messages: []
+    },
+    participantsError: {
+      messages: []
+    },
+    dateError: {
+      messages: []
+    },
+    beginningTimeError: {
+      messages: []
+    }
   }),
   methods: {
+    clearErrorMessages(error) {
+      error.messages = [];
+    },
+    checkFormValidity() {
+      if (!this.subject) {
+        this.subjectError.messages.push("Le sujet de la salle est requis.");
+      } else if (this.subject.length < 8) {
+        this.subjectError.messages.push(
+          "Entrez au moins 8 charactères pour le sujet de la séance."
+        );
+      }
+
+      if (!this.room) {
+        this.roomError.messages.push("Le nom de salle est requis.");
+      } else if (this.room.length < 3) {
+        this.roomError.messages.push(
+          "Entrez au moins 3 charactères pour le sujet de la séance."
+        );
+      }
+
+      if (!this.publiq) {
+        this.publicError.messages.push("Le nom du public est requis.");
+      } else if (this.publiq.length < 4) {
+        this.roomError.messages.push(
+          "Entrez au moins 4 charactères pour le sujet de la séance."
+        );
+      }
+
+      if (!this.participants && this.participants !== 0) {
+        console.log("1");
+        this.participantsError.messages.push(
+          "Le nombre de participants est requis sous forme de nombre."
+        );
+      } else if (this.participants <= 0) {
+        console.log("2");
+        this.participantsError.messages.push(
+          "Le nombre de participants doit être strictement positif."
+        );
+      }
+
+      if (!this.date) {
+        this.dateError.messages.push("La date est requise.");
+      }
+
+      if (!this.beginningTime) {
+        this.beginningTimeError.messages.push("Le temps de début est requis.");
+      }
+      console.log(
+        this.subjectError.messages.length,
+        this.roomError.messages.length,
+        this.publicError.messages.length,
+        this.participantsError.messages.length,
+        this.dateError.messages.length,
+        this.beginningTimeError.messages.length,
+        0
+      );
+
+      return (
+        this.subjectError.messages.length == 0 &&
+        this.roomError.messages.length == 0 &&
+        this.publicError.messages.length == 0 &&
+        this.participantsError.messages.length == 0 &&
+        this.dateError.messages.length == 0 &&
+        this.beginningTimeError.messages.length == 0
+      );
+    },
     async createSession() {
-      if (config.apiCallEnabled) {
+      if (config.apiCallEnabled && this.checkFormValidity()) {
         const sessionData = {
           subject: this.subject,
           room: this.room,
           publiq: this.publiq,
           date: this.date,
           beginningTime: this.date + "T" + this.beginningTime,
-          endingTime: this.date + "T" + this.endingTime,
           description: this.description,
           participants: this.participants,
           file: this.file
         };
-
         try {
-            this.isParsing = true;
+          this.isParsing = true;
           var response = await SessionCreationService.createSession(
             sessionData
           );
+          this.store.sessionsInProcess.unshift({
+            SUBJECT: response.data.SUBJECT,
+            ID: response.data.ID
+          });
+          console.log(this.store);
         } catch (error) {
           console.trace(error);
         }
-        this.$router.push("/mes-seances");
+        setTimeout(function() {
+          this.$router.push("/mes-seances");
+        }, 2000);
       }
     },
     async uploadFinished(status, file) {
@@ -168,18 +313,34 @@ export default {
       this.$router.push("/");
     }
   },
-
   watch: {
-    participants(val) {
-      this.isFormFullyCompleted = val > 0;
+    subject() {
+      if (this.subjectError.messages.length)
+        this.clearErrorMessages(this.subjectError);
     },
-
-    beginningTime(val) {
-      this.isLegalDate = this.endingTime > val;
+    room() {
+      if (this.roomError.messages.length)
+        this.clearErrorMessages(this.roomError);
     },
-
-    endingTime(val) {
-      this.isLegalDate = this.beginningTime < val;
+    participants() {
+      if (this.participantsError.messages.length)
+        this.clearErrorMessages(this.participantsError);
+    },
+    publiq() {
+      if (this.publicError.messages.length)
+        this.clearErrorMessages(this.publicError);
+    },
+    date() {
+      if (this.dateError.messages.length)
+        this.clearErrorMessages(this.dateError);
+    },
+    beginningTime() {
+      if (this.beginningTimeError.messages.length)
+        this.clearErrorMessages(this.beginningTimeError);
+    },
+    subject() {
+      if (this.subjectError.messages.length)
+        this.clearErrorMessages(this.subjectError);
     }
   }
 };
