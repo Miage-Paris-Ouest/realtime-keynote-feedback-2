@@ -55,10 +55,13 @@ public class SeanceAnalyticsController {
 
     public void analyse(@PathVariable("path") String path, @PathVariable("id") long id) throws UnsupportedEncodingException {
 
+            System.loadLibrary("opencv_java342");
+
+        nu.pattern.OpenCV.loadShared();
         //String chemin ="C:\\Users\\amine\\Desktop\\VID_20190417_112105.mp4";
         String analyseData = "";
         String chemin = path.replace("~","\\");
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         SeanceAnalytics s = seanceRepository.findById(id).get().getSeanceAnalytics();
         //Create new MAT object
         Mat frame = new Mat();

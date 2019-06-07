@@ -9,8 +9,10 @@ import miage.nanterre.m1app.realtimekeynote.Model.User;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
+import miage.nanterre.m1app.realtimekeynote.Repository.VideoProcessStateRepository;
 import miage.nanterre.m1app.realtimekeynote.Service.SeanceAnalyticsService;
 import miage.nanterre.m1app.realtimekeynote.Service.SeanceService;
+import miage.nanterre.m1app.realtimekeynote.Service.VideoProcessService;
 import miage.nanterre.m1app.realtimekeynote.View.SeanceView;
 import miage.nanterre.m1app.realtimekeynote.helpers.Helper;
 import org.springframework.http.HttpStatus;
@@ -31,13 +33,15 @@ public class SeanceController extends SeanceBuilder {
     private UserRepository userRepository;
     private SeanceRepository seanceRepository;
     private SeanceAnalyticsRepository analyticsRepo;
+    private VideoProcessStateRepository videoProcessStateRepo;
 
     private static final boolean ENABLE_VIDEO_ANALYSIS = true;
 
-    public SeanceController(UserRepository userRepository, SeanceRepository seanceRepository, SeanceAnalyticsRepository analyticsRepo) {
+    public SeanceController(UserRepository userRepository, SeanceRepository seanceRepository, SeanceAnalyticsRepository analyticsRepo, VideoProcessStateRepository videoProcessStateRepo) {
         this.userRepository = userRepository;
         this.seanceRepository = seanceRepository;
         this.analyticsRepo = analyticsRepo;
+        this.videoProcessStateRepo = videoProcessStateRepo;
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -54,6 +58,12 @@ public class SeanceController extends SeanceBuilder {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @RequestMapping(value = "/test-upload", method = RequestMethod.GET, headers = "Accept=application/json")
+    public void testUpload(@RequestParam("id") long id){
+        VideoProcessService service = new VideoProcessService( seanceRepository, analyticsRepo, videoProcessStateRepo);
+        service.analyse("blabla", id);
+    }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(path= "/create")
@@ -87,7 +97,7 @@ public class SeanceController extends SeanceBuilder {
 
         if (ENABLE_VIDEO_ANALYSIS) {
             SeanceAnalyticsService service = new SeanceAnalyticsService(analyticsRepo, seanceRepository);
-            service.analyse(fileToAnalyse, seance.getId());
+            //service.analyse(fileToAnalyse, seance.getId());
         }
         return seance;
     }

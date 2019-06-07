@@ -5,12 +5,14 @@ import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
+import miage.nanterre.m1app.realtimekeynote.VideoProcessing.AnalysisThread;
 import miage.nanterre.m1app.realtimekeynote.helpers.DateHelper;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
 import javax.persistence.TemporalType;
 import java.text.SimpleDateFormat;
@@ -276,43 +278,49 @@ public class SeanceAnalyticsService {
         return collector;
     }
 
-    public  void analyse(String nom,long id) {
 
-        String path ="C:\\data\\"+nom;
+
+    public void analyse2(String nom,long id) {
+        nu.pattern.OpenCV.loadShared();
+        //String path ="C:\\data\\"+nom;
+        String path ="C:\\data\\" + "WIN_20181223_15_29_59_Pro.mp4";
         String nb = "";
 
         String chemin = path.replace("~","\\");
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        SeanceAnalytics s = this.seanceRepository.findById(id).get().getSeanceAnalytics();
+        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        System.loadLibrary("opencv_java342");
+
+        // SeanceAnalytics s = this.seanceRepository.findById(id).get().getSeanceAnalytics();
         //Create new MAT object
         Mat frame = new Mat();
         //Create new VideoCapture object
         VideoCapture camera = new VideoCapture(chemin);
+        int secondRatio = (int) camera.get(Videoio.CAP_PROP_FPS);
+        System.out.println(secondRatio);
         String xmlFile = "XML\\lbpcascade_frontalface.xml";
 
-        int batch=0 ;
         MatOfRect faceDetection = new MatOfRect();
         CascadeClassifier cc = new CascadeClassifier(xmlFile);
-        int i = 0;
-        while (camera.read(frame)) {
-            //If next video frame is available
-            if (batch % 10 == 0 ) {
-                if (camera.read(frame)) {
+        int fPos = 0;
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+        while (true) {
+            if (camera.read(frame)) {
+                if(fPos % secondRatio == 0) {
                     cc.detectMultiScale(frame, faceDetection);
-                    if (i == 0) {
-                        nb = nb + faceDetection.toArray().length;
-                    } else {
-                        nb = nb + "," + faceDetection.toArray().length;
-                    }
-                } else {
-                    break;
+                    System.out.println(nb);
+                    arr.add((int)faceDetection.total());
+                    System.out.println(arr);
+                    System.out.println(fPos);
                 }
+                fPos++;
+            } else {
+                break;
             }
-            i++;
         }
+        System.out.println("Video fini");
 
-        s.setAnalyticsData(nb);
-        analyticsRepository.save(s) ;
+        // s.setAnalyticsData(nb);
+        // analyticsRepository.save(s) ;
 
         System.out.println(nb);
     }
