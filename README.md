@@ -32,7 +32,7 @@ Lancez le frontend :
 - Pour lancer l'application client -->  *npm run serve*
 - Le port d'écoute s'affiche dans le terminal (généralement 8080)
 
-En dev : Après avoir exécuté le projet, vous devrez aller dans le fichier *application.properties* qui est dans *ressources* et :
+En dev : Après avoir exécuté le projet, vous devrez aller dans le fichier [application.properties](https://github.com/Miage-Paris-Ouest/realtime-keynote-feedback-2/tree/master/src/main/resources/application.properties) qui est dans *ressources* et :
 - commenter : spring.jpa.hibernate.ddl-auto = create
 - Décommenter: spring.jpa.hibernate.ddl-auto=update
 
