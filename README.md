@@ -21,9 +21,9 @@ Lancez le backend :
 - Ouvrez le projet à la racine dans IntelliJ
 - Installez les dépendances Maven
 - Modifiez les propriétées de base de donnée selon votre configuration de serveur MySQL dans "application.properties" : 
-      spring.datasource.url=jdbc:mysql://localhost:3306/realtime_keynote?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC
-      spring.datasource.username=root
-      spring.datasource.password=root
+      -spring.datasource.url=jdbc:mysql://localhost:3306/realtime_keynote?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC
+      -spring.datasource.username=root
+      -spring.datasource.password=root
 - Lancez le serveur ce dernier écoute sur le port 8082
 
 Lancez le frontend :
