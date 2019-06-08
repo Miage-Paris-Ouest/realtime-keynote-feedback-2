@@ -13,6 +13,8 @@
             </template>
             <template slot="items" slot-scope="{ item }">
               <td :title="title">{{ item.subject}}</td>
+              <td :title="title">{{ item.public }}</td>
+              <td :title="title">{{ item.room }}</td>
               <td :title="title">{{ item.date }}</td>
               <td :title="title">{{ item.beginningTime }}</td>
               <td :title="title">{{ item.duration }}</td>
@@ -50,6 +52,14 @@ export default {
       },
       {
         sortable: false,
+        text: "Public"
+      },
+      {
+        sortable: false,
+        text: "Salle"
+      },
+      {
+        sortable: false,
         text: "Date"
       },
       {
@@ -62,7 +72,7 @@ export default {
       },
       {
         sortable: false,
-        text: "Indice d'attention",
+        text: "Attention moyenne",
         align: "right"
       }
     ],
@@ -92,6 +102,8 @@ export default {
         return computed.map(data => {
           return {
             subject: data.SUBJECT,
+            public: data.PUBLIC,
+            room: data.ROOM,
             date: FormatterHelper.getDateFromDateTime(data.DATE),
             beginningTime: FormatterHelper.getTimeFromDateTime(
               data.BEGINNING_TIME

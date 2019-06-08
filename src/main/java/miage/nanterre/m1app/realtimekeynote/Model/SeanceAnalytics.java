@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -27,15 +26,27 @@ public class SeanceAnalytics implements Serializable {
     @Column(nullable = true)
     private long duration;
 
+    @Column(nullable = true)
+    private long maxParticipantsObserved;
+
+
     public SeanceAnalytics() {
     }
 
-    public SeanceAnalytics(Seance seance, String analyticsData, long duration) {
+    public SeanceAnalytics(Seance seance, String analyticsData, long duration, long maxParticipantsObserved) {
         this.seance = seance;
         this.analyticsData = analyticsData;
         this.duration = duration;
+        this.maxParticipantsObserved = maxParticipantsObserved;
     }
 
+    public long getMaxParticipantsObserved() {
+        return maxParticipantsObserved;
+    }
+
+    public void setMaxParticipantsObserved(long maxParticipantsObserved) {
+        this.maxParticipantsObserved = maxParticipantsObserved;
+    }
     public long getDuration(){
         return this.duration;
     }

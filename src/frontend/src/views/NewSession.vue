@@ -274,15 +274,6 @@ export default {
       if (!this.beginningTime) {
         this.beginningTimeError.messages.push("Le temps de début est requis.");
       }
-      console.log(
-        this.subjectError.messages.length,
-        this.roomError.messages.length,
-        this.publicError.messages.length,
-        this.participantsError.messages.length,
-        this.dateError.messages.length,
-        this.beginningTimeError.messages.length,
-        0
-      );
 
       return (
         this.subjectError.messages.length == 0 &&

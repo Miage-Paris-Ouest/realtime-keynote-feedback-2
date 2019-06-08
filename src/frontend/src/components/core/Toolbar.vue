@@ -114,7 +114,8 @@ export default {
   watch: {
     store: {
       handler: function(val, oldVal) {
-        if (!this.isFetching) this.periodicFetch();
+        if (!this.isFetching && this.store.sessionsInProcess.length)
+          this.periodicFetch();
       },
       deep: true
     }

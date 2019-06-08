@@ -26,10 +26,12 @@ export default {
             gridLines: {
               display: true,
               color: "#eee"
+            },
+
+            ticks: {
+              suggestedMin: 0,
+              suggestedMax: 50
             }
-            /* ticks: {
-              fontColor: "white"
-            }*/
           }
         ],
         xAxes: [

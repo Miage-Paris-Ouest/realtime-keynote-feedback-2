@@ -7,7 +7,6 @@ public enum SeanceEnum {
     PARTICIPANTS,
     DATE,
     BEGINNING_TIME,
-    ENDING_TIME,
     DURATION,
     ID;
 }

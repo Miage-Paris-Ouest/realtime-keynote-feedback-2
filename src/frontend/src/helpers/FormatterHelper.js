@@ -5,7 +5,6 @@ export default {
     return `${timeParts[0]}h ${timeParts[1]}`
   },
   getDateFromDateTime (date) {
-    console.log(date)
     var timeParts = date.split('-')
     return `${timeParts[2]}/${timeParts[1]}/${timeParts[0]}`
   },

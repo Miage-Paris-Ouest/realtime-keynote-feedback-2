@@ -140,6 +140,16 @@ export default {
                 labels: {
                   fontColor: "white"
                 }
+              },
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      suggestedMin: 50,
+                      suggestedMax: 100
+                    }
+                  }
+                ]
               }
             }
           };
@@ -184,8 +194,16 @@ export default {
             value: FormatterHelper.getDurationFromString(session.DURATION)
           },
           {
-            label: "Effectif",
+            label: "Effectif attendu",
             value: session.PARTICIPANTS
+          },
+          {
+            label: "Effectif observé",
+            value: session.OBSERVED_PARTICIPANTS
+          },
+          {
+            label: "Absents",
+            value: session.ABSENT_PARTICIPANTS
           },
           {
             label: "Début",

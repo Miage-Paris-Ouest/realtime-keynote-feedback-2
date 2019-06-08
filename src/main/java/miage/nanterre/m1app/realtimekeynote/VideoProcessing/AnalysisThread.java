@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.ArrayList;
 
 @Component
 @Scope("prototype")
@@ -25,7 +24,7 @@ public class AnalysisThread extends Thread {
     private VideoProcessStateRepository videoProcessStateRepository;
     private SeanceAnalyticsRepository seanceAnalyticsRepository;
     public void setVideoName(String videoName){
-        this.videoName = videoName;
+        this.videoName = UploadService.getCleanFileName(videoName);
     }
     public void setSeance(Seance seance){
         this.seance = seance;
@@ -54,12 +53,19 @@ public class AnalysisThread extends Thread {
         CascadeClassifier cc = new CascadeClassifier(xmlFile);
         int fPos = 0;
         String strAnalytics = "";
+        long total  = 0;
+        long max = 1;
+        System.out.println("Début de l'analyse vidéo...");
         while (true) {
             if (camera.read(frame)) {
                 if(fPos % secondRatio == 0) {
                     cc.detectMultiScale(frame, faceDetection);
+                    total = faceDetection.total();
                     strAnalytics+=faceDetection.total()+",";
                     System.out.println(fPos);
+                    if(total > max){
+                        max = total;
+                    }
                 }
                 fPos++;
             } else {
@@ -70,8 +76,17 @@ public class AnalysisThread extends Thread {
         videoProcessState.setActive(false);
         videoProcessStateRepository.save(videoProcessState);
         SeanceAnalytics seanceAnalytics = seance.getSeanceAnalytics();
-        seanceAnalytics.setAnalyticsData(strAnalytics.substring(0, strAnalytics.length() - 1));
-        seanceAnalytics.setDuration(fPos/secondRatio);
+        seanceAnalytics.setMaxParticipantsObserved(max);
+
+        if(strAnalytics.length()>1)
+            seanceAnalytics.setAnalyticsData(strAnalytics.substring(0, strAnalytics.length() - 1));
+        else
+            seanceAnalytics.setAnalyticsData("");
+
+        long duration = fPos/secondRatio;
+        duration = duration > 1 ? duration : 1;
+        seanceAnalytics.setDuration(duration);
+
         seanceAnalyticsRepository.save(seanceAnalytics);
         File file = new File(path);
         file.delete();

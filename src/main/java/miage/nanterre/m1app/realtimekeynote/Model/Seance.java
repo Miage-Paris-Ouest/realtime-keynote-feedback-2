@@ -66,7 +66,7 @@ public class Seance implements Serializable {
     private int participants;
 
     public Seance() {
-        seanceAnalytics = new SeanceAnalytics(this, null, 0);
+        seanceAnalytics = new SeanceAnalytics(this, null, 0,0);
         videoProcessState = new VideoProcessState(this);
     }
 
@@ -80,7 +80,7 @@ public class Seance implements Serializable {
         this.user = user;
         this.participants = participants;
 
-        seanceAnalytics = new SeanceAnalytics(this, null,0);
+        seanceAnalytics = new SeanceAnalytics(this, null,0,0);
         videoProcessState = new VideoProcessState(this);
     }
 
@@ -137,7 +137,6 @@ public class Seance implements Serializable {
     }
 
     public Seance setBeginningTime(Date beginningTime) {
-
         this.beginningTime = beginningTime;
         return this;
     }
@@ -145,16 +144,13 @@ public class Seance implements Serializable {
     public String getDescription() {
         return description;
     }
-
     public Seance setDescription(String description) {
         this.description = description;
         return this;
     }
-
     public SeanceAnalytics getSeanceAnalytics() {
         return seanceAnalytics;
     }
-
     public Seance setSeanceAnalytics(SeanceAnalytics seanceAnalytics) {
         this.seanceAnalytics = seanceAnalytics;
         return this;

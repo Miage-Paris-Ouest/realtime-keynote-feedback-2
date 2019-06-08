@@ -5,19 +5,10 @@ import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
-import miage.nanterre.m1app.realtimekeynote.VideoProcessing.AnalysisThread;
 import miage.nanterre.m1app.realtimekeynote.helpers.DateHelper;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfRect;
-import org.opencv.objdetect.CascadeClassifier;
-import org.opencv.videoio.VideoCapture;
-import org.opencv.videoio.Videoio;
 
-import javax.persistence.TemporalType;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
 import java.util.*;
 
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceAnalyticsEnum.*;
@@ -80,12 +71,15 @@ public class SeanceAnalyticsService {
             seanceData.put(String.valueOf(PUBLIC), seance.getPubliq());
             seanceData.put(String.valueOf(ROOM), seance.getRoom());
             seanceData.put(String.valueOf(PARTICIPANTS), seance.getParticipants());
+            seanceData.put(String.valueOf(OBSERVED_PARTICIPANTS), seance.getSeanceAnalytics().getMaxParticipantsObserved());
+            long absents = seance.getParticipants() - seance.getSeanceAnalytics().getMaxParticipantsObserved();
+            absents = absents > 0 ? absents : 0;
+            seanceData.put(String.valueOf(ABSENT_PARTICIPANTS), absents);
             seanceData.put(String.valueOf(DATE), seance.getDate());
             seanceData.put(String.valueOf(BEGINNING_TIME), seance.getBeginningTime());
-            //seanceData.put(String.valueOf(ENDING_TIME), seance.getEndingTime());
             seanceData.put(String.valueOf(DURATION), SeanceService.CalcDuration(seance));
 
-            int participants = seance.getParticipants();
+            long participants = seance.getSeanceAnalytics().getMaxParticipantsObserved();
             ArrayList<Integer> parsedAnalytics = parseAnalytics(seance.getSeanceAnalytics().getAnalyticsData());
 
             response.put(String.valueOf(ATTENTION_AVG), getAverageSessionAttention(participants, parsedAnalytics));
@@ -102,12 +96,10 @@ public class SeanceAnalyticsService {
     }
 
     private static double getAttentionAveragePerMonth(ArrayList<SeanceAnalytics> sessions) throws AnalyticsException {
-       /* if (sessions.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
 
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
-            collector.add(getAverageSessionAttention(session.getSeance().getParticipants(),
+            collector.add(getAverageSessionAttention(session.getSeance().getSeanceAnalytics().getMaxParticipantsObserved(),
                     parseAnalytics(session.getAnalyticsData())));
         }
         return collector
@@ -119,9 +111,9 @@ public class SeanceAnalyticsService {
     private static double getAttentionDiffPerMonth(ArrayList<SeanceAnalytics> sessions) throws AnalyticsException {
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
-            collector.add(getBestSessionAttention(session.getSeance().getParticipants(),
+            collector.add(getBestSessionAttention(session.getSeance().getSeanceAnalytics().getMaxParticipantsObserved(),
                     parseAnalytics(session.getAnalyticsData()))
-                    - getWorstSessionAttention(session.getSeance().getParticipants(),
+                    - getWorstSessionAttention(session.getSeance().getSeanceAnalytics().getMaxParticipantsObserved(),
                     parseAnalytics(session.getAnalyticsData())));
         }
         return (collector
@@ -136,7 +128,7 @@ public class SeanceAnalyticsService {
 
         ArrayList<Double> collector = new ArrayList<Double>();
         for (SeanceAnalytics session : sessions) {
-            collector.add(getAverageAbsentParticipants(session.getSeance().getParticipants(),
+            collector.add(getAverageAbsentParticipants(session.getSeance().getSeanceAnalytics().getMaxParticipantsObserved(),
                     parseAnalytics(session.getAnalyticsData()))
             );
         }
@@ -146,9 +138,7 @@ public class SeanceAnalyticsService {
                 / (collector.size() * 1.);
     }
 
-    public static double getAverageSessionAttention(int participants, ArrayList<Integer> dataAnalytics) {
-       /* if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
+    public static double getAverageSessionAttention(long participants, ArrayList<Integer> dataAnalytics) {
 
         return (((dataAnalytics
                 .stream()
@@ -158,31 +148,24 @@ public class SeanceAnalyticsService {
                 * MAX_ATTENTION;
     }
 
-    private static double getBestSessionAttention(int participants, ArrayList<Integer> dataAnalytics)
-            throws AnalyticsException {
-      /*  if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
+    private static double getBestSessionAttention(long participants, ArrayList<Integer> dataAnalytics)
+           {
 
         return ((Collections.max(dataAnalytics) * 1.)
                 / (participants * 1.))
                 * MAX_ATTENTION;
     }
 
-    private static double getWorstSessionAttention(int participants, ArrayList<Integer> dataAnalytics)
-            throws AnalyticsException {
-       /* if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
+    private static double getWorstSessionAttention(long participants, ArrayList<Integer> dataAnalytics)
+             {
 
         return ((Collections.min(dataAnalytics) * 1.)
                 / (participants * 1.))
                 * MAX_ATTENTION;
     }
 
-    private static double getAverageAbsentParticipants(int participants, ArrayList<Integer> dataAnalytics)
-            throws AnalyticsException {
-       /* if (dataAnalytics.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
-
+    private static double getAverageAbsentParticipants(long participants, ArrayList<Integer> dataAnalytics)
+          {
         double data = participants * 1. -
                 ((dataAnalytics.stream()
                         .reduce(0, (a, b) -> a + b) * 1.)
@@ -191,9 +174,7 @@ public class SeanceAnalyticsService {
     }
 
     private static HashMap<LocalDate, ArrayList> getSessionsPerMonths(ArrayList<SeanceAnalytics> analytics, ArrayList<LocalDate> months)
-            throws AnalyticsException {
-      /*  if (months.isEmpty())
-            throw new AnalyticsException("Aucune session à analyser !");*/
+        {
 
         HashMap<LocalDate, ArrayList> datasets = new HashMap<LocalDate, ArrayList>();
         for (LocalDate date : months) {
@@ -257,7 +238,7 @@ public class SeanceAnalyticsService {
         long frameByParts = parsed.size() / partsNumber;
         ArrayList<Double> part;
         HashMap datas = new HashMap();
-        datas.put(String.valueOf(DATA), (double) 25.);
+        datas.put(String.valueOf(DATA), (double) 0.);
         collector.add(datas);
         while (count < partsNumber) {
             part = new ArrayList<Double>();
@@ -269,7 +250,7 @@ public class SeanceAnalyticsService {
             double value = part.stream()
                     .reduce(0., (a, b) -> (a + b)) * 1.
                     / part.size()
-                    / seance.getParticipants()
+                    / seance.getSeanceAnalytics().getMaxParticipantsObserved()
                     * MAX_ATTENTION;
             datas.put(String.valueOf(DATA), value);
             collector.add(datas);
@@ -277,7 +258,6 @@ public class SeanceAnalyticsService {
         }
         Date date = seance.getBeginningTime();
         SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-        // date = new Date(date.getTime()+3600000);
         for (int i = 0; i < collector.size(); i++) {
             collector.get(i).put(String.valueOf(LABEL), localDateFormat.format(date));
             date = new Date(date.getTime() + milliSecondsSeparation);

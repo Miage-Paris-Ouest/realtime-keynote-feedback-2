@@ -11,7 +11,7 @@ import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceAnalyticsEnum.*;
 
 public class SeanceService {
 
-    public static ArrayList<HashMap> getDurationSession(SeanceRepository seanceRepository) {
+    public static ArrayList<HashMap> getAllSeances(SeanceRepository seanceRepository) {
 
         ArrayList<HashMap> response = new ArrayList<>();
         Iterable<Seance> seances = seanceRepository.findAll();
@@ -28,7 +28,7 @@ public class SeanceService {
                 seanceData.put(String.valueOf(ID), seance.getId());
                 seanceData.put(String.valueOf(ATTENTION_AVG),
                         SeanceAnalyticsService.getAverageSessionAttention(
-                                seance.getParticipants(),
+                                seance.getSeanceAnalytics().getMaxParticipantsObserved(),
                                 SeanceAnalyticsService
                                         .parseAnalytics(
                                         seance.getSeanceAnalytics()

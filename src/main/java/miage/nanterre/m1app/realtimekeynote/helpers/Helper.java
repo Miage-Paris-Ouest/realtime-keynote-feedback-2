@@ -28,8 +28,7 @@ public class Helper {
 
     public static String getRandomData(Seance seance){
         StringBuilder str = new StringBuilder();
-        int participants = seance.getParticipants();
-        System.out.println(participants);
+        int participants = (int) seance.getSeanceAnalytics().getMaxParticipantsObserved();
         //Get number of frames
         long framesNumber = 100000;
         Random rand = new Random();
