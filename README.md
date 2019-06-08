@@ -11,7 +11,7 @@ Comment installer le projet :
 - Installer IntelliJ
 - Installer Wampserver 
 - Wamp --> PHPMyAdmin --> Créer une nouvelle base nommée realtime_keynote
-- Créez un dossier sur votre système --> "C:\data-video" c'est dans ce dossier que les vidéos sont uploadées, traitées, puis supprimées (sinon modifiez la valeur de ce champs dans le fichier java Service/UploadService.java)
+- Créez un dossier sur votre système --> "C:\data-video" c'est dans ce dossier que les vidéos sont uploadées, traitées, puis supprimées (sinon modifiez la valeur de ce champs dans la variable statique correspondante qui se situe dans [ce fichier](https://github.com/Miage-Paris-Ouest/realtime-keynote-feedback-2/blob/master/src/main/java/miage/nanterre/m1app/realtimekeynote/Service/UploadService.java)
 - Installer node et npm
 
 Pour accéder à la base de donnée : 
