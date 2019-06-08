@@ -4,7 +4,7 @@ Comment installer le projet :
 
 - Installer IntelliJ
 - Installer Wampserver 
-- Wamp --> PHPMyAdmin (on remarquera l'ironie) --> Créer une nouvelle base nommée realtime_keynote
+- Wamp --> PHPMyAdmin --> Créer une nouvelle base nommée realtime_keynote
 
 L'architecture du projet étant entièrement refaite, il vous faudra : 
 - git checkout master
