@@ -249,7 +249,7 @@ public class SeanceAnalyticsService {
             partsNumber = (long) Math.ceil(durationMin * 1. / 15 * 1.);
             milliSecondsSeparation = 60000 * 15;
         } else {
-            partsNumber = durationMin;
+            partsNumber = durationMin > 0 ? durationMin : 1;
             milliSecondsSeparation = 60000;
         }
 

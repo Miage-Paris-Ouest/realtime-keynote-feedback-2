@@ -43,6 +43,7 @@ public class SeanceService {
         long duration = seance.getSeanceAnalytics().getDuration();
         int hours = Math.toIntExact(duration / 60 / 60);
         int min = Math.toIntExact((duration / 60) - hours * 60);
+        min = min > 0 ? min : 1;
         return hours + ":" + min;
     }
 

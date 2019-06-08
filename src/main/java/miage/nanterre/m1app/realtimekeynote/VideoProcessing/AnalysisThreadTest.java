@@ -38,6 +38,7 @@ public class AnalysisThreadTest extends Thread {
     }
     @Override
     public void run(){
+        System.out.println("okokokokok");
         VideoProcessState videoProcessState = seance.getVideoProcessState();
         nu.pattern.OpenCV.loadShared();
         String path = UploadService.uploadDir + videoName;
@@ -46,7 +47,7 @@ public class AnalysisThreadTest extends Thread {
         //Create new MAT object
         Mat frame = new Mat();
         //Create new VideoCapture object
-        VideoCapture camera = new VideoCapture("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+        VideoCapture camera = new VideoCapture("http://techslides.com/demos/sample-videos/small.mp4");
         int secondRatio = (int) camera.get(Videoio.CAP_PROP_FPS);
         System.out.println(secondRatio);
         String xmlFile = "XML\\lbpcascade_frontalface.xml";
@@ -70,8 +71,13 @@ public class AnalysisThreadTest extends Thread {
         videoProcessState.setActive(false);
         videoProcessStateRepository.save(videoProcessState);
         SeanceAnalytics seanceAnalytics = seance.getSeanceAnalytics();
+        if(strAnalytics.length()>0)
         seanceAnalytics.setAnalyticsData(strAnalytics.substring(0, strAnalytics.length() - 1));
-        seanceAnalytics.setDuration(fPos/secondRatio);
+        else
+            seanceAnalytics.setAnalyticsData("");
+        long duration = fPos/secondRatio;
+        duration = duration > 1 ? duration : 1;
+        seanceAnalytics.setDuration(duration);
         seanceAnalyticsRepository.save(seanceAnalytics);
         File file = new File(path);
         file.delete();

@@ -53,7 +53,7 @@ public class SeanceDAO {
 
     @PostConstruct
     public void testCreateSeance() {
-        User user = new User("Christelle", "Ilunga", null);
+       User user = new User("Christelle", "Ilunga", null);
         userRepository.save(user);
         String analytics1 = "20,20,20,20,20,20,20,20,20,20,25";
         Seance seance1 = new Seance(
