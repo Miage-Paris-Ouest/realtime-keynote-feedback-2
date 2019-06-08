@@ -2,6 +2,7 @@ package miage.nanterre.m1app.realtimekeynote.Controller;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import miage.nanterre.m1app.realtimekeynote.Builder.SeanceBuilder;
+import miage.nanterre.m1app.realtimekeynote.Exception.AnalyticsException;
 import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
@@ -54,6 +55,13 @@ public class SeanceController extends SeanceBuilder {
         User user = userRepository.findById(userId).get();
         return new ResponseEntity<Object>(user.getSeances(), HttpStatus.OK);
     }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @RequestMapping(value = "/test", method = RequestMethod.GET, headers = "Accept=application/json")
+    public ResponseEntity<Object> sendAnalyticsData(@RequestParam("id") long id) throws AnalyticsException {
+        VideoProcessService videoService = new VideoProcessService(seanceRepository, analyticsRepo, videoProcessStateRepo);
+        videoService.test(seanceRepository.findById(id).get());
+        return new ResponseEntity<Object>("ok", HttpStatus.OK);
+    }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value = "/all", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -94,8 +102,7 @@ public class SeanceController extends SeanceBuilder {
         state.setActive(true);
         videoProcessStateRepo.save(state);
         VideoProcessService videoService = new VideoProcessService(seanceRepository, analyticsRepo, videoProcessStateRepo);
-       System.out.println(fileToAnalyse);
-       System.out.println(seance.getId());
+
         videoService.analyse(fileToAnalyse,seance);
         HashMap<String,Object> hash = new HashMap<>();
         hash.put(String.valueOf(ID), seance.getId());

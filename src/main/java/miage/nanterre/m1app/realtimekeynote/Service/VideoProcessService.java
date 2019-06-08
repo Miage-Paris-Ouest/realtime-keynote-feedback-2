@@ -6,6 +6,7 @@ import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.VideoProcessStateRepository;
 import miage.nanterre.m1app.realtimekeynote.VideoProcessing.AnalysisThread;
+import miage.nanterre.m1app.realtimekeynote.VideoProcessing.AnalysisThreadTest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,16 @@ public class VideoProcessService {
         videoProcess.setVideoProcessStateRepository(videoProcessStateRepository);
         videoProcess.start();
     }
+
+    public void test(Seance seance){
+        AnalysisThreadTest videoProcess = new AnalysisThreadTest();
+        videoProcess.setSeanceAnalyticsRepository(seanceAnalyticsRepository);
+        videoProcess.setSeance(seance);
+        videoProcess.setVideoProcessStateRepository(videoProcessStateRepository);
+        videoProcess.start();
+    }
+
+
 
     public ArrayList<HashMap> getSessionsInProcess(){
         ArrayList<HashMap> list = new ArrayList<>();

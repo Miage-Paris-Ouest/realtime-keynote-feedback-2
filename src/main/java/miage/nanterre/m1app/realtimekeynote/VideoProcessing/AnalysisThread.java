@@ -28,7 +28,7 @@ public class AnalysisThread extends Thread {
         this.videoName = videoName;
     }
     public void setSeance(Seance seance){
-     this.seance = seance;
+        this.seance = seance;
     }
     public void setVideoProcessStateRepository(VideoProcessStateRepository videoProcessStateRepository) {
         this.videoProcessStateRepository = videoProcessStateRepository;
@@ -46,11 +46,10 @@ public class AnalysisThread extends Thread {
         //Create new MAT object
         Mat frame = new Mat();
         //Create new VideoCapture object
-        VideoCapture camera = new VideoCapture(chemin);
+        VideoCapture camera = new VideoCapture(path);
         int secondRatio = (int) camera.get(Videoio.CAP_PROP_FPS);
         System.out.println(secondRatio);
         String xmlFile = "XML\\lbpcascade_frontalface.xml";
-
         MatOfRect faceDetection = new MatOfRect();
         CascadeClassifier cc = new CascadeClassifier(xmlFile);
         int fPos = 0;
@@ -78,3 +77,6 @@ public class AnalysisThread extends Thread {
         file.delete();
     }
 }
+
+
+
