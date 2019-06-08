@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height fluid grid-list-xl>
-    <v-layout justify-center wrap>
-      <v-flex md10 v-if="responseData.length">
+    <v-layout justify-center wrap v-if="responseData.length">
+      <v-flex md10>
         <material-card
           color="primary"
           title="Liste de vos séances"
@@ -39,6 +39,7 @@ import SessionsListService from "../services/SessionsList";
 import config from "../config";
 import StatisticsHelper from "../helpers/StatisticsHelper";
 import FormatterHelper from "../helpers/FormatterHelper";
+import store from "../store.js";
 export default {
   data: () => ({
     title: "Cliquez pour accéder aux statistiques de cette séance",
@@ -65,16 +66,22 @@ export default {
         align: "right"
       }
     ],
-    responseData: []
+    responseData: [],
+    store
   }),
   async mounted() {
-    if (config.apiCallEnabled) {
-      try {
-        var response = await SessionsListService.getSessionsList();
-        console.log(response.data);
-        if (response.data) this.responseData = response.data;
-      } catch (error) {
-        console.trace(error);
+    this.fetch();
+  },
+  methods: {
+    async fetch() {
+      if (config.apiCallEnabled) {
+        try {
+          var response = await SessionsListService.getSessionsList();
+          if (response.data) this.responseData = response.data;
+        } catch (error) {
+          console.trace(error);
+          this.$router.push("/erreur");
+        }
       }
     }
   },
@@ -94,7 +101,15 @@ export default {
             sessionId: data.ID
           };
         });
-      }
+      } else return [];
+    }
+  },
+  watch: {
+    store: {
+      handler: function(val, oldVal) {
+        this.fetch();
+      },
+      deep: true
     }
   }
 };

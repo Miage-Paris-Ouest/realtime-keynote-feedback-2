@@ -1,7 +1,25 @@
 <template>
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
-      <v-flex xs12 md8 lg4 v-if="!isParsing">
+      <v-flex xs12 md8 lg4 v-if="!isParsing && store.sessionsInProcess.length >= 3">
+        <material-card
+          color="primary"
+          title="Vous avez atteint votre limite d'upload parallèles"
+          text="Vous êtes limités à 3 uploads en parallèle."
+        >
+          <v-container py-0 px-0>
+            <v-layout wrap>
+              <v-flex xs12 md12>
+                <p>
+                  Nous analysons 3 vidéos en arrière-plan pour vous,
+                  attendez encore un peu et vous pourrez analyser une nouvelle vidéo.
+                </p>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </material-card>
+      </v-flex>
+      <v-flex xs12 md8 lg4 v-if="!isParsing && store.sessionsInProcess.length < 3">
         <material-card
           color="primary"
           title="Uploadez un fichier vidéo"
@@ -17,7 +35,7 @@
         </material-card>
       </v-flex>
 
-      <v-flex xs12 md8 lg6 v-if="!isParsing">
+      <v-flex xs12 md8 lg6 v-if="!isParsing && store.sessionsInProcess.length < 3">
         <material-card
           color="primary"
           title="Informations sur la séance"
@@ -112,7 +130,7 @@
           </v-form>
         </material-card>
       </v-flex>
-      <v-flex xs12 md8 lg4 v-if="isParsing">
+      <v-flex xs12 md8 lg8 v-if="isParsing">
         <material-card
           color="primary"
           title="Upload réussi !"
@@ -120,15 +138,15 @@
         >
           <v-container py-0 px-0>
             <v-layout wrap justify-center>
-              <v-flex xs2 md2>
-                <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-              </v-flex>
-            </v-layout>
-            <v-layout wrap justify-center>
-              <v-flex xs4 md4>
-                <h4>
-                  <br>Votre fichier est en cours d'analyse...
+              <v-flex xs6 md6>
+                <h4 style="text-align:center;">
+                  <br>Nous traitons votre vidéo en arrière plan.
                 </h4>
+                <p style="text-align:center;">
+                  Pour voir l'avancement de votre vidéo cliquez dans la barre de navigation
+                  sur
+                  <b>"EN TRAITEMENT"</b>.
+                </p>
               </v-flex>
             </v-layout>
           </v-container>
@@ -292,17 +310,17 @@ export default {
           var response = await SessionCreationService.createSession(
             sessionData
           );
-          this.store.sessionsInProcess.unshift({
+          this.store.sessionsInProcess.push({
             SUBJECT: response.data.SUBJECT,
             ID: response.data.ID
           });
-          console.log(this.store);
         } catch (error) {
           console.trace(error);
+          this.$router.push("/erreur");
         }
-        setTimeout(function() {
+        setTimeout(() => {
           this.$router.push("/mes-seances");
-        }, 2000);
+        }, 3000);
       }
     },
     async uploadFinished(status, file) {

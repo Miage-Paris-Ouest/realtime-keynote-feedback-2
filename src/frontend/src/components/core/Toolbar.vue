@@ -11,7 +11,7 @@
           <v-subheader
             v-if="sessionsInProcessComputed.length"
           >Vidéos en cours d'analyse par nos serveurs, le traitement peut durer plusieurs minutes.</v-subheader>
-          <v-subheader v-else>Aucune vidéo en cours d'analyse.</v-subheader>
+          <v-subheader v-else>Toutes vos vidéos sont analysées avec succès.</v-subheader>
           <v-list-tile
             @click="sheet = false"
             v-for="( data, index) in sessionsInProcessComputed"
@@ -63,18 +63,16 @@ export default {
         icon: "mdi-clipboard-outline",
         text: "Mes séances"
       }
-      /* {
-        to: "/mon-compte",
-        icon: "mdi-account",
-        text: "Mon compte"
-      }*/
     ],
     responsive: false,
     store,
-    interval: null
+    interval: null,
+    isFetching: false
   }),
-  mounted() {
-    this.testPeriodic();
+  async mounted() {
+    var response = await SessionProcessService.getSessionsInProcess();
+    this.store.sessionsInProcess = response.data ? response.data : [];
+    this.periodicFetch();
   },
   computed: {
     sessionsInProcessComputed() {
@@ -82,18 +80,20 @@ export default {
     }
   },
   methods: {
-    async testPeriodic() {
+    async periodicFetch() {
+      this.isFetching = true;
       var interval = setInterval(async () => {
         try {
           var response = await SessionProcessService.getSessionsInProcess();
           var sessionsStore = this.store.sessionsInProcess;
           if (response.data.length == 0) {
             this.store.sessionsInProcess = [];
+            this.isFetching = false;
             clearInterval(interval);
             return;
           }
           if (sessionsStore.length !== response.data.length) {
-            sessionsStore = response.data;
+            this.store.sessionsInProcess = response.data;
           } else {
             var length = sessionsStore.length;
             for (let index = 0; index < length; index++) {
@@ -108,12 +108,13 @@ export default {
           console.trace(err);
         }
       }, 6000);
-    }
+    },
+    async fetch() {}
   },
   watch: {
     store: {
       handler: function(val, oldVal) {
-        this.testPeriodic();
+        if (!this.isFetching) this.periodicFetch();
       },
       deep: true
     }

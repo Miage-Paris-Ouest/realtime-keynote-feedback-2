@@ -25,6 +25,11 @@ export default [
     view: 'Account'
   },
   {
+    path: '/erreur',
+    name: 'Erreur',
+    view: 'Error'
+  },
+  {
     path: '/video',
     name: 'Démarrer une vidéo',
     view: 'Video'

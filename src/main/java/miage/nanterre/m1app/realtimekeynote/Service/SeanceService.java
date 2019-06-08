@@ -9,7 +9,6 @@ import java.util.HashMap;
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceEnum.*;
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceAnalyticsEnum.*;
 
-
 public class SeanceService {
 
     public static ArrayList<HashMap> getDurationSession(SeanceRepository seanceRepository) {
@@ -26,7 +25,6 @@ public class SeanceService {
                 seanceData.put(String.valueOf(PARTICIPANTS), seance.getParticipants());
                 seanceData.put(String.valueOf(DATE), seance.getDate());
                 seanceData.put(String.valueOf(BEGINNING_TIME), seance.getBeginningTime());
-                // seanceData.put(String.valueOf(ENDING_TIME), s.getEndingTime());
                 seanceData.put(String.valueOf(ID), seance.getId());
                 seanceData.put(String.valueOf(ATTENTION_AVG),
                         SeanceAnalyticsService.getAverageSessionAttention(

@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <core-filter/>
     <core-toolbar/>
     <core-view/>
   </v-app>

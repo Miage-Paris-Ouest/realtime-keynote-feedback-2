@@ -2,7 +2,14 @@
   <div class="file-upload">
     <v-layout wrap v-if="!terminated">
       <v-flex v-if="!uploading" xs12 class="text-xs-center">
-        <input type="file" id="file" ref="file" style="display:none;" v-on:change="startUpload()">
+        <input
+          type="file"
+          id="file"
+          accept=".mp4, .mov, .avi"
+          ref="file"
+          style="display:none;"
+          v-on:change="startUpload()"
+        >
         <v-btn align-center color="primary" v-on:click="handleFileUpload()">
           Choisir un fichier&nbsp;
           <v-icon>mdi-arrow-collapse-down</v-icon>
@@ -82,6 +89,7 @@ export default {
           this.$emit("uploaded", false);
         }
       } catch (err) {
+        this.$router.push("/erreur");
         console.trace(err);
       }
     }

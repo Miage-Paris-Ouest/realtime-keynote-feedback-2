@@ -5,6 +5,7 @@ import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Model.VideoProcessState;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.VideoProcessStateRepository;
+import miage.nanterre.m1app.realtimekeynote.Service.UploadService;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.objdetect.CascadeClassifier;
@@ -13,6 +14,7 @@ import org.opencv.videoio.Videoio;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 
 @Component
@@ -36,17 +38,11 @@ public class AnalysisThread extends Thread {
     }
     @Override
     public void run(){
-        //EntityManager manager = (EntityManager) ;
         VideoProcessState videoProcessState = seance.getVideoProcessState();
         nu.pattern.OpenCV.loadShared();
-        //String path ="C:\\data\\"+nom;
-        String path ="C:\\data\\" + videoName;
-        String nb = "";
-
+        String path = UploadService.uploadDir + videoName;
         String chemin = path.replace("~","\\");
-        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
-
         //Create new MAT object
         Mat frame = new Mat();
         //Create new VideoCapture object
@@ -78,6 +74,7 @@ public class AnalysisThread extends Thread {
         seanceAnalytics.setAnalyticsData(strAnalytics.substring(0, strAnalytics.length() - 1));
         seanceAnalytics.setDuration(fPos/secondRatio);
         seanceAnalyticsRepository.save(seanceAnalytics);
-        System.out.println(nb);
+        File file = new File(path);
+        file.delete();
     }
 }
