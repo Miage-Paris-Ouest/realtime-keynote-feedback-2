@@ -41,6 +41,7 @@ public class AnalysisThreadTest extends Thread {
         System.out.println("okokokokok");
         VideoProcessState videoProcessState = seance.getVideoProcessState();
         nu.pattern.OpenCV.loadShared();
+        nu.pattern.OpenCV.loadLocally();
         String path = UploadService.uploadDir + videoName;
         String chemin = path.replace("~","\\");
         System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
