@@ -5,7 +5,7 @@ L'application propose un reporting détaillée de l'évolution de l'attention de
 
 Décomposition technique du projet :
 - Un client (Vue.js)
-- Un serveur (Spring, OpenCV) de type API
+- Une API serveur (Spring, OpenCV)
 
 Comment installer le projet : 
 - Installer IntelliJ
