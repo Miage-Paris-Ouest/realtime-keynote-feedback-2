@@ -6,11 +6,14 @@ import miage.nanterre.m1app.realtimekeynote.Exception.UserNotFoundException;
 import miage.nanterre.m1app.realtimekeynote.Model.Seance;
 import miage.nanterre.m1app.realtimekeynote.Model.SeanceAnalytics;
 import miage.nanterre.m1app.realtimekeynote.Model.User;
+import miage.nanterre.m1app.realtimekeynote.Model.VideoProcessState;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceAnalyticsRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.SeanceRepository;
 import miage.nanterre.m1app.realtimekeynote.Repository.UserRepository;
+import miage.nanterre.m1app.realtimekeynote.Repository.VideoProcessStateRepository;
 import miage.nanterre.m1app.realtimekeynote.Service.SeanceAnalyticsService;
 import miage.nanterre.m1app.realtimekeynote.Service.SeanceService;
+import miage.nanterre.m1app.realtimekeynote.Service.VideoProcessService;
 import miage.nanterre.m1app.realtimekeynote.View.SeanceView;
 import miage.nanterre.m1app.realtimekeynote.helpers.Helper;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceEnum.ID;
+import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceEnum.SUBJECT;
+
 @Controller
 @RequestMapping(value = "/seance")
 public class SeanceController extends SeanceBuilder {
@@ -31,13 +37,15 @@ public class SeanceController extends SeanceBuilder {
     private UserRepository userRepository;
     private SeanceRepository seanceRepository;
     private SeanceAnalyticsRepository analyticsRepo;
+    private VideoProcessStateRepository videoProcessStateRepo;
 
     private static final boolean ENABLE_VIDEO_ANALYSIS = true;
 
-    public SeanceController(UserRepository userRepository, SeanceRepository seanceRepository, SeanceAnalyticsRepository analyticsRepo) {
+    public SeanceController(UserRepository userRepository, SeanceRepository seanceRepository, SeanceAnalyticsRepository analyticsRepo, VideoProcessStateRepository videoProcessStateRepo) {
         this.userRepository = userRepository;
         this.seanceRepository = seanceRepository;
         this.analyticsRepo = analyticsRepo;
+        this.videoProcessStateRepo = videoProcessStateRepo;
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -54,16 +62,20 @@ public class SeanceController extends SeanceBuilder {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @RequestMapping(value = "/get/seances-in-process", method = RequestMethod.GET, headers = "Accept=application/json")
+    public ResponseEntity<Object> getSessionsInProcess() {
+        VideoProcessService service = new VideoProcessService(seanceRepository, analyticsRepo, videoProcessStateRepo);
+        return new ResponseEntity<>(service.getSessionsInProcess(), HttpStatus.OK);
+    }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping(path= "/create")
-    public Seance createSeance(@RequestBody SeanceView seanceView) throws UserNotFoundException {
+    @PostMapping(path = "/create")
+    public ResponseEntity<Object> createSeance(@RequestBody SeanceView seanceView) throws UserNotFoundException {
         User user = userRepository
-                    .findById((long)1)
-                    .orElseThrow(UserNotFoundException::new);
-
+                .findById((long) 1)
+                .orElseThrow(UserNotFoundException::new);
         String fileToAnalyse = seanceView.getFile();
-
         Seance seance = new Seance();
         seance
                 .setName(seanceView.getName())
@@ -73,22 +85,21 @@ public class SeanceController extends SeanceBuilder {
                 .setParticipants(seanceView.getParticipants())
                 .setDate(seanceView.getDate())
                 .setBeginningTime(seanceView.getBeginningTime())
-                .setEndingTime(seanceView.getEndingTime())
                 .setRoom(seanceView.getRoom())
                 .setUser(user);
 
-        if (seance.getParticipants() == 0 ) {
-            seance.setParticipants(1);
-        }
-
         SeanceAnalytics analytics = seance.getSeanceAnalytics();
-        analytics.setAnalyticsData(Helper.getRandomData(seance));
         seanceRepository.save(seance);
-
-        if (ENABLE_VIDEO_ANALYSIS) {
-            SeanceAnalyticsService service = new SeanceAnalyticsService(analyticsRepo, seanceRepository);
-            service.analyse(fileToAnalyse, seance.getId());
-        }
-        return seance;
+        VideoProcessState state = seance.getVideoProcessState();
+        state.setActive(true);
+        videoProcessStateRepo.save(state);
+        VideoProcessService videoService = new VideoProcessService(seanceRepository, analyticsRepo, videoProcessStateRepo);
+       System.out.println(fileToAnalyse);
+       System.out.println(seance.getId());
+        videoService.analyse(fileToAnalyse,seance);
+        HashMap<String,Object> hash = new HashMap<>();
+        hash.put(String.valueOf(ID), seance.getId());
+        hash.put(String.valueOf(SUBJECT), seance.getSubject());
+        return new ResponseEntity<>(hash, HttpStatus.OK);
     }
 }

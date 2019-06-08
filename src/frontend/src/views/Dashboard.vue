@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height fluid grid-list-xl>
+  <v-container fill-height fluid grid-list-xl v-if="responseData">
     <v-layout wrap>
       <v-flex md12 sm12 lg4>
         <material-chart-card
@@ -61,10 +61,12 @@
       </v-flex>
 
       <v-flex sm6 xs12 md6 lg8>
-        <v-alert :value="true" type="info" color="primary" style="margin-top:25px;">
-          Votre niveau d'attention globale est dans la moyenne haute.
-          Si vous souhaitez en savoir plus, consultez nos conseils pour améliorer l'attention de votre public.
-        </v-alert>
+        <v-alert
+          :value="true"
+          type="info"
+          :color="analysisComputed.color"
+          style="margin-top:25px;"
+        >{{analysisComputed.message}}</v-alert>
       </v-flex>
     </v-layout>
   </v-container>
@@ -78,7 +80,25 @@ import FormatterHelper from "../helpers/FormatterHelper";
 export default {
   data() {
     return {
-      responseData: [],
+      analysis: {
+        low: {
+          color: "red",
+          message: `Le niveau d'attention sur les 6 derniers mois est dans la moyenne basse (inférieur à 20).
+         Vous devez améliorer l'attention de votre auditoire en suivant nos conseils personalisés.`
+        },
+        medium: {
+          color: "orange",
+          message: `Le niveau d'attention sur les 6 derniers mois est dans la moyenne (entre 20 et 35).
+          Ce niveau correspond à une attention satisfaisante mais perfectible.
+          Si vous souhaitez en savoir plus, consultez nos conseils pour accroitre l'attention de votre public.`
+        },
+        high: {
+          color: "green",
+          message: `Le niveau d'attention sur les 6 derniers mois est dans la moyenne haute (entre 35 et 50).
+          Si vous souhaitez en savoir plus, consultez nos conseils pour améliorer l'attention de votre public.`
+        }
+      },
+      responseData: null,
       avgAttention: "",
       attentionChart: {
         data: {
@@ -185,9 +205,24 @@ export default {
         this.avgAttention = StatisticsHelper.roundStat(
           this.responseData.ATTENTION_AVG
         );
+      } else {
+        this.$router.push("/erreur");
       }
     } catch (error) {
       console.trace(error);
+      this.$router.push("/erreur");
+    }
+  },
+  computed: {
+    analysisComputed() {
+      var avg = this.responseData.ATTENTION_AVG;
+      if (avg < 20) {
+        return this.analysis.low;
+      } else if (avg < 35) {
+        return this.analysis.medium;
+      } else {
+        return this.analysis.high;
+      }
     }
   }
 };

@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height fluid grid-list-xl>
-    <v-layout justify-center wrap>
-      <v-flex md10 v-if="responseData.length">
+    <v-layout justify-center wrap v-if="responseData.length">
+      <v-flex md10>
         <material-card
           color="primary"
           title="Liste de vos séances"
@@ -15,7 +15,6 @@
               <td :title="title">{{ item.subject}}</td>
               <td :title="title">{{ item.date }}</td>
               <td :title="title">{{ item.beginningTime }}</td>
-              <td :title="title">{{ item.endingTime}}</td>
               <td :title="title">{{ item.duration }}</td>
               <td class="text-xs-right">{{ item.attention }}/50</td>
               <td :title="title" class="text-xs-right">
@@ -40,52 +39,49 @@ import SessionsListService from "../services/SessionsList";
 import config from "../config";
 import StatisticsHelper from "../helpers/StatisticsHelper";
 import FormatterHelper from "../helpers/FormatterHelper";
+import store from "../store.js";
 export default {
   data: () => ({
     title: "Cliquez pour accéder aux statistiques de cette séance",
     headers: [
       {
         sortable: false,
-        text: "Titre",
-        value: "name"
+        text: "Titre"
       },
       {
         sortable: false,
-        text: "Date",
-        value: "country"
+        text: "Date"
       },
       {
         sortable: false,
-        text: "Heure de début",
-        value: "city"
+        text: "Heure de début"
       },
       {
         sortable: false,
-        text: "Heure de fin",
-        value: "salary"
-      },
-      {
-        sortable: false,
-        text: "Durée",
-        value: "salary"
+        text: "Durée"
       },
       {
         sortable: false,
         text: "Indice d'attention",
-        value: "salary",
         align: "right"
       }
     ],
-    responseData: []
+    responseData: [],
+    store
   }),
-   async mounted() {
-    if (config.apiCallEnabled) {
-      try {
-        var response = await SessionsListService.getSessionsList();
-        console.log(response.data);
-        if (response.data) this.responseData = response.data;
-      } catch (error) {
-        console.trace(error);
+  async mounted() {
+    this.fetch();
+  },
+  methods: {
+    async fetch() {
+      if (config.apiCallEnabled) {
+        try {
+          var response = await SessionsListService.getSessionsList();
+          if (response.data) this.responseData = response.data;
+        } catch (error) {
+          console.trace(error);
+          this.$router.push("/erreur");
+        }
       }
     }
   },
@@ -100,13 +96,20 @@ export default {
             beginningTime: FormatterHelper.getTimeFromDateTime(
               data.BEGINNING_TIME
             ),
-            endingTime: FormatterHelper.getTimeFromDateTime(data.ENDING_TIME),
             duration: FormatterHelper.getDurationFromString(data.DURATION),
             attention: StatisticsHelper.roundStat(data.ATTENTION_AVG),
             sessionId: data.ID
           };
         });
-      }
+      } else return [];
+    }
+  },
+  watch: {
+    store: {
+      handler: function(val, oldVal) {
+        this.fetch();
+      },
+      deep: true
     }
   }
 };

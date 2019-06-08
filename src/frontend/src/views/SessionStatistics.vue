@@ -40,47 +40,26 @@
       </v-flex>
       <v-flex md8>
         <material-complex-chart-card
+          v-if="attentionChart"
           color="white"
           chart-type="Line"
           :data="attentionChart.data"
           :options="attentionChart.options"
         >
           <h4 class="title font-weight-light">Évolution de l'attention au fil du temps</h4>
-          <p class="category d-inline-flex font-weight-light">
-            <v-icon color="primary" small>mdi-arrow-up</v-icon>
-            <span class="green--text">55%</span>&nbsp;
-            Analysé depuis l'attention individuelle de chaque étudiant.
-          </p>
+          <p
+            class="category d-inline-flex font-weight-light"
+          >Analysé depuis l'attention individuelle de chaque étudiant.</p>
         </material-complex-chart-card>
-        <v-layout wrap row>
-          <v-flex md6>
-            <!--
-            <material-complex-chart-card
-              color="white"
-              chart-type="Polar"
-              :options="dispersionChart.options"
-              :data="dispersionChart.data"
-            >
-              <h4 class="title font-weight-light">Stimulus à l'origine d'une perte d'attention</h4>
-              <p
-                class="category d-inline-flex font-weight-light"
-              >Nombre d'absents pendant la séance.</p>
-            </material-complex-chart-card>
-          </v-flex>
-          <v-flex md6>
-            <material-complex-chart-card
-              color="white"
-              chart-type="Polar"
-              :options="dispersionChart.options"
-              :data="dispersionChart.data"
-            >
-              <h4 class="title font-weight-light">Stimulus à l'origine d'une perte d'attention</h4>
-              <p
-                class="category d-inline-flex font-weight-light"
-              >Nombre d'absents pendant la séance.</p>
-            </material-complex-chart-card>-->
-          </v-flex>
-        </v-layout>
+
+        <v-flex sm6 xs12 md12 lg12 v-if="responseData">
+          <v-alert
+            :value="true"
+            type="info"
+            :color="analysisComputed.color"
+            style="margin-top:25px;"
+          >{{analysisComputed.message}}</v-alert>
+        </v-flex>
       </v-flex>
     </v-layout>
   </v-container>
@@ -102,7 +81,26 @@ export default {
       items: [],
       attentionAverage: 0,
       attentionMax: 0,
-      attentionMin: 0
+      attentionMin: 0,
+      attentionChart: null,
+      analysis: {
+        low: {
+          color: "red",
+          message: `Votre niveau d'attention globale pour cette séance est dans la moyenne basse (inférieur à 20).
+         Vous devez améliorer l'attention de votre auditoire en suivant nos conseils personalisés.`
+        },
+        medium: {
+          color: "orange",
+          message: `Votre niveau d'attention globale est dans la moyenne (entre 20 et 35).
+          Ce niveau correspond à une attention satisfaisante mais perfectible.
+          Si vous souhaitez en savoir plus, consultez nos conseils pour accroitre l'attention de votre public.`
+        },
+        high: {
+          color: "green",
+          message: `Votre niveau d'attention globale est dans la moyenne haute (entre 35 et 50).
+          Si vous souhaitez en savoir plus, consultez nos conseils pour améliorer l'attention de votre public.`
+        }
+      }
     };
   },
   async mounted() {
@@ -111,7 +109,6 @@ export default {
         var response = await SessionStatisticsService.getSeanceStatistics(
           this.$route.params.id
         );
-        console.log(response.data);
         if (response.data) {
           this.responseData = response.data;
           this.attentionAverage = StatisticsHelper.roundStat(
@@ -149,11 +146,23 @@ export default {
         }
       } catch (error) {
         console.trace(error);
+        this.$router.push("/erreur");
       }
     }
   },
-
   computed: {
+    analysisComputed() {
+      if (this.responseData) {
+        var avg = this.responseData.ATTENTION_AVG;
+        if (avg < 20) {
+          return this.analysis.low;
+        } else if (avg < 35) {
+          return this.analysis.medium;
+        } else {
+          return this.analysis.high;
+        }
+      }
+    },
     itemsComputed() {
       if (this.responseData) {
         const session = this.responseData.SESSION;
@@ -167,6 +176,10 @@ export default {
             value: session.ROOM
           },
           {
+            label: "Date",
+            value: FormatterHelper.getDateFromDateTime(session.DATE)
+          },
+          {
             label: "Durée",
             value: FormatterHelper.getDurationFromString(session.DURATION)
           },
@@ -177,10 +190,6 @@ export default {
           {
             label: "Début",
             value: FormatterHelper.getTimeFromDateTime(session.BEGINNING_TIME)
-          },
-          {
-            label: "Fin",
-            value: FormatterHelper.getTimeFromDateTime(session.ENDING_TIME)
           }
         ];
       } else {
@@ -191,6 +200,10 @@ export default {
           },
           {
             label: "Salle",
+            value: ""
+          },
+          {
+            label: "Date",
             value: ""
           },
           {

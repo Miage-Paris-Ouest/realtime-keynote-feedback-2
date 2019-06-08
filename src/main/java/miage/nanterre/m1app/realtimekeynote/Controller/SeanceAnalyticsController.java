@@ -51,42 +51,4 @@ public class SeanceAnalyticsController {
     }
 
 
-    @RequestMapping(value = "/analyse/{path}/{id}")
-
-    public void analyse(@PathVariable("path") String path, @PathVariable("id") long id) throws UnsupportedEncodingException {
-
-        //String chemin ="C:\\Users\\amine\\Desktop\\VID_20190417_112105.mp4";
-        String analyseData = "";
-        String chemin = path.replace("~","\\");
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        SeanceAnalytics s = seanceRepository.findById(id).get().getSeanceAnalytics();
-        //Create new MAT object
-        Mat frame = new Mat();
-        //Create new VideoCapture object
-        VideoCapture camera = new VideoCapture(chemin);
-        String xmlFile = "XML\\lbpcascade_frontalface.xml";
-
-        int batch=0 ;
-        MatOfRect faceDetection = new MatOfRect();
-        int i=0;
-        while (camera.read(frame)) {
-            //If next video frame is available
-            if (batch % 10 == 0 )
-            if (camera.read(frame)) {
-                CascadeClassifier cc = new CascadeClassifier(xmlFile);
-                cc.detectMultiScale(frame, faceDetection);
-
-                if (i == 0) {
-                    analyseData += faceDetection.toArray().length;
-                } else {
-                    analyseData +=  "," + faceDetection.toArray().length;
-
-                }
-            } else {
-                break;
-            }
-        }
-        s.setAnalyticsData(analyseData);
-        analyticsRepository.save(s) ;
-    }
 }

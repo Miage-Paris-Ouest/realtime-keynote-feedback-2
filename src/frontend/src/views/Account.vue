@@ -13,7 +13,6 @@
                 <v-flex xs12 md12>
                   <v-text-field label="Votre profession"/>
                 </v-flex>
-
                 <v-flex xs12 md6>
                   <v-text-field label="Votre prénom" class="purple-input"/>
                 </v-flex>

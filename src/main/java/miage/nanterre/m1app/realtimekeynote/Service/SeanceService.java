@@ -9,46 +9,40 @@ import java.util.HashMap;
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceEnum.*;
 import static miage.nanterre.m1app.realtimekeynote.Enum.SeanceAnalyticsEnum.*;
 
-
 public class SeanceService {
 
     public static ArrayList<HashMap> getDurationSession(SeanceRepository seanceRepository) {
 
         ArrayList<HashMap> response = new ArrayList<>();
-        Iterable<Seance> seance = seanceRepository.findAll();
+        Iterable<Seance> seances = seanceRepository.findAll();
 
-        for (Seance s : seance)
-            if (s != null) {
+        for (Seance seance : seances)
+            if (seance != null && seance.getVideoProcessState().getActive()==false) {
                 HashMap<String, Object> seanceData = new HashMap<String, Object>();
-                seanceData.put(String.valueOf(SUBJECT), s.getSubject());
-                seanceData.put(String.valueOf(PUBLIC), s.getPubliq());
-                seanceData.put(String.valueOf(ROOM), s.getRoom());
-                seanceData.put(String.valueOf(PARTICIPANTS), s.getParticipants());
-                seanceData.put(String.valueOf(DATE), s.getDate());
-                seanceData.put(String.valueOf(BEGINNING_TIME), s.getBeginningTime());
-                seanceData.put(String.valueOf(ENDING_TIME), s.getEndingTime());
-                seanceData.put(String.valueOf(ID), s.getId());
+                seanceData.put(String.valueOf(SUBJECT), seance.getSubject());
+                seanceData.put(String.valueOf(PUBLIC), seance.getPubliq());
+                seanceData.put(String.valueOf(ROOM), seance.getRoom());
+                seanceData.put(String.valueOf(PARTICIPANTS), seance.getParticipants());
+                seanceData.put(String.valueOf(DATE), seance.getDate());
+                seanceData.put(String.valueOf(BEGINNING_TIME), seance.getBeginningTime());
+                seanceData.put(String.valueOf(ID), seance.getId());
                 seanceData.put(String.valueOf(ATTENTION_AVG),
-                        SeanceAnalyticsService.getAverageSessionAttention(s.getParticipants(),
-                                SeanceAnalyticsService.parseAnalytics(s.getSeanceAnalytics().getAnalyticsData())));
-
-                long duration = s.getEndingTime().getTime() - s.getBeginningTime().getTime();
-
-                int hours = Math.toIntExact(duration / 1000 / 60 / 60);
-                int min = Math.toIntExact((duration / 1000 / 60) - hours * 60);
-
-                seanceData.put(String.valueOf(DURATION), CalcDuration(s));
-                seanceData.put(String.valueOf(DURATION), CalcDuration(s));
+                        SeanceAnalyticsService.getAverageSessionAttention(
+                                seance.getParticipants(),
+                                SeanceAnalyticsService
+                                        .parseAnalytics(
+                                        seance.getSeanceAnalytics()
+                                        .getAnalyticsData())));
+                seanceData.put(String.valueOf(DURATION), CalcDuration(seance));
                 response.add(seanceData);
             }
         return response;
     }
 
     public static String CalcDuration(Seance seance) {
-        long duration = seance.getEndingTime().getTime() - seance.getBeginningTime().getTime();
-        int hours = Math.toIntExact(duration / 1000 / 60 / 60);
-        int min = Math.toIntExact((duration / 1000 / 60) - hours * 60);
-
+        long duration = seance.getSeanceAnalytics().getDuration();
+        int hours = Math.toIntExact(duration / 60 / 60);
+        int min = Math.toIntExact((duration / 60) - hours * 60);
         return hours + ":" + min;
     }
 

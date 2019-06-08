@@ -50,6 +50,13 @@ public class Seance implements Serializable {
             mappedBy = "seance")
     private SeanceAnalytics seanceAnalytics;
 
+    @JsonManagedReference
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            optional = false,
+            mappedBy = "seance")
+    private VideoProcessState videoProcessState;
+
     @JsonBackReference
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name="user")
@@ -59,23 +66,22 @@ public class Seance implements Serializable {
     private int participants;
 
     public Seance() {
-        seanceAnalytics = new SeanceAnalytics(this, null);
-        this.setSeanceAnalytics(seanceAnalytics);
+        seanceAnalytics = new SeanceAnalytics(this, null, 0);
+        videoProcessState = new VideoProcessState(this);
     }
 
-    public Seance(String subject, String room, String publiq, Date date, Date beginningTime, Date endingTime, String description, User user, int participants) {
+    public Seance(String subject, String room, String publiq, Date date, Date beginningTime, String description, User user, int participants) {
         this.subject = subject;
         this.room = room;
         this.publiq = publiq;
         this.date = date;
         this.beginningTime = beginningTime;
-        this.endingTime = endingTime;
         this.description = description;
         this.user = user;
         this.participants = participants;
 
-        seanceAnalytics = new SeanceAnalytics(this, null);
-        this.setSeanceAnalytics(seanceAnalytics);
+        seanceAnalytics = new SeanceAnalytics(this, null,0);
+        videoProcessState = new VideoProcessState(this);
     }
 
     public long getId() {
@@ -114,6 +120,14 @@ public class Seance implements Serializable {
         return this;
     }
 
+    public VideoProcessState getVideoProcessState() {
+        return videoProcessState;
+    }
+
+    public void setVideoProcessState(VideoProcessState videoProcessState) {
+        this.videoProcessState = videoProcessState;
+    }
+
     public Date getDate(){
         return date;
     }
@@ -125,15 +139,6 @@ public class Seance implements Serializable {
     public Seance setBeginningTime(Date beginningTime) {
 
         this.beginningTime = beginningTime;
-        return this;
-    }
-
-    public Date getEndingTime() {
-        return endingTime;
-    }
-
-    public Seance setEndingTime(Date endingTime) {
-        this.endingTime = endingTime;
         return this;
     }
 

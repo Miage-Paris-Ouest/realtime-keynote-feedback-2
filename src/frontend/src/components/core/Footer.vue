@@ -1,6 +1,6 @@
 <template>
   <v-footer height="auto" color="#000">
-    <v-btn v-for="link in links" :key="link" color="white" flat round>{{ link.name }}</v-btn>
+    <v-btn v-for="(link,index) in links" :key="index" color="white" flat round>{{ link.name }}</v-btn>
     <v-spacer></v-spacer>
     <p style="color:rgb(255,255,255,0.8);">
       <strong>&copy;2019 — Realtime Keynote Feedback</strong>

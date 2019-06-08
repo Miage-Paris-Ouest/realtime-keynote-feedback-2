@@ -1,6 +1,7 @@
 package miage.nanterre.m1app.realtimekeynote.Controller;
 
 
+import miage.nanterre.m1app.realtimekeynote.Service.UploadService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,18 +15,11 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/video")
 public class UploadController {
-
-    private static final String uploadDir = "C:\\data\\";
-
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value="/upload",method= RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) {
-        File convertFile = new File(uploadDir+file.getOriginalFilename());
         try {
-            convertFile.createNewFile();
-            FileOutputStream fout = new FileOutputStream(convertFile);
-            fout.write(file.getBytes());
-            fout.close();
+            UploadService.upload(file);
         } catch (IOException e) {
             e.printStackTrace();
         }

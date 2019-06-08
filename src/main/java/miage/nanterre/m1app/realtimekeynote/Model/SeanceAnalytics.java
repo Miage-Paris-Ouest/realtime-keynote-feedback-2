@@ -24,12 +24,24 @@ public class SeanceAnalytics implements Serializable {
     @Column(nullable = true, length=260000,unique = false)
     private String analyticsData;
 
+    @Column(nullable = true)
+    private long duration;
+
     public SeanceAnalytics() {
     }
 
-    public SeanceAnalytics(Seance seance, String analyticsData) {
+    public SeanceAnalytics(Seance seance, String analyticsData, long duration) {
         this.seance = seance;
         this.analyticsData = analyticsData;
+        this.duration = duration;
+    }
+
+    public long getDuration(){
+        return this.duration;
+    }
+
+    public void setDuration(long duration){
+        this.duration = duration;
     }
     
     public long getId() {

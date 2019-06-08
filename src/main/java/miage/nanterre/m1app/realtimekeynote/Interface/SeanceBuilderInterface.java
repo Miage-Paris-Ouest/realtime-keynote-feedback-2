@@ -12,7 +12,6 @@ public interface SeanceBuilderInterface {
     public SeanceBuilder setRoom(String salle);
     public SeanceBuilder setPubliq(String publique);
     public SeanceBuilder setBeginningDate(Date date);
-    public SeanceBuilder setEndingDate(Date date);
     public SeanceBuilder setDescription(String Description);
     public SeanceBuilder setUser(User user);
     public SeanceBuilder setParticipants(int participants);
